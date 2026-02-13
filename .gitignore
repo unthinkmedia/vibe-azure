@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.vite/
+
+# OS files
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+
+# Playwright
+.playwright-mcp/
+
+# Browser profiles (scraper artifacts)
+.browser-profile/
+
+# Nested git repos
+charm-pilot/
+
+# Python
+__pycache__/
+
+# Misc
+*.log

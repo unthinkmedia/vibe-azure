@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHARM Component Catalog — Coherence Design System</title>
+  <link rel="stylesheet" href="charm-pilot/packages/demo/public/theme.css">
+  <link rel="stylesheet" href="charm-pilot/packages/demo/public/reset.css">
+  <link rel="stylesheet" href="charm-pilot/packages/demo/public/utility-classes.css">
+  <link rel="stylesheet" href="charm-pilot/packages/demo/dist/themes/fluent/selector-theme.css">
+  <script type="module" src="charm-pilot/packages/demo/public/html/index.js"></script>
+  <style>
+    :root {
+      --catalog-bg: #f5f5f5;
+      --catalog-surface: #ffffff;
+      --catalog-text: #242424;
+      --catalog-text-secondary: #616161;
+      --catalog-border: #e0e0e0;
+      --catalog-primary: #0078d4;
+      --catalog-primary-hover: #106ebe;
+      --catalog-card-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 0 2px rgba(0,0,0,0.04);
+      --catalog-card-shadow-hover: 0 4px 12px rgba(0,0,0,0.12), 0 0 4px rgba(0,0,0,0.06);
+      --catalog-tag-bg: #e8f4fd;
+      --catalog-tag-text: #0078d4;
+      --catalog-code-bg: #f0f0f0;
+    }
+    [data-theme="dark"] {
+      --catalog-bg: #1b1b1b;
+      --catalog-surface: #2d2d2d;
+      --catalog-text: #e0e0e0;
+      --catalog-text-secondary: #a0a0a0;
+      --catalog-border: #404040;
+      --catalog-primary: #4da6ff;
+      --catalog-primary-hover: #79bbff;
+      --catalog-card-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      --catalog-card-shadow-hover: 0 4px 12px rgba(0,0,0,0.4);
+      --catalog-tag-bg: #1a3a5c;
+      --catalog-tag-text: #79bbff;
+      --catalog-code-bg: #1e1e1e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--catalog-bg);
+      color: var(--catalog-text);
+      line-height: 1.5;
+    }
+    .header {
+      background: var(--catalog-surface);
+      border-bottom: 1px solid var(--catalog-border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .header h1 { font-size: 20px; font-weight: 600; }
+    .header h1 span { color: var(--catalog-primary); }
+    .header-controls { display: flex; align-items: center; gap: 12px; }
+    .search-box {
+      padding: 8px 12px;
+      border: 1px solid var(--catalog-border);
+      border-radius: 6px;
+      font-size: 14px;
+      width: 280px;
+      background: var(--catalog-bg);
+      color: var(--catalog-text);
+      outline: none;
+    }
+    .search-box:focus { border-color: var(--catalog-primary); box-shadow: 0 0 0 1px var(--catalog-primary); }
+    .theme-toggle {
+      padding: 6px 12px;
+      border: 1px solid var(--catalog-border);
+      border-radius: 6px;
+      background: var(--catalog-bg);
+      color: var(--catalog-text);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .main { display: flex; min-height: calc(100vh - 57px); }
+    .sidebar {
+      width: 220px;
+      background: var(--catalog-surface);
+      border-right: 1px solid var(--catalog-border);
+      padding: 16px 0;
+      position: sticky;
+      top: 57px;
+      height: calc(100vh - 57px);
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+    .sidebar h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--catalog-text-secondary);
+      padding: 8px 16px 4px;
+    }
+    .sidebar-item {
+      display: block;
+      padding: 6px 16px 6px 24px;
+      font-size: 13px;
+      color: var(--catalog-text);
+      text-decoration: none;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-item:hover { background: var(--catalog-bg); }
+    .sidebar-item.active { border-left-color: var(--catalog-primary); color: var(--catalog-primary); font-weight: 600; background: var(--catalog-bg); }
+    .content { flex: 1; padding: 24px 32px; max-width: 1200px; }
+    .stats {
+      display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .stat-card {
+      background: var(--catalog-surface);
+      border: 1px solid var(--catalog-border);
+      border-radius: 8px;
+      padding: 12px 20px;
+      min-width: 140px;
+    }
+    .stat-card .num { font-size: 24px; font-weight: 700; color: var(--catalog-primary); }
+    .stat-card .label { font-size: 12px; color: var(--catalog-text-secondary); }
+
+    /* Grid view */
+    .grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .category-title {
+      grid-column: 1 / -1;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 16px 0 4px;
+      border-bottom: 2px solid var(--catalog-primary);
+      margin-bottom: 4px;
+    }
+    .component-card {
+      background: var(--catalog-surface);
+      border: 1px solid var(--catalog-border);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: var(--catalog-card-shadow);
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .component-card:hover { box-shadow: var(--catalog-card-shadow-hover); transform: translateY(-2px); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .card-name { font-size: 16px; font-weight: 600; }
+    .card-tag {
+      background: var(--catalog-tag-bg);
+      color: var(--catalog-tag-text);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+    .card-desc { font-size: 13px; color: var(--catalog-text-secondary); margin-bottom: 10px; }
+    .card-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+    .card-tags code {
+      font-size: 11px;
+      background: var(--catalog-code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Cascadia Code', Consolas, monospace;
+    }
+
+    /* Detail view */
+    .detail-view { display: none; }
+    .detail-view.active { display: block; }
+    .grid-view.hidden { display: none; }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--catalog-primary);
+      cursor: pointer;
+      margin-bottom: 16px;
+      padding: 6px 0;
+      border: none;
+      background: none;
+      font-family: inherit;
+    }
+    .back-btn:hover { text-decoration: underline; }
+    .detail-title { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+    .detail-subtitle { color: var(--catalog-text-secondary); font-size: 14px; margin-bottom: 20px; }
+    .detail-section { margin-bottom: 24px; }
+    .detail-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; border-bottom: 1px solid var(--catalog-border); padding-bottom: 6px; }
+    .demo-area {
+      background: var(--catalog-surface);
+      border: 1px solid var(--catalog-border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 16px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .code-block {
+      background: var(--catalog-code-bg);
+      border: 1px solid var(--catalog-border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Cascadia Code', Consolas, monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.6;
+    }
+    .props-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .props-table th {
+      text-align: left;
+      padding: 8px 12px;
+      background: var(--catalog-bg);
+      border-bottom: 2px solid var(--catalog-border);
+      font-weight: 600;
+    }
+    .props-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--catalog-border);
+    }
+    .props-table code {
+      background: var(--catalog-code-bg);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: 'Cascadia Code', Consolas, monospace;
+      font-size: 12px;
+    }
+    .badge-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .info-badge {
+      font-size: 12px; padding: 3px 10px; border-radius: 12px;
+      background: var(--catalog-tag-bg); color: var(--catalog-tag-text); font-weight: 500;
+    }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .grid-view { grid-template-columns: 1fr; }
+      .search-box { width: 180px; }
+    }
+  </style>
+</head>
+<body class="fluent-light" data-theme="light">
+  <div class="header">
+    <div class="header-left">
+      <h1><span>CHARM</span> Component Catalog</h1>
+      <span style="font-size:12px;color:var(--catalog-text-secondary)">Coherence + HARMony &bull; Lit 3.2 Web Components</span>
+    </div>
+    <div class="header-controls">
+      <input class="search-box" type="text" placeholder="Search components..." id="searchBox">
+      <button class="theme-toggle" id="themeToggle">🌙 Dark</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <nav class="sidebar" id="sidebar"></nav>
+    <div class="content">
+      <div class="stats" id="statsBar"></div>
+      <div class="grid-view" id="gridView"></div>
+      <div class="detail-view" id="detailView"></div>
+    </div>
+  </div>
+
+<script type="module">
+// Demo HTML uses ch- prefix (the actual registered tag names in the bundle).
+// Display labels use fui- prefix (the intended project prefix).
+const COMPONENTS = [
+  // ── Layout ───────────────────────────
+  { name:"Divider", tag:"fui-divider", coreTag:"ch-divider", category:"Layout", base:"CharmElement",
+    desc:"Horizontal or vertical line to separate content sections.",
+    slots:[],
+    props:[{n:"orientation",t:"string",d:"'horizontal'",desc:"'horizontal' | 'vertical'"},{n:"appearance",t:"string",d:"'default'",desc:"'default' | 'strong' | 'brand' | 'subtle'"},{n:"inset",t:"boolean",d:"false",desc:"Adds padding to edges"}],
+    demo:`<div style="width:100%"><p>Content above</p><ch-divider></ch-divider><p>Content below</p><ch-divider appearance="brand"></ch-divider><p>Brand divider above</p></div>`},
+  { name:"Skeleton", tag:"fui-skeleton", coreTag:"ch-skeleton", category:"Layout", base:"CharmElement",
+    desc:"Placeholder shimmer for loading states.",
+    slots:[],
+    props:[{n:"shape",t:"string",d:"'rectangle'",desc:"'rectangle' | 'circle' | 'square'"},{n:"animation",t:"string",d:"'wave'",desc:"'wave' | 'pulse'"}],
+    demo:`<div style="display:flex;gap:12px;align-items:center"><ch-skeleton shape="circle" style="width:40px;height:40px"></ch-skeleton><div style="display:flex;flex-direction:column;gap:8px"><ch-skeleton style="width:200px;height:16px"></ch-skeleton><ch-skeleton style="width:140px;height:12px"></ch-skeleton></div></div>`},
+  { name:"Scoped Styles", tag:"fui-scoped-styles", coreTag:"ch-scoped-styles", category:"Layout", base:"CharmElement",
+    desc:"Container that applies CHARM theme tokens to its children.",
+    slots:["default"],
+    props:[],
+    demo:`<ch-scoped-styles><p style="font-family:var(--fontFamilyBase,inherit)">Themed content inside scoped styles</p></ch-scoped-styles>`},
+  { name:"Card", tag:"fui-card", coreTag:"ch-card", category:"Layout", base:"CharmElement", noDemo:true,
+    desc:"Flexible container for grouping related content with optional header, footer, and media slots.",
+    slots:["default","header","footer","media"],
+    props:[{n:"orientation",t:"string",d:"'vertical'",desc:"'vertical' | 'horizontal'"},{n:"interactive",t:"boolean",d:"false",desc:"If card responds to click/keyboard"},{n:"appearance",t:"string",d:"'filled'",desc:"'filled' | 'subtle' | 'outline' | 'filled-alternative'"}],
+    demo:`<fui-card style="width:280px"><div slot="header" style="font-weight:600;padding:8px 0">Card Title</div><div>Card body content goes here.</div></fui-card>`},
+
+  // ── Navigation ───────────────────────
+  { name:"Tabs", tag:"fui-tabs", coreTag:"ch-tabs", category:"Navigation", base:"CharmFocusableElement",
+    desc:"Tabbed navigation container for switching between content panels.",
+    slots:["default"],
+    props:[{n:"orientation",t:"string",d:"'horizontal'",desc:"'horizontal' | 'vertical'"},{n:"appearance",t:"string",d:"'transparent'",desc:"'transparent' | 'subtle'"},{n:"size",t:"string",d:"'medium'",desc:"'small' | 'medium' | 'large'"}],
+    demo:`<ch-tabs><ch-tab id="t1">First Tab</ch-tab><ch-tab id="t2">Second Tab</ch-tab><ch-tab id="t3">Third Tab</ch-tab><ch-tab-panel tab="t1"><p style="padding:12px">Content for the first tab panel</p></ch-tab-panel><ch-tab-panel tab="t2"><p style="padding:12px">Content for the second tab panel</p></ch-tab-panel><ch-tab-panel tab="t3"><p style="padding:12px">Content for the third tab panel</p></ch-tab-panel></ch-tabs>`},
+  { name:"Tab", tag:"fui-tab", coreTag:"ch-tab", category:"Navigation", base:"CharmFocusableElement",
+    desc:"Individual tab button used inside a Tabs container.",
+    slots:["default","icon"],
+    props:[{n:"disabled",t:"boolean",d:"false",desc:"Disables the tab"}],
+    demo:`<ch-tabs><ch-tab id="d1">Active</ch-tab><ch-tab id="d2" disabled>Disabled</ch-tab><ch-tab id="d3">Normal</ch-tab></ch-tabs>`},
+  { name:"Tab Panel", tag:"fui-tab-panel", coreTag:"ch-tab-panel", category:"Navigation", base:"CharmElement",
+    desc:"Content panel associated with a Tab.",
+    slots:["default"],
+    props:[{n:"tab",t:"string",d:"",desc:"ID of the associated tab"}],
+    demo:`<ch-tabs><ch-tab id="p1">Panel Demo</ch-tab><ch-tab-panel tab="p1"><div style="padding:12px;background:var(--catalog-bg);border-radius:6px">This is a tab panel with content</div></ch-tab-panel></ch-tabs>`},
+  { name:"Breadcrumb", tag:"fui-breadcrumb", coreTag:"ch-breadcrumb", category:"Navigation", base:"CharmElement",
+    desc:"Navigation trail showing the user's current location hierarchy.",
+    slots:["default"],
+    props:[{n:"size",t:"string",d:"'medium'",desc:"'small' | 'medium' | 'large'"}],
+    demo:`<ch-breadcrumb><ch-breadcrumb-item>Home</ch-breadcrumb-item><ch-breadcrumb-item>Products</ch-breadcrumb-item><ch-breadcrumb-item>Details</ch-breadcrumb-item></ch-breadcrumb>`},
+  { name:"Breadcrumb Item", tag:"fui-breadcrumb-item", coreTag:"ch-breadcrumb-item", category:"Navigation", base:"CharmElement",
+    desc:"Individual crumb within a Breadcrumb trail.",
+    slots:["default","separator"],
+    props:[{n:"href",t:"string",d:"",desc:"Link URL"},{n:"current",t:"boolean",d:"false",desc:"Marks as current page"}],
+    demo:`<ch-breadcrumb><ch-breadcrumb-item href="#">Home</ch-breadcrumb-item><ch-breadcrumb-item href="#">Section</ch-breadcrumb-item><ch-breadcrumb-item current>Current</ch-breadcrumb-item></ch-breadcrumb>`},
+  { name:"Navigation", tag:"fui-navigation", coreTag:"ch-navigation", category:"Navigation", base:"CharmElement",
+    desc:"Vertical sidebar navigation component with expand/collapse items.",
+    slots:["default","heading","footer"],
+    props:[{n:"expand-mode",t:"string",d:"'single'",desc:"'single' | 'multiple' — controls how many items expand at once"}],
+    demo:`<ch-navigation style="width:250px;border:1px solid var(--catalog-border);border-radius:8px"><ch-navigation-heading>Main Menu</ch-navigation-heading><ch-navigation-item label="Home" selected></ch-navigation-item><ch-navigation-item label="Settings"></ch-navigation-item><ch-navigation-item label="About"></ch-navigation-item></ch-navigation>`},
+  { name:"Navigation Item", tag:"fui-navigation-item", coreTag:"ch-navigation-item", category:"Navigation", base:"CharmElement",
+    desc:"Individual item within a Navigation component. Supports nesting and split toggle.",
+    slots:["default","icon","label"],
+    props:[{n:"label",t:"string",d:"",desc:"Display label"},{n:"href",t:"string",d:"",desc:"Navigation link"},{n:"selected",t:"boolean",d:"false",desc:"Active state"},{n:"disabled",t:"boolean",d:"false",desc:"Disabled state"},{n:"split",t:"boolean",d:"false",desc:"Separate toggle from click"}],
+    demo:`<ch-navigation style="width:250px;border:1px solid var(--catalog-border);border-radius:8px"><ch-navigation-item label="Selected" selected></ch-navigation-item><ch-navigation-item label="Normal"></ch-navigation-item><ch-navigation-item label="Disabled" disabled></ch-navigation-item></ch-navigation>`},
+  { name:"Navigation Heading", tag:"fui-navigation-heading", coreTag:"ch-navigation-heading", category:"Navigation", base:"CharmElement",
+    desc:"Section heading within a Navigation component.",
+    slots:["default"],
+    props:[],
+    demo:`<ch-navigation style="width:250px;border:1px solid var(--catalog-border);border-radius:8px"><ch-navigation-heading>Section Title</ch-navigation-heading><ch-navigation-item label="Item A"></ch-navigation-item><ch-navigation-item label="Item B"></ch-navigation-item></ch-navigation>`},
+  { name:"Menu", tag:"fui-menu", coreTag:"ch-menu", category:"Navigation", base:"CharmElement",
+    desc:"Popup menu with selectable items, used for context menus and dropdowns.",
+    slots:["default","trigger"],
+    props:[{n:"open",t:"boolean",d:"false",desc:"Controls menu visibility"},{n:"positioning",t:"string",d:"'below-start'",desc:"Popup positioning"}],
+    demo:`<ch-menu><ch-button slot="trigger">Open Menu ▾</ch-button><ch-menu-item>Cut</ch-menu-item><ch-menu-item>Copy</ch-menu-item><ch-menu-item>Paste</ch-menu-item></ch-menu>`},
+  { name:"Menu Item", tag:"fui-menu-item", coreTag:"ch-menu-item", category:"Navigation", base:"CharmFocusableElement",
+    desc:"Selectable item within a Menu.",
+    slots:["default","icon","submenu"],
+    props:[{n:"disabled",t:"boolean",d:"false",desc:"Disables the item"},{n:"role",t:"string",d:"'menuitem'",desc:"'menuitem' | 'menuitemcheckbox' | 'menuitemradio'"}],
+    demo:`<ch-menu open><ch-menu-item>Normal Item</ch-menu-item><ch-menu-item disabled>Disabled Item</ch-menu-item></ch-menu>`},
+
+  // ── Data Display ─────────────────────
+  { name:"Avatar", tag:"fui-avatar", coreTag:"ch-avatar", category:"Data Display", base:"CharmElement",
+    desc:"Circular image or initials representing a user or entity.",
+    slots:["default","badge"],
+    props:[{n:"name",t:"string",d:"",desc:"Full name for initials"},{n:"size",t:"number",d:"32",desc:"Pixel size"},{n:"shape",t:"string",d:"'circular'",desc:"'circular' | 'square'"},{n:"color",t:"string",d:"'neutral'",desc:"Color scheme for initials"}],
+    demo:`<ch-avatar name="Alex Smith" size="48"></ch-avatar><ch-avatar name="Jane Doe" size="48" shape="square"></ch-avatar><ch-avatar name="Bob" size="48" color="brand"></ch-avatar><ch-avatar size="48">🎨</ch-avatar>`},
+  { name:"Badge", tag:"fui-badge", coreTag:"ch-badge", category:"Data Display", base:"CharmElement",
+    desc:"Small status indicator or counter label.",
+    slots:["default"],
+    props:[{n:"appearance",t:"string",d:"'filled'",desc:"'filled' | 'ghost' | 'outline' | 'tint'"},{n:"color",t:"string",d:"'brand'",desc:"'brand' | 'danger' | 'important' | 'informative' | 'severe' | 'subtle' | 'success' | 'warning'"},{n:"size",t:"string",d:"'medium'",desc:"'tiny' | 'extra-small' | 'small' | 'medium' | 'large' | 'extra-large'"},{n:"shape",t:"string",d:"'circular'",desc:"'circular' | 'rounded' | 'square'"}],
+    demo:`<ch-badge>99+</ch-badge><ch-badge color="success">Done</ch-badge><ch-badge color="danger">Error</ch-badge><ch-badge color="warning" appearance="tint">Warn</ch-badge><ch-badge appearance="outline">Outline</ch-badge>`},
+  { name:"Tag", tag:"fui-tag", coreTag:"ch-tag", category:"Data Display", base:"CharmFocusableElement",
+    desc:"Compact label for categorization, with optional dismiss action.",
+    slots:["default","start"],
+    props:[{n:"appearance",t:"string",d:"'filled'",desc:"'filled' | 'outline' | 'brand'"},{n:"size",t:"string",d:"'medium'",desc:"'extra-small' | 'small' | 'medium'"},{n:"dismissible",t:"boolean",d:"false",desc:"Shows dismiss button"},{n:"disabled",t:"boolean",d:"false",desc:"Disables interactions"}],
+    demo:`<div style="display:flex;gap:8px;flex-wrap:wrap"><ch-tag>Default</ch-tag><ch-tag appearance="outline">Outline</ch-tag><ch-tag appearance="brand">Brand</ch-tag><ch-tag dismissible>Dismissible</ch-tag><ch-tag disabled>Disabled</ch-tag></div>`},
+  { name:"Icon", tag:"fui-icon", coreTag:"ch-icon", category:"Data Display", base:"CharmElement",
+    desc:"Renders SVG icons from the registered icon set.",
+    slots:[],
+    props:[{n:"name",t:"string",d:"",desc:"Icon name from registered set"},{n:"size",t:"string",d:"'1em'",desc:"Icon size"}],
+    demo:`<div style="display:flex;gap:16px;font-size:24px"><ch-icon name="warning"></ch-icon><ch-icon name="accessibility"></ch-icon><ch-icon name="shape"></ch-icon></div>`},
+  { name:"Persona", tag:"fui-persona", coreTag:"ch-persona", category:"Data Display", base:"CharmElement",
+    desc:"Displays a user identity with avatar, name, and presence status.",
+    slots:["default","primary","secondary","tertiary"],
+    props:[{n:"presence",t:"string",d:"",desc:"'available' | 'away' | 'busy' | 'do-not-disturb' | 'offline' | 'out-of-office'"},{n:"out-of-office",t:"boolean",d:"false",desc:"Out of office indicator"}],
+    demo:`<div style="display:flex;flex-direction:column;gap:12px"><ch-persona><ch-avatar slot="default" name="Alex Smith" size="48"></ch-avatar><span slot="primary">Alex Smith</span><span slot="secondary">Software Engineer</span></ch-persona></div>`},
+  { name:"Progress Bar", tag:"fui-progress-bar", coreTag:"ch-progress-bar", category:"Data Display", base:"CharmElement",
+    desc:"Horizontal bar showing task completion progress.",
+    slots:[],
+    props:[{n:"value",t:"number",d:"0",desc:"Current progress (0-1)"},{n:"max",t:"number",d:"1",desc:"Maximum value"},{n:"thickness",t:"string",d:"'medium'",desc:"'medium' | 'large'"},{n:"color",t:"string",d:"'brand'",desc:"'brand' | 'success' | 'warning' | 'error'"}],
+    demo:`<div style="width:100%;display:flex;flex-direction:column;gap:12px"><ch-progress-bar value="0.7"></ch-progress-bar><ch-progress-bar value="0.4" color="success"></ch-progress-bar><ch-progress-bar value="0.9" color="warning"></ch-progress-bar><ch-progress-bar></ch-progress-bar></div>`},
+  { name:"Spinner", tag:"fui-spinner", coreTag:"ch-spinner", category:"Data Display", base:"CharmElement",
+    desc:"Animated circular loading indicator.",
+    slots:[],
+    props:[{n:"size",t:"string",d:"'medium'",desc:"'tiny' | 'extra-small' | 'small' | 'medium' | 'large' | 'extra-large' | 'huge'"},{n:"appearance",t:"string",d:"'primary'",desc:"'primary' | 'inverted'"}],
+    demo:`<ch-spinner size="tiny"></ch-spinner><ch-spinner size="small"></ch-spinner><ch-spinner size="medium"></ch-spinner><ch-spinner size="large"></ch-spinner><ch-spinner size="extra-large"></ch-spinner>`},
+
+  // ── Forms ────────────────────────────
+  { name:"Checkbox", tag:"fui-checkbox", coreTag:"ch-checkbox", category:"Forms", base:"CharmFormControlElement",
+    desc:"Toggle checkbox for boolean or tri-state selections.",
+    slots:["default"],
+    props:[{n:"checked",t:"boolean",d:"false",desc:"Checked state"},{n:"indeterminate",t:"boolean",d:"false",desc:"Indeterminate (mixed) state"},{n:"disabled",t:"boolean",d:"false",desc:"Disables the checkbox"}],
+    demo:`<div style="display:flex;flex-direction:column;gap:8px"><ch-checkbox checked>Checked</ch-checkbox><ch-checkbox>Unchecked</ch-checkbox><ch-checkbox indeterminate>Indeterminate</ch-checkbox><ch-checkbox disabled>Disabled</ch-checkbox></div>`},
+  { name:"Radio", tag:"fui-radio", coreTag:"ch-radio", category:"Forms", base:"CharmFormControlElement",
+    desc:"Single radio button, used within Radio Group.",
+    slots:["default"],
+    props:[{n:"value",t:"string",d:"",desc:"Radio value"},{n:"disabled",t:"boolean",d:"false",desc:"Disables the radio"}],
+    demo:`<ch-radio-group><ch-radio value="a">Option A</ch-radio><ch-radio value="b">Option B</ch-radio><ch-radio value="c" disabled>Disabled</ch-radio></ch-radio-group>`},
+  { name:"Radio Group", tag:"fui-radio-group", coreTag:"ch-radio-group", category:"Forms", base:"CharmFormControlElement",
+    desc:"Groups radio buttons for single-selection behavior.",
+    slots:["default"],
+    props:[{n:"value",t:"string",d:"",desc:"Currently selected value"},{n:"orientation",t:"string",d:"'vertical'",desc:"'horizontal' | 'vertical'"}],
+    demo:`<ch-radio-group orientation="horizontal"><ch-radio value="sm">Small</ch-radio><ch-radio value="md">Medium</ch-radio><ch-radio value="lg">Large</ch-radio></ch-radio-group>`},
+  { name:"Select", tag:"fui-select", coreTag:"ch-select", category:"Forms", base:"CharmFormControlElement",
+    desc:"Dropdown select for picking from a list of options.",
+    slots:["default"],
+    props:[{n:"value",t:"string",d:"",desc:"Selected value"},{n:"appearance",t:"string",d:"'outline'",desc:"'outline' | 'underline' | 'filled-darker' | 'filled-lighter'"},{n:"disabled",t:"boolean",d:"false",desc:"Disables the select"}],
+    demo:`<ch-select style="width:200px"><option value="">Choose an option</option><option value="a">Option Alpha</option><option value="b">Option Bravo</option><option value="c">Option Charlie</option></ch-select>`},
+  { name:"Switch", tag:"fui-switch", coreTag:"ch-switch", category:"Forms", base:"CharmFormControlElement",
+    desc:"Toggle switch for on/off binary choices.",
+    slots:["default"],
+    props:[{n:"checked",t:"boolean",d:"false",desc:"On/off state"},{n:"disabled",t:"boolean",d:"false",desc:"Disables the switch"}],
+    demo:`<div style="display:flex;flex-direction:column;gap:8px"><ch-switch checked>Notifications</ch-switch><ch-switch>Dark Mode</ch-switch><ch-switch disabled>Disabled</ch-switch></div>`},
+  { name:"Input", tag:"fui-input", coreTag:"ch-input", category:"Forms", base:"CharmFormControlElement", noDemo:true,
+    desc:"Single-line text input with label and validation support.",
+    slots:["start","end"],
+    props:[{n:"value",t:"string",d:"",desc:"Current input value"},{n:"placeholder",t:"string",d:"",desc:"Placeholder text"},{n:"type",t:"string",d:"'text'",desc:"HTML input type"},{n:"appearance",t:"string",d:"'outline'",desc:"'outline' | 'underline' | 'filled-darker' | 'filled-lighter'"},{n:"disabled",t:"boolean",d:"false",desc:"Disables the input"}],
+    demo:`<fui-input placeholder="Default input"></fui-input>`},
+  { name:"Text Area", tag:"fui-text-area", coreTag:"ch-text-area", category:"Forms", base:"CharmFormControlElement", noDemo:true,
+    desc:"Multi-line text display and input field.",
+    slots:[],
+    props:[{n:"value",t:"string",d:"",desc:"Current text value"},{n:"placeholder",t:"string",d:"",desc:"Placeholder text"},{n:"resize",t:"string",d:"'none'",desc:"'none' | 'both' | 'horizontal' | 'vertical'"},{n:"rows",t:"number",d:"3",desc:"Visible row count"}],
+    demo:`<fui-text-area placeholder="Enter your message..." resize="vertical"></fui-text-area>`},
+
+  // ── Actions ──────────────────────────
+  { name:"Button", tag:"fui-button", coreTag:"ch-button", category:"Actions", base:"CharmFocusableElement",
+    desc:"Standard interactive button with appearance variants.",
+    slots:["default","icon"],
+    props:[{n:"appearance",t:"string",d:"'secondary'",desc:"'primary' | 'secondary' | 'outline' | 'subtle' | 'transparent'"},{n:"size",t:"string",d:"'medium'",desc:"'small' | 'medium' | 'large'"},{n:"disabled",t:"boolean",d:"false",desc:"Disables the button"},{n:"shape",t:"string",d:"'rounded'",desc:"'rounded' | 'circular' | 'square'"}],
+    demo:`<ch-button appearance="primary">Primary</ch-button><ch-button appearance="secondary">Secondary</ch-button><ch-button appearance="outline">Outline</ch-button><ch-button appearance="subtle">Subtle</ch-button><ch-button disabled>Disabled</ch-button>`},
+  { name:"Button Group", tag:"fui-button-group", coreTag:"ch-button-group", category:"Actions", base:"CharmElement",
+    desc:"Groups related buttons together.",
+    slots:["default"],
+    props:[],
+    demo:`<ch-button-group><ch-button>Left</ch-button><ch-button>Center</ch-button><ch-button>Right</ch-button></ch-button-group>`},
+
+  // ── Feedback ─────────────────────────
+  { name:"Alert", tag:"fui-alert", coreTag:"ch-alert", category:"Feedback", base:"CharmDismissibleElement", noDemo:true,
+    desc:"Inline notification banner for status messages.",
+    slots:["default","icon","action"],
+    props:[{n:"intent",t:"string",d:"'info'",desc:"'info' | 'success' | 'warning' | 'error'"},{n:"appearance",t:"string",d:"'primary'",desc:"'primary' | 'inverted'"}],
+    demo:`<fui-alert intent="info">Informational alert</fui-alert><fui-alert intent="success">Success!</fui-alert>`},
+  { name:"Tooltip", tag:"fui-tooltip", coreTag:"ch-tooltip", category:"Feedback", base:"CharmElement",
+    desc:"Popup label that appears on hover with helpful text.",
+    slots:["default"],
+    props:[{n:"content",t:"string",d:"",desc:"Tooltip text"},{n:"positioning",t:"string",d:"'above'",desc:"'above' | 'below' | 'before' | 'after'"}],
+    demo:`<ch-tooltip content="This is helpful info!"><ch-button>Hover Me</ch-button></ch-tooltip>`},
+
+  // ── Overlays ─────────────────────────
+  { name:"Dialog", tag:"fui-dialog", coreTag:"ch-dialog", category:"Overlays", base:"CharmDismissibleElement",
+    desc:"Modal or non-modal dialog window.",
+    slots:["default","title","actions"],
+    props:[{n:"type",t:"string",d:"'modal'",desc:"'modal' | 'non-modal' | 'alert'"},{n:"open",t:"boolean",d:"false",desc:"Controls visibility"}],
+    demo:`<ch-button onclick="this.nextElementSibling.show()">Open Dialog</ch-button><ch-dialog><div slot="title" style="font-weight:600;font-size:18px">Dialog Title</div><p>This is the dialog body content. It can contain any elements.</p><div slot="actions" style="display:flex;gap:8px;justify-content:flex-end"><ch-button appearance="primary" onclick="this.closest('ch-dialog').hide()">OK</ch-button><ch-button onclick="this.closest('ch-dialog').hide()">Cancel</ch-button></div></ch-dialog>`},
+  { name:"Popup", tag:"fui-popup", coreTag:"ch-popup", category:"Overlays", base:"CharmElement",
+    desc:"Anchored floating container for custom popup content.",
+    slots:["default","trigger"],
+    props:[{n:"open",t:"boolean",d:"false",desc:"Controls visibility"},{n:"positioning",t:"string",d:"'below-start'",desc:"Positioning relative to trigger"}],
+    demo:`<ch-popup><ch-button slot="trigger">Show Popup</ch-button><div style="padding:12px;background:var(--catalog-surface);border:1px solid var(--catalog-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15)">Custom popup content here</div></ch-popup>`},
+  { name:"Disclosure", tag:"fui-disclosure", coreTag:"ch-disclosure", category:"Overlays", base:"CharmDismissibleElement", noDemo:true,
+    desc:"Expand/collapse container for toggling content visibility.",
+    slots:["default","summary"],
+    props:[{n:"open",t:"boolean",d:"false",desc:"Expanded state"}],
+    demo:`<fui-disclosure open><span slot="summary">Click to toggle</span><div>Hidden content revealed.</div></fui-disclosure>`},
+  { name:"Push Pane", tag:"fui-push-pane", coreTag:"ch-push-pane", category:"Overlays", base:"CharmDismissibleElement", noDemo:true,
+    desc:"Slide-in side panel that pushes content.",
+    slots:["default"],
+    props:[{n:"open",t:"boolean",d:"false",desc:"Controls visibility"},{n:"position",t:"string",d:"'end'",desc:"'start' | 'end'"}],
+    demo:`<fui-push-pane><div style="padding:16px">Side panel content</div></fui-push-pane>`},
+
+  // ── Composite ────────────────────────
+  { name:"Accordion", tag:"fui-accordion", coreTag:"ch-accordion", category:"Composite", base:"CharmElement",
+    desc:"Container of collapsible accordion items.",
+    slots:["default"],
+    props:[{n:"multiple",t:"boolean",d:"false",desc:"Allow multiple items open simultaneously"}],
+    demo:`<ch-accordion><ch-accordion-item><span slot="heading">Section 1</span><div>Content for section one. Accordion items expand and collapse.</div></ch-accordion-item><ch-accordion-item><span slot="heading">Section 2</span><div>Content for section two. Only one can be open at a time by default.</div></ch-accordion-item><ch-accordion-item><span slot="heading">Section 3</span><div>Content for section three.</div></ch-accordion-item></ch-accordion>`},
+  { name:"Accordion Item", tag:"fui-accordion-item", coreTag:"ch-accordion-item", category:"Composite", base:"CharmDismissibleElement",
+    desc:"Individual collapsible item within an Accordion.",
+    slots:["default","heading","icon"],
+    props:[{n:"open",t:"boolean",d:"false",desc:"Expanded state"},{n:"disabled",t:"boolean",d:"false",desc:"Disables expand/collapse"}],
+    demo:`<ch-accordion><ch-accordion-item open><span slot="heading">Open by default</span><div>This item starts in the expanded state.</div></ch-accordion-item><ch-accordion-item disabled><span slot="heading">Disabled</span><div>Cannot be toggled.</div></ch-accordion-item></ch-accordion>`},
+];
+
+const CATEGORIES = ["Layout","Navigation","Data Display","Forms","Actions","Feedback","Overlays","Composite"];
+const CAT_ICONS = {"Layout":"📐","Navigation":"🧭","Data Display":"📊","Forms":"📝","Actions":"🖱️","Feedback":"💬","Overlays":"🪟","Composite":"🧩"};
+
+// ── State ───────────────────────────
+let currentFilter = '';
+let currentCategory = 'all';
+let currentComponent = null;
+
+// ── Sidebar ─────────────────────────
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  let html = `<div class="sidebar-item ${currentCategory==='all'?'active':''}" data-cat="all">All Components (${COMPONENTS.length})</div>`;
+  for (const cat of CATEGORIES) {
+    const count = COMPONENTS.filter(c=>c.category===cat).length;
+    if (count === 0) continue;
+    html += `<h3>${CAT_ICONS[cat]||''} ${cat}</h3>`;
+    const items = COMPONENTS.filter(c=>c.category===cat);
+    for (const item of items) {
+      html += `<div class="sidebar-item" data-component="${item.tag}">${item.name}</div>`;
+    }
+  }
+  sb.innerHTML = html;
+  sb.querySelectorAll('.sidebar-item[data-cat]').forEach(el => {
+    el.addEventListener('click', () => { currentCategory = el.dataset.cat; currentComponent = null; render(); });
+  });
+  sb.querySelectorAll('.sidebar-item[data-component]').forEach(el => {
+    el.addEventListener('click', () => { const c = COMPONENTS.find(x=>x.tag===el.dataset.component); if(c) showDetail(c); });
+  });
+}
+
+// ── Stats ───────────────────────────
+function renderStats() {
+  const bar = document.getElementById('statsBar');
+  const catCounts = CATEGORIES.map(c => ({cat:c,count:COMPONENTS.filter(x=>x.category===c).length})).filter(x=>x.count>0);
+  const registered = COMPONENTS.filter(c => !c.noDemo).length;
+  bar.innerHTML = `<div class="stat-card"><div class="num">${COMPONENTS.length}</div><div class="label">Total Components</div></div>`
+    + `<div class="stat-card"><div class="num">${registered}</div><div class="label">Live Demos</div></div>`
+    + catCounts.map(c => `<div class="stat-card"><div class="num">${c.count}</div><div class="label">${CAT_ICONS[c.cat]||''} ${c.cat}</div></div>`).join('');
+}
+
+// ── Grid ────────────────────────────
+function getFilteredComponents() {
+  let list = COMPONENTS;
+  if (currentCategory !== 'all') list = list.filter(c => c.category === currentCategory);
+  if (currentFilter) {
+    const q = currentFilter.toLowerCase();
+    list = list.filter(c => c.name.toLowerCase().includes(q) || c.tag.toLowerCase().includes(q) || c.desc.toLowerCase().includes(q) || c.category.toLowerCase().includes(q));
+  }
+  return list;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('gridView');
+  const items = getFilteredComponents();
+  if (items.length === 0) { grid.innerHTML = '<p style="padding:32px;text-align:center;color:var(--catalog-text-secondary)">No components match your search.</p>'; return; }
+  let html = '';
+  let lastCat = '';
+  for (const c of items) {
+    if (c.category !== lastCat) { html += `<div class="category-title">${CAT_ICONS[c.category]||''} ${c.category}</div>`; lastCat = c.category; }
+    html += `<div class="component-card" data-tag="${c.tag}">
+      <div class="card-header"><div class="card-name">${c.name}${c.noDemo ? ' <span style="font-size:10px;color:var(--catalog-text-secondary);font-weight:400">(core only)</span>' : ''}</div><div class="card-tag">${c.category}</div></div>
+      <div class="card-desc">${c.desc}</div>
+      <div class="card-tags"><code>&lt;${c.tag}&gt;</code><code>${c.base}</code></div>
+    </div>`;
+  }
+  grid.innerHTML = html;
+  grid.querySelectorAll('.component-card').forEach(el => {
+    el.addEventListener('click', () => { const c = COMPONENTS.find(x => x.tag === el.dataset.tag); if (c) showDetail(c); });
+  });
+}
+
+// ── Detail ──────────────────────────
+function showDetail(comp) {
+  currentComponent = comp;
+  document.getElementById('gridView').classList.add('hidden');
+  document.getElementById('statsBar').style.display = 'none';
+  const dv = document.getElementById('detailView');
+  dv.classList.add('active');
+
+  // Update sidebar active
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  const sideEl = document.querySelector(`.sidebar-item[data-component="${comp.tag}"]`);
+  if (sideEl) sideEl.classList.add('active');
+
+  const propsRows = (comp.props||[]).map(p =>
+    `<tr><td><code>${p.n}</code></td><td><code>${p.t}</code></td><td><code>${p.d||'—'}</code></td><td>${p.desc}</td></tr>`
+  ).join('');
+
+  const slotsHtml = (comp.slots||[]).length > 0
+    ? comp.slots.map(s => `<span class="info-badge">${s === 'default' ? '(default)' : s}</span>`).join('')
+    : '<span style="color:var(--catalog-text-secondary)">None</span>';
+
+  // Demo HTML already uses ch- prefix (the actual registered tags).
+  // For display/docs we show the fui- version (intended project prefix).
+  const liveDemo = comp.demo;
+  const displayDemo = comp.demo.replace(/ch-/g, 'fui-');
+  const escapedDemo = displayDemo.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  const noDemoNotice = comp.noDemo
+    ? `<div style="padding:16px;background:var(--catalog-bg);border:1px solid var(--catalog-border);border-radius:8px;color:var(--catalog-text-secondary);text-align:center">
+         <strong>⚠️ Component not registered in demo bundle</strong><br>
+         <span style="font-size:13px">This component exists in core but is not exported by the demo build.<br>Refer to the code snippet below for usage.</span>
+       </div>`
+    : '';
+
+  dv.innerHTML = `
+    <button class="back-btn" id="backBtn">← Back to all components</button>
+    <div class="detail-title">${comp.name}</div>
+    <div class="detail-subtitle">${comp.desc}</div>
+    <div class="badge-row">
+      <span class="info-badge">${comp.category}</span>
+      <span class="info-badge">&lt;${comp.tag}&gt;</span>
+      <span class="info-badge">Core: &lt;${comp.coreTag}&gt;</span>
+      <span class="info-badge">Base: ${comp.base}</span>
+    </div>
+
+    <div class="detail-section">
+      <h3>🎨 Live Demo</h3>
+      <div class="demo-area fluent-light" id="liveDemo">${comp.noDemo ? noDemoNotice : liveDemo}</div>
+    </div>
+
+    <div class="detail-section">
+      <h3>📋 Code</h3>
+      <div class="code-block">${escapedDemo}</div>
+    </div>
+
+    ${(comp.props||[]).length > 0 ? `<div class="detail-section">
+      <h3>⚙️ Properties</h3>
+      <table class="props-table">
+        <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>${propsRows}</tbody>
+      </table>
+    </div>` : ''}
+
+    <div class="detail-section">
+      <h3>📦 Slots</h3>
+      <div class="badge-row">${slotsHtml}</div>
+    </div>
+  `;
+
+  document.getElementById('backBtn').addEventListener('click', hideDetail);
+}
+
+function hideDetail() {
+  currentComponent = null;
+  document.getElementById('detailView').classList.remove('active');
+  document.getElementById('gridView').classList.remove('hidden');
+  document.getElementById('statsBar').style.display = '';
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  const allEl = document.querySelector('.sidebar-item[data-cat="all"]');
+  if (allEl) allEl.classList.add('active');
+  render();
+}
+
+// ── Render ──────────────────────────
+function render() {
+  renderSidebar();
+  renderStats();
+  renderGrid();
+}
+
+// ── Events ──────────────────────────
+document.getElementById('searchBox').addEventListener('input', (e) => {
+  currentFilter = e.target.value;
+  if (currentComponent) { hideDetail(); }
+  renderGrid();
+});
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const body = document.body;
+  const isDark = body.dataset.theme === 'dark';
+  body.dataset.theme = isDark ? 'light' : 'dark';
+  body.classList.toggle('fluent-light', !isDark);
+  body.classList.toggle('fluent-dark', isDark);
+  document.getElementById('themeToggle').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+});
+
+// ── Init ────────────────────────────
+render();
+</script>
+</body>
+</html>

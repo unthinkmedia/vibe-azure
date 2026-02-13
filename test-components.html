@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Component Test</title>
+  <link rel="stylesheet" href="charm-pilot/packages/demo/public/theme.css">
+  <link rel="stylesheet" href="charm-pilot/packages/demo/public/reset.css">
+  <link rel="stylesheet" href="charm-pilot/packages/demo/dist/themes/fluent/selector-theme.css">
+  <script type="module" src="charm-pilot/packages/demo/public/html/index.js"></script>
+</head>
+<body class="fluent-light" style="padding:40px;font-family:sans-serif">
+  <h2>Static ch- elements</h2>
+  <ch-button appearance="primary">CH Button</ch-button>
+  <ch-card style="width:280px;display:block;margin:12px 0">Card content here</ch-card>
+  <ch-divider></ch-divider>
+  <ch-badge>Badge</ch-badge>
+  <ch-spinner></ch-spinner>
+
+  <h2 style="margin-top:24px">Static fui- elements</h2>
+  <fui-button appearance="primary">FUI Button</fui-button>
+  <fui-card style="width:280px;display:block;margin:12px 0">Card content here</fui-card>
+  <fui-divider></fui-divider>
+  <fui-badge>Badge</fui-badge>
+  <fui-spinner></fui-spinner>
+
+  <h2 style="margin-top:24px">Injected via innerHTML</h2>
+  <div id="injected"></div>
+
+  <h2 style="margin-top:24px">Debug Info</h2>
+  <pre id="debug" style="background:#f0f0f0;padding:12px;border-radius:6px;font-size:12px;max-height:300px;overflow:auto"></pre>
+
+  <script type="module">
+    // Give components time to register
+    setTimeout(() => {
+      const debug = document.getElementById('debug');
+      const allDefined = [];
+      // Check both prefixes
+      ['button','card','divider','badge','spinner','input','checkbox','alert','dialog','tabs','tab','avatar','icon','menu','select','switch','tooltip','popup'].forEach(name => {
+        ['ch-','fui-'].forEach(prefix => {
+          const tag = prefix + name;
+          const defined = customElements.get(tag);
+          if (defined) allDefined.push(tag);
+        });
+      });
+      debug.textContent = 'Defined custom elements:\n' + allDefined.join('\n') + '\n\nTotal: ' + allDefined.length;
+
+      // Test innerHTML injection
+      const container = document.getElementById('injected');
+      if (allDefined.length > 0) {
+        const firstTag = allDefined[0];
+        container.innerHTML = `<${firstTag} appearance="primary">Injected ${firstTag}</${firstTag}>`;
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

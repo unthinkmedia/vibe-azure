@@ -24,5 +24,8 @@ charm-pilot/
 # Python
 __pycache__/
 
+# Credentials
+.npmrc
+
 # Misc
 *.log

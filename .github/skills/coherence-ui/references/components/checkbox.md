@@ -37,11 +37,13 @@ Create a visual separation between parent and child checkboxes to increase scann
 
 ### Content
 
-- Use the label to describe a group of checkboxes. If there are selection requirements, include them in the label. Try not to repeat words in each option. Instead, include repeated words in the group label to keep the options concise.
+- Use the label to describe a group of checkboxes. If there are selection requirements, include them in the label.
+ Try not to repeat words in each option. Instead, include repeated words in the group label to keep the options concise.
 
 ### Group options for scannability
 
-- Use the label to describe a group of checkboxes. If there are selection requirements, include them in the label. Avoid putting two groups of checkboxes next to each other, as people may read them in the wrong order and get confused.
+- Use the label to describe a group of checkboxes. If there are selection requirements, include them in the label.
+ Avoid putting two groups of checkboxes next to each other, as people may read them in the wrong order and get confused.
 
 ### Parameters
 
@@ -56,7 +58,7 @@ In this scenario, the checkbox allows you to add an optional parameter, Stay sig
 
 ### Accessibility
 
-- Every component meets the Microsoft Accessibility Standards (MAS) requirements, which includes headings, keyboard navigation (focus order), screen readers (labels), color contrast, and more. Using our components and following the design standards will get you most of the way to an accessible experience that meets grade C.  To get you the rest of the way to grade C, we recommend running Accessibility Insight's FastPass tool and manually testing your scenarios end to end with a keyboard and screen reader.
+- Every component meets the Microsoft Accessibility Standards (MAS) requirements, which includes headings, keyboard navigation (focus order), screen readers (labels), color contrast, and more. Using our components and following the design standards will get you most of the way to an accessible experience that meets grade C.To get you the rest of the way to grade C, we recommend running Accessibility Insight's FastPass tool and manually testing your scenarios end to end with a keyboard and screen reader.
 
 ### Using fieldset for screen readers
 
@@ -74,11 +76,17 @@ In this scenario, the checkbox allows you to add an optional parameter, Stay sig
 The label can be placed before the checkbox.
 
 ```html
-<div style="width: 200px;">
-      <cui-checkbox>
+import { CuiCheckbox } from '@charm-ux/cui/react';
+
+export default () => {
+  return (
+    <div style="width: 200px;">
+      <CuiCheckbox>
         Here is an example of a checkbox with a long label and it starts to wrap to a second line.
-      </cui-checkbox>
+      </CuiCheckbox>
     </div>
+  );
+};
 ```
 
 ## API Reference

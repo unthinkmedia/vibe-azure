@@ -40,7 +40,7 @@ Example: Make sure you know the difference between imperative and declarative st
 Use sparingly
 Interrogative
 Interrogative statements are OK in product flows where people have to make choices and are natural in areas like support (e.g., FAQs). They can help clarify people’s needs and uncover solutions. 
- Example: Did you know that an interrogative statement is just a question?
+Example: Did you know that an interrogative statement is just a question?
 Exclamatory
 Exclamatory statements end with exclamation marks. They express intense feelings (e.g., joy, anger, or excitement).. Occasionally, exclamatory statements can be used in UI copy. Just remember, the more you use them, the smaller the positive impact. 
 
@@ -89,7 +89,9 @@ Know when to focus on the reader
 When it’s the product or app speaking, use we or Microsoft. This avoids confusion about who’s doing the talking or who should take action. For example, use We found these results, rather than I found these results.
 
 
-The word we, which is first person, can help create a more human experience within the UI, but using it too much diverts attention from the reader and what they need to do.To make your product more centered on the reader, consider using first person for systems errors and other system-related issues and in copy about the product or team. 
+The word we, which is first person, can help create a more human experience within the UI, but using it too much diverts attention from the reader and what they need to do.
+
+To make your product more centered on the reader, consider using first person for systems errors and other system-related issues and in copy about the product or team. 
 Correct
 Take ownership of system or input errors to show people they're important every step of the way. E.g., We couldn’t find that file. Try searching for a different name.
 Incorrect
@@ -108,7 +110,8 @@ Double negatives create confusion and affect task completion.
 Use specific verbs whenever possible
 Specific verbs are more meaningful to people than generic ones. 
 Correct
-Help people quickly understand available options or necessary actions by using specific words like get, update, choose, or change. 
+Help people quickly understand available options or necessary actions by using specific words like get, update
+, choose, or change. 
 Incorrect
 Avoid confusion and reduce ambiguity by eliminating words that have multiple meanings. 
 Use consistent terminology
@@ -142,13 +145,15 @@ Use common contractions like can’t, don’t, it's, that’s, they’ll, they�
 When not to use contractions
 Use the spelled-out version when the weight and importance of a message requires urgency. E.g., You are required to complete your security training by Nov 17, 2024.
 Data formatting
-Microsoft has specific formatting requirements for displaying data. This ensures data is consistent, legible, and clear. Adhere to Microsoft data formatting standards and abbreviate data according to guidance, with special attention to localization requirements.
+Microsoft has specific formatting requirements for displaying data. This ensures data is consistent, legible, and clear. Adhere to Microsoft data formatting standards and abbreviate data according to guidance
+, with special attention to localization requirements.
 
 
 Begin calendars on Monday, which is the custom in much of the world.
 
 
-Right-align dates and numbers in a column.
+
+Right-align dates and numbers in a column.
 Abbreviate dates consistently
 Dates are formatted with a two-digit date, three-letter abbreviation for the month, and a four-digit year. Abbreviate only when space is extremely tight. Don’t punctuate.
 Month abbreviation

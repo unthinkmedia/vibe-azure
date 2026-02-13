@@ -12,6 +12,45 @@
 import '@charm-ux/cui/dist/components/icon/index.js'
 ```
 
+## Fluent 2 Icon Dependency
+
+The `cui-icon` component uses icons sourced from the **Fluent 2 Icon Library** (IconCloud). When using the `name` attribute to reference icons by name, the icons must first be **registered** via the project configuration.
+
+### Icon Registration (Required)
+
+The Coherence package ships with only a handful of default icons (checkmark-circle, chevron-down, chevron-right, error-circle, warning-shield). To access the full set of ~80 Fluent 2 icons, you **must** import the project configuration file:
+
+**Web components:**
+```js
+import '@charm-ux/cui/dist/project-config.js';
+```
+
+**React (automatic):** The React wrappers (`@charm-ux/cui/react`) auto-register the project config, so no extra import is needed when using React.
+
+**CDN:**
+```html
+<script type="module" src="https://coherence-ftekb0dcfpcjb3gv.b02.azurefd.net/cdn/latest/project-config.js"></script>
+```
+
+Without importing the project config, using `<cui-icon name="search">` will show a fallback question-mark icon and log a console warning: *"The icon 'search' was used but not registered."*
+
+### Available Registered Icon Names
+
+After importing the project config, the following icon names are available for the `name` attribute:
+
+`accessibility`, `add`, `alert`, `arrow-clockwise`, `arrow-download`, `arrow-left`, `arrow-maximize`, `arrow-minimize`, `arrow-move`, `arrow-redo-regular`, `arrow-reply`, `arrow-right`, `arrow-sort-down`, `arrow-sort-up`, `arrow-sync`, `arrow-undo-regular`, `arrow-upload`, `attach`, `bookmark`, `bookmark-filled`, `bot`, `calendar`, `calendar-clock`, `chat`, `checkmark`, `checkmark-circle`, `chevron-double-left`, `chevron-double-right`, `chevron-down`, `chevron-left`, `chevron-up`, `circle-half-fill`, `clock`, `code-regular`, `comment`, `contact-card`, `copy-filled`, `cut-filled`, `dislike-filled`, `dismiss-circle`, `document-checkmark`, `document-edit`, `document-ribbon`, `emoji-meh`, `emoji-sad`, `error-circle`, `eye-off`, `filter-filled`, `highlight-regular`, `like-filled`, `link-edit-regular`, `link-regular`, `lock-closed`, `lock-open`, `more-horizontal`, `paste-filled`, `person-feedback`, `pin-filled`, `star-filled`, `start-line-horizontal`, `subtract-circle`, `tap-single`, `task-list`, `text-align-center-regular`, `text-align-left-regular`, `text-align-right-regular`, `text-bold-regular`, `text-bullet-list-regular`, `text-clear-formatting-regular`, `text-color-regular`, `text-font-regular`, `text-font-size-regular`, `text-header-1-regular`, `text-header-2-regular`, `text-header-3-regular`, `text-header-4-regular`, `text-header-5-regular`, `text-header-6-regular`, `text-indent-decrease-regular`, `text-indent-increase-regular`, `text-italic-regular`, `text-number-list-ltr-regular`, `text-quote-regular`, `text-strikethrough-regular`, `text-subscript-regular`, `text-superscript-regular`, `text-t-regular`, `text-underline-regular`, `zoom-in`, `zoom-out`
+
+### Custom Icons
+
+If you need an icon not in the registered set, you have two options:
+1. **Slot an SVG directly** into the `cui-icon` default slot (see Slots example below)
+2. **Use the `url` attribute** to point to an external SVG file
+3. **Register custom icons** via `project.updateProject({ icons: { 'my-icon': '<svg>...</svg>' } })` — import `project` from `@charm-ux/fui`
+
+### Browsing Available Icons
+
+Browse the full Fluent 2 icon library at: https://iconcloud.design/browse/Fluent%20System%20Library/Fluent%20Regular
+
 ## Guidance
 
 ### Standards
@@ -44,7 +83,9 @@ Filled icons are used for highlighting selected states or for smaller moments th
 
 ### Accessibility
 
-- Avoid using tooltips alone. Instead, use the hidden text supplied via the label attribute to describe icon buttons. The screen reader reads the label twice if you use tooltips without appropriate labeling.
+- Avoid using tooltips alone
+. Instead, use the hidden text supplied via the label attribute to describe icon buttons. 
+The screen reader reads the label twice if you use tooltips without appropriate labeling.
 
 ### Provide feedback
 

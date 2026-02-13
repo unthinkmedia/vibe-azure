@@ -341,6 +341,33 @@ The theme CSS imports provide all Coherence design tokens. The `@charm-ux/cui/re
 
 Edit `coherence-preview/src/main.tsx` — replace or add the component import and render it inside the root `<div>`. Vite HMR will update the browser automatically.
 
+## Icons & Fluent 2 Dependency
+
+The `cui-icon` component relies on the **Fluent 2** icon set. Icons referenced by `name` attribute must be registered first.
+
+### Critical: Import the Project Config
+
+When generating code that uses `<cui-icon name="...">` (or `<CuiIcon name="...">` in React), you **must** ensure the project configuration is imported. Without it, icons will show a fallback question-mark and log a console warning.
+
+**For web components / plain HTML:**
+```js
+import '@charm-ux/cui/dist/project-config.js';
+import '@charm-ux/cui/dist/components/icon/index.js';
+```
+
+**For React:** No extra import needed — the `@charm-ux/cui/react` wrappers auto-register icons.
+
+**For the preview app (`coherence-preview/`):** Add this import to `main.tsx`:
+```tsx
+import '@charm-ux/cui/dist/project-config.js';
+```
+
+### Available Icon Names
+
+After importing the project config, ~80 Fluent 2 icons are available. Common ones include: `add`, `alert`, `attach`, `bookmark`, `bot`, `calendar`, `chat`, `checkmark`, `clock`, `comment`, `copy-filled`, `dismiss-circle`, `document-edit`, `error-circle`, `eye-off`, `filter-filled`, `like-filled`, `lock-closed`, `more-horizontal`, `pin-filled`, `star-filled`, `zoom-in`, `zoom-out`.
+
+See [references/components/icon.md](references/components/icon.md) for the full list and custom icon registration.
+
 ## Mapping to charm-pilot
 
 When working in the local `charm-pilot` codebase (`@charm-ux/core`):

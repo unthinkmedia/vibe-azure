@@ -65,6 +65,18 @@ To get you the rest of the way to grade C, you’ll need to ensure that experien
 
 - Toolbars can use icons as button labels as a space-saving measure when there are many options to present. It’s important to use icons that are familiar and not force people to guess what each icon does. Make sure to provide text labels with a tooltip for visual users and with aria-labels for people who use screen readers.
 
+### Prevent button text wrapping
+
+- Buttons inside a toolbar wrap their text by default. In toolbar UIs the labels should always stay on a single line. Use the `::part(content)` CSS selector to prevent wrapping:
+
+```css
+cui-toolbar cui-button::part(content) {
+  white-space: nowrap;
+}
+```
+
+- **Always include this rule** (or an equivalent scoped version) when generating toolbar-based action bars, command bars, or navigation toolbars.
+
 ### Provide feedback
 
 - Reach out to us if you spot a bug or have a feature request. Your feedback is critical to the success of Coherence and everyone who uses it.

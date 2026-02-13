@@ -30,7 +30,7 @@ Follow the specific requirements for the components that make up the AI experien
 Components
 AI interfaces are made up of individual components that come together to create a robust user experience. Visit the articles below for detailed guidance, templates, and examples for each component.
 AI chat
-AI chat is an AI-powered conversational interface that respond to user-input and intelligently adapt to customer needs. This component primary component for Copilot and similar AI assistants.  Get AI chat guidance, templates, and code
+AI chat is an AI-powered conversational interface that respond to user-input and intelligently adapt to customer needs. This component primary component for Copilot and similar AI assistants.Get AI chat guidance, templates, and code
 Feedback for AI
 Feedback for AI is a component that allows AI assistants such as Copilot to prompt for feedback from those using it. This qualitative feedback is used to improve their experience further.
 

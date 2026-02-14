@@ -47,26 +47,23 @@ function AzurePortalHeader() {
         placeholder="Search resources, services, and docs (G+/)"
       />
 
-      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Copilot">
         <CuiIcon name="bot" />
-        <span className="visually-hidden">Copilot</span>
       </CuiButton>
-      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
-        <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" label="Cloud Shell" />
+      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
+        <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
       </CuiButton>
-      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
         <CuiIcon name="alert" />
-        <span className="visually-hidden">Notifications</span>
       </CuiButton>
-      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
-        <CuiIcon url="https://api.iconify.design/fluent:settings-24-regular.svg" label="Settings" />
+      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
+        <CuiIcon url="https://api.iconify.design/fluent:settings-24-regular.svg" />
       </CuiButton>
-      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
-        <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" label="Help + support" />
+      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
+        <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
       </CuiButton>
-      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+      <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
         <CuiIcon name="person-feedback" />
-        <span className="visually-hidden">Feedback</span>
       </CuiButton>
 
       <CuiPopOver slot="actions-end" fixedPlacement>
@@ -95,7 +92,7 @@ function AzurePortalHeader() {
 - `navigationIconLabel` on `CuiHeader` enables the hamburger toggle for the side nav drawer.
 - Search placeholder follows the Azure convention: includes `(G+/)` keyboard shortcut hint.
 - Six global action buttons in `overflow-actions` match the real Azure portal (Copilot, Cloud Shell, Notifications, Settings, Help + support, Feedback).
-- Each icon-only button has an accessible label — either via `<span className="visually-hidden">` or the `label` prop on `CuiIcon`.
+- Each icon-only button uses `aria-label` on the button for accessibility — no visible text labels.
 - Avatar uses `size={24}` inside the header button; full-size avatar inside the popover persona.
 - The popover body uses a `CuiPersona` for the user card, followed by a divider and link-appearance buttons for navigation actions.
 

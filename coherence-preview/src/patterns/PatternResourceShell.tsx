@@ -87,26 +87,23 @@ export default function PatternResourceShell() {
             hideLabel
             placeholder="Search resources, services, and docs (G+/)"
           />
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Copilot">
             <CuiIcon name="bot" />
-            <span className="visually-hidden">Copilot</span>
           </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" label="Cloud Shell" />
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
+            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
           </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
             <CuiIcon name="alert" />
-            <span className="visually-hidden">Notifications</span>
           </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
-            <CuiIcon url="https://api.iconify.design/fluent:settings-24-regular.svg" label="Settings" />
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
+            <CuiIcon url="https://api.iconify.design/fluent:settings-24-regular.svg" />
           </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" label="Help + support" />
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
+            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
           </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
-            <span className="visually-hidden">Feedback</span>
           </CuiButton>
           <CuiPopOver slot="actions-end" fixedPlacement>
             <CuiButton slot="anchor" appearance="subtle" shape="rounded" size="large" iconOnly>

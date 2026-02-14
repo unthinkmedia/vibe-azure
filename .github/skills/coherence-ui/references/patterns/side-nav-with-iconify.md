@@ -1,6 +1,11 @@
-# Side Nav with Iconify Icons
+# Side Nav with Icons
 
-Pattern for Azure-style side navigation using `CuiSideNav` with Fluent 2 icons loaded from Iconify SVG URLs. Supports regular/filled icon pairs that toggle on selection, plus grouped sections with headings.
+Pattern for Azure-style side navigation using `CuiSideNav` with Fluent 2 icons. **Prefer native `name` attribute** for icons in the Coherence registered set (~120 icons). Fall back to Iconify SVG URLs only for icons not available natively. Supports regular/filled icon pairs that toggle on selection, plus grouped sections with headings.
+
+## Icon Strategy
+
+1. **Native icons (preferred):** Use `<CuiIcon slot="icon" name="settings" />` for icons in the registered set. Faster, offline-capable, design-system consistent.
+2. **Iconify fallback:** Use `<CuiIcon slot="icon" url="..." selectedUrl="..." />` only for domain-specific icons not in the registered set (e.g. `stethoscope`, `folder`, `server`, `globe`).
 
 ## Structure
 
@@ -8,7 +13,7 @@ Pattern for Azure-style side navigation using `CuiSideNav` with Fluent 2 icons l
 CuiDrawer (slot="navigation", inline, position="start", breakpoint="686px", open)
 └── CuiSideNav (size="small")
     ├── CuiNavItem (label, href, selected?)
-    │   └── CuiIcon (slot="icon", url="...regular.svg", selectedUrl="...filled.svg")
+    │   └── CuiIcon (slot="icon", name="..." or url="...regular.svg", selectedUrl="...filled.svg")
     ├── CuiNavItem ...
     ├── CuiNavHeading → Section title
     ├── CuiNavItem ...
@@ -28,37 +33,33 @@ CuiDrawer (slot="navigation", inline, position="start", breakpoint="686px", open
   open
 >
   <CuiSideNav size="small">
+    {/* Native icon — "navigation" is in the registered set */}
     <CuiNavItem label="Overview" href="#" selected>
-      <CuiIcon
-        slot="icon"
-        url="https://api.iconify.design/fluent:home-24-regular.svg"
-        selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg"
-      />
+      <CuiIcon slot="icon" name="navigation" />
     </CuiNavItem>
+    {/* Native icon — "history" is in the registered set */}
     <CuiNavItem label="Activity log" href="#">
-      <CuiIcon
-        slot="icon"
-        url="https://api.iconify.design/fluent:document-24-regular.svg"
-        selectedUrl="https://api.iconify.design/fluent:document-24-filled.svg"
-      />
+      <CuiIcon slot="icon" name="history" />
     </CuiNavItem>
+    {/* Native icon — "person" is in the registered set */}
     <CuiNavItem label="Access control (IAM)" href="#">
-      <CuiIcon
-        slot="icon"
-        url="https://api.iconify.design/fluent:person-24-regular.svg"
-        selectedUrl="https://api.iconify.design/fluent:person-24-filled.svg"
-      />
+      <CuiIcon slot="icon" name="person" />
     </CuiNavItem>
-    <CuiNavItem label="Tags" href="#">
-      <CuiIcon
-        slot="icon"
-        url="https://api.iconify.design/fluent:tag-24-regular.svg"
-        selectedUrl="https://api.iconify.design/fluent:tag-24-filled.svg"
-      />
+
+    <CuiNavHeading>Settings</CuiNavHeading>
+
+    {/* Native icon — "settings" is in the registered set */}
+    <CuiNavItem label="Configuration" href="#">
+      <CuiIcon slot="icon" name="settings" />
+    </CuiNavItem>
+    {/* Native icon — "info" is in the registered set */}
+    <CuiNavItem label="Properties" href="#">
+      <CuiIcon slot="icon" name="info" />
     </CuiNavItem>
 
     <CuiNavHeading>APIs</CuiNavHeading>
 
+    {/* Iconify fallback — "plug-connected" is NOT in the registered set */}
     <CuiNavItem label="APIs" href="#">
       <CuiIcon
         slot="icon"
@@ -66,16 +67,10 @@ CuiDrawer (slot="navigation", inline, position="start", breakpoint="686px", open
         selectedUrl="https://api.iconify.design/fluent:plug-connected-24-filled.svg"
       />
     </CuiNavItem>
-    <CuiNavItem label="Subscriptions" href="#">
-      <CuiIcon
-        slot="icon"
-        url="https://api.iconify.design/fluent:key-24-regular.svg"
-        selectedUrl="https://api.iconify.design/fluent:key-24-filled.svg"
-      />
-    </CuiNavItem>
 
     <CuiDivider />
 
+    {/* Iconify fallback — "globe" is NOT in the registered set */}
     <CuiNavItem label="Developer portal" href="#">
       <CuiIcon
         slot="icon"
@@ -87,43 +82,48 @@ CuiDrawer (slot="navigation", inline, position="start", breakpoint="686px", open
 </CuiDrawer>
 ```
 
-## Iconify URL Pattern
+## Iconify URL Pattern (fallback only)
 
-All icons use the Iconify API with Fluent 2 icon set:
+For icons **not** in the Coherence registered set, use the Iconify API:
 
 ```
 Regular:  https://api.iconify.design/fluent:{name}-24-regular.svg
 Filled:   https://api.iconify.design/fluent:{name}-24-filled.svg
 ```
 
-The `url` prop shows the regular (outline) variant. The `selectedUrl` prop shows the filled variant when the parent `CuiNavItem` has `selected`.
-
 ## Common Azure Nav Icons
 
-| Label | Icon name |
-|-------|-----------|
-| Home / Overview | `home` |
-| Activity log | `document` |
-| Access control (IAM) | `person` |
-| Tags | `tag` |
-| Diagnostics | `stethoscope` |
-| Resource visualizer | `diagram` |
-| Events | `flash` |
-| Workspaces / Folders | `folder` |
-| APIs / Connections | `plug-connected` |
-| Servers | `server` |
-| Products / Packages | `box` |
-| Subscriptions / Keys | `key` |
-| Settings / Grid | `grid` |
-| Cloud / Backends | `cloud` |
-| Extensions / Fragments | `puzzle-piece` |
-| Schemas / Database | `database` |
-| Security / Credentials | `shield` |
-| Portal / Web | `globe` |
-| Power Platform | `power` |
-| Center / Alignment | `center-horizontal` |
-| Edit columns | `column-edit` |
-| Delete | `delete` |
+| Label | Native `name` | Iconify fallback needed? |
+|-------|--------------|--------------------------|
+| Home / Overview | `navigation` | No |
+| Activity log | `history` | No |
+| Access control (IAM) | `person` | No |
+| Tags | — | Yes: `tag` |
+| Diagnostics | — | Yes: `stethoscope` |
+| Resource visualizer | — | Yes: `diagram` |
+| Events | — | Yes: `flash` |
+| Settings / Config | `settings` | No |
+| Properties / Info | `info` | No |
+| Delete | `delete` | No |
+| Edit | `edit` | No |
+| Search | `search` | No |
+| Save | `save` | No |
+| Filter | `filter` | No |
+| Eye / View | `eye` | No |
+| Mail | `mail` | No |
+| Share | `share` | No |
+| Copilot | `copilot` | No |
+| Warning | `warning` | No |
+| Workspaces / Folders | — | Yes: `folder` |
+| APIs / Connections | — | Yes: `plug-connected` |
+| Servers | — | Yes: `server` |
+| Products / Packages | — | Yes: `box` |
+| Subscriptions / Keys | — | Yes: `key` |
+| Cloud / Backends | — | Yes: `cloud` |
+| Schemas / Database | — | Yes: `database` |
+| Security / Credentials | — | Yes: `shield` |
+| Portal / Web | — | Yes: `globe` |
+| Terminal | — | Yes: `terminal` |
 
 ## Key Details
 

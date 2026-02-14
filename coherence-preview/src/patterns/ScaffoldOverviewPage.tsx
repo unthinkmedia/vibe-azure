@@ -135,7 +135,7 @@ export default function AzureOverviewPage() {
             <CuiIcon name="alert" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
-            <CuiIcon url="https://api.iconify.design/fluent:settings-24-regular.svg" />
+            <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
             <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
@@ -261,8 +261,7 @@ export default function AzureOverviewPage() {
               <CuiButton appearance="subtle" size="small">
                 <CuiIcon
                   slot="start"
-                  url="https://api.iconify.design/fluent:delete-24-regular.svg"
-                  label="Delete"
+                  name="delete"
                 />
                 Delete
               </CuiButton>

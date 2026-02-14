@@ -49,11 +49,7 @@ export default function PatternToolbar() {
           <CuiDivider orientation="vertical" style={{ height: '20px' }} />
 
           <CuiButton appearance="subtle" size="small">
-            <CuiIcon
-              slot="start"
-              url="https://api.iconify.design/fluent:delete-24-regular.svg"
-              label="Delete"
-            />
+            <CuiIcon slot="start" name="delete" label="Delete" />
             Delete
           </CuiButton>
 

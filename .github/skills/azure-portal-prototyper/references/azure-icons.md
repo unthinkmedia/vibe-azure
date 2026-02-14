@@ -92,7 +92,7 @@ Common toolbar icon pairings:
 
 // Delete button
 <CuiButton appearance="subtle" size="small">
-  <CuiIcon slot="start" url="https://api.iconify.design/fluent:delete-24-regular.svg" /> Delete
+  <CuiIcon slot="start" name="delete" /> Delete
 </CuiButton>
 
 // Refresh (text only is standard in Azure)

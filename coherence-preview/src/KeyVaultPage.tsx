@@ -230,7 +230,7 @@ export default function KeyVaultPage() {
             <CuiIcon name="alert" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
-            <CuiIcon url="https://api.iconify.design/fluent:settings-24-regular.svg" />
+            <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
             <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />

@@ -18,7 +18,7 @@ The `cui-icon` component uses icons sourced from the **Fluent 2 Icon Library** (
 
 ### Icon Registration (Required)
 
-The Coherence package ships with only a handful of default icons (checkmark-circle, chevron-down, chevron-right, error-circle, warning-shield). To access the full set of ~80 Fluent 2 icons, you **must** import the project configuration file:
+The Coherence package ships with only a handful of default icons (checkmark-circle, chevron-down, chevron-right, error-circle, warning-shield). To access the full set of ~120 Fluent 2 icons, you **must** import the project configuration file:
 
 **Web components:**
 ```js
@@ -38,7 +38,15 @@ Without importing the project config, using `<cui-icon name="search">` will show
 
 After importing the project config, the following icon names are available for the `name` attribute:
 
-`accessibility`, `add`, `alert`, `arrow-clockwise`, `arrow-download`, `arrow-left`, `arrow-maximize`, `arrow-minimize`, `arrow-move`, `arrow-redo-regular`, `arrow-reply`, `arrow-right`, `arrow-sort-down`, `arrow-sort-up`, `arrow-sync`, `arrow-undo-regular`, `arrow-upload`, `attach`, `bookmark`, `bookmark-filled`, `bot`, `calendar`, `calendar-clock`, `chat`, `checkmark`, `checkmark-circle`, `chevron-double-left`, `chevron-double-right`, `chevron-down`, `chevron-left`, `chevron-up`, `circle-half-fill`, `clock`, `code-regular`, `comment`, `contact-card`, `copy-filled`, `cut-filled`, `dislike-filled`, `dismiss-circle`, `document-checkmark`, `document-edit`, `document-ribbon`, `emoji-meh`, `emoji-sad`, `error-circle`, `eye-off`, `filter-filled`, `highlight-regular`, `like-filled`, `link-edit-regular`, `link-regular`, `lock-closed`, `lock-open`, `more-horizontal`, `paste-filled`, `person-feedback`, `pin-filled`, `star-filled`, `start-line-horizontal`, `subtract-circle`, `tap-single`, `task-list`, `text-align-center-regular`, `text-align-left-regular`, `text-align-right-regular`, `text-bold-regular`, `text-bullet-list-regular`, `text-clear-formatting-regular`, `text-color-regular`, `text-font-regular`, `text-font-size-regular`, `text-header-1-regular`, `text-header-2-regular`, `text-header-3-regular`, `text-header-4-regular`, `text-header-5-regular`, `text-header-6-regular`, `text-indent-decrease-regular`, `text-indent-increase-regular`, `text-italic-regular`, `text-number-list-ltr-regular`, `text-quote-regular`, `text-strikethrough-regular`, `text-subscript-regular`, `text-superscript-regular`, `text-t-regular`, `text-underline-regular`, `zoom-in`, `zoom-out`
+**Simple names (prefer these when available — they map to common UI metaphors):**
+
+`accessibility`, `add`, `alert`, `attach`, `bookmark`, `bot`, `calendar`, `chat`, `checkmark`, `clock`, `comment`, `copilot`, `copy`, `cut`, `delete`, `dislike`, `dismiss`, `edit`, `emoji`, `eye`, `filter`, `history`, `hourglass`, `info`, `like`, `link`, `location`, `mail`, `navigation`, `open`, `options`, `paste`, `pause`, `person`, `phone`, `pin`, `play`, `prohibited`, `resize`, `save`, `search`, `send`, `settings`, `share`, `snooze`, `star`, `stop`, `warning`
+
+**Compound/variant names:**
+
+`arrow-clockwise`, `arrow-download`, `arrow-left`, `arrow-maximize`, `arrow-minimize`, `arrow-move`, `arrow-redo-regular`, `arrow-reply`, `arrow-right`, `arrow-sort-down`, `arrow-sort-up`, `arrow-sync`, `arrow-undo-regular`, `arrow-upload`, `bookmark-filled`, `calendar-clock`, `checkmark-circle`, `chevron-double-left`, `chevron-double-right`, `chevron-down`, `chevron-left`, `chevron-up`, `circle-half-fill`, `code-regular`, `contact-card`, `copy-filled`, `cut-filled`, `dislike-filled`, `dismiss-circle`, `document-checkmark`, `document-edit`, `document-ribbon`, `emoji-meh`, `emoji-sad`, `error-circle`, `eye-off`, `filter-filled`, `highlight-regular`, `like-filled`, `link-edit-regular`, `link-regular`, `lock-closed`, `lock-open`, `more-horizontal`, `paste-filled`, `person-feedback`, `pin-filled`, `star-filled`, `start-line-horizontal`, `subtract-circle`, `tap-single`, `task-list`, `text-align-center-regular`, `text-align-left-regular`, `text-align-right-regular`, `text-bold-regular`, `text-bullet-list-regular`, `text-clear-formatting-regular`, `text-color-regular`, `text-font-regular`, `text-font-size-regular`, `text-header-1-regular`, `text-header-2-regular`, `text-header-3-regular`, `text-header-4-regular`, `text-header-5-regular`, `text-header-6-regular`, `text-indent-decrease-regular`, `text-indent-increase-regular`, `text-italic-regular`, `text-number-list-ltr-regular`, `text-quote-regular`, `text-strikethrough-regular`, `text-subscript-regular`, `text-superscript-regular`, `text-t-regular`, `text-underline-regular`, `zoom-in`, `zoom-out`
+
+> **Important:** Always prefer using `name` over `url` when the icon is in the registered set above. Using `name` is faster (no network request), works offline, and stays consistent with the Coherence design system. Only fall back to `url` for icons not in this list.
 
 ### Custom Icons
 

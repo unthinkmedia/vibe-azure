@@ -71,7 +71,7 @@ function ResourceToolbar() {
         <CuiButton appearance="subtle" size="small">
           <CuiIcon
             slot="start"
-            url="https://api.iconify.design/fluent:delete-24-regular.svg"
+            name="delete"
             label="Delete"
           />
           Delete

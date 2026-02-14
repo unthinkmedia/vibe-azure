@@ -45,7 +45,7 @@ An exception to this rule is when next and back actions are used. For example, i
 
 ### Accessibility
 
-- Every component meets the Microsoft Accessibility Standards (MAS) requirements, which includes headings, keyboard navigation (focus order), screen readers (labels), color contrast, and more. Using our components and following the design standards gets you most of the way to an accessible experience that meets grade C.  To get you the rest of the way to grade C, run the Accessibility Insight's FastPass tool and manually test your scenarios end to end with a keyboard and screen reader.
+- Every component meets the Microsoft Accessibility Standards (MAS) requirements, which includes headings, keyboard navigation (focus order), screen readers (labels), color contrast, and more. Using our components and following the design standards gets you most of the way to an accessible experience that meets grade C.To get you the rest of the way to grade C, run the Accessibility Insight's FastPass tool and manually test your scenarios end to end with a keyboard and screen reader.
 
 ### Toggle button actions and states
 
@@ -74,25 +74,37 @@ subtle: minimizes emphasis to blend into the background until hovered or focused
 transparent: removes background and border styling.
 
 ```html
-<div class="d-flex gap-md">
-      <cui-button>Default</cui-button>
-      <cui-button appearance="primary">Primary</cui-button>
-      <cui-button appearance="outline">Outline</cui-button>
-      <cui-button appearance="subtle">Subtle</cui-button>
-      <cui-button appearance="transparent">Transparent</cui-button>
+import { CuiButton } from '@charm-ux/cui/react';
+
+export default () => {
+  return (
+    <div className="d-flex gap-md">
+      <CuiButton>Default</CuiButton>
+      <CuiButton appearance="primary">Primary</CuiButton>
+      <CuiButton appearance="outline">Outline</CuiButton>
+      <CuiButton appearance="subtle">Subtle</CuiButton>
+      <CuiButton appearance="transparent">Transparent</CuiButton>
     </div>
+  );
+};
 ```
 
 ### Shape
 
 A button can be rounded, circular, or square.
-
+s
 ```html
-<div class="d-flex gap-md">
-        <cui-button shape="rounded">Rounded</cui-button>
-        <cui-button shape="circular">Circular</cui-button>
-        <cui-button shape="square">Square</cui-button>
+import { CuiButton } from '@charm-ux/cui/react';
+
+export default () => {
+  return (
+    <div className="d-flex gap-md">
+        <CuiButton shape="rounded">Rounded</CuiButton>
+        <CuiButton shape="circular">Circular</CuiButton>
+        <CuiButton shape="square">Square</CuiButton>
     <div/>
+  );
+};
 ```
 
 ### Size
@@ -100,29 +112,35 @@ A button can be rounded, circular, or square.
 A button supports small, medium and large size. Default size is medium.
 
 ```html
-<div class="d-flex gap-md">
-      <cui-button size="small">Small</cui-button>
-      <cui-button size="small">
-        Small with icon <cui-icon slot="start" name="person"></cui-icon>
-      </cui-button>
-      <cui-button size="small" icon-only>
-        <cui-icon name="person" label="user"></cui-icon>
-      </cui-button>
-      <cui-button size="medium">Medium</cui-button>
-      <cui-button size="medium">
-        Medium with icon <cui-icon slot="start" name="person"></cui-icon>
-      </cui-button>
-      <cui-button size="medium" icon-only>
-        <cui-icon name="person" label="user"></cui-icon>
-      </cui-button>
-      <cui-button size="large">Large</cui-button>
-      <cui-button size="large">
-        Large with icon <cui-icon slot="start" name="person"></cui-icon>
-      </cui-button>
-      <cui-button size="large" icon-only>
-        <cui-icon name="person" label="user"></cui-icon>
-      </cui-button>
+import { CuiButton, CuiIcon } from '@charm-ux/cui/react';
+
+export default () => {
+  return (
+    <div className="d-flex gap-md">
+      <CuiButton size="small">Small</CuiButton>
+      <CuiButton size="small">
+        Small with icon <CuiIcon slot="start" name="person" />
+      </CuiButton>
+      <CuiButton size="small" iconOnly>
+        <CuiIcon name="person" label="user" />
+      </CuiButton>
+      <CuiButton size="medium">Medium</CuiButton>
+      <CuiButton size="medium">
+        Medium with icon <CuiIcon slot="start" name="person" />
+      </CuiButton>
+      <CuiButton size="medium" iconOnly>
+        <CuiIcon name="person" label="user" />
+      </CuiButton>
+      <CuiButton size="large">Large</CuiButton>
+      <CuiButton size="large">
+        Large with icon <CuiIcon slot="start" name="person" />
+      </CuiButton>
+      <CuiButton size="large" iconOnly>
+        <CuiIcon name="person" label="user" />
+      </CuiButton>
     </div>
+  );
+};
 ```
 
 ### Icon Position
@@ -130,10 +148,16 @@ A button supports small, medium and large size. Default size is medium.
 An icon can be positioned before or after text content within a button.
 
 ```html
-<div class="d-flex gap-lg">
-      <cui-button><cui-icon name="person" slot="start"></cui-icon>Icon start</cui-button>
-      <cui-button><cui-icon name="person" slot="end"></cui-icon>Icon end</cui-button>
+import { CuiButton } from '@charm-ux/cui/react';
+
+export default () => {
+  return (
+    <div className="d-flex gap-lg">
+      <CuiButton><CuiIcon name="person" slot="start"/>Icon start</CuiButton>
+      <CuiButton><CuiIcon name="person" slot="end"/>Icon end</CuiButton>
     <div/>
+  );
+};
 ```
 
 ### Long Text
@@ -141,9 +165,15 @@ An icon can be positioned before or after text content within a button.
 Text wraps after it hits the max width of the component.
 
 ```html
-<div style="width: 300px;">
-      <cui-button>Long text wraps after it hits the max width of the component</cui-button>
+import { CuiButton } from '@charm-ux/cui/react';
+
+export default () => {
+  return (
+    <div style={{"width: 300px;"}}>
+      <CuiButton>Long text wraps after it hits the max width of the component</CuiButton>
     </div>
+  );
+};
 ```
 
 ### Toggle Button
@@ -151,21 +181,27 @@ Text wraps after it hits the max width of the component.
 A button can be used as a toggle button, which can be clicked on and off.
 
 ```html
-<div class="d-flex gap-md">
-      <cui-button toggle>Default</cui-button>
-      <cui-button toggle appearance="primary">
+import { CuiButton } from '@charm-ux/cui/react';
+
+export default () => {
+  return (
+    <div class="d-flex gap-md">
+      <CuiButton toggle>Default</CuiButton>
+      <CuiButton toggle appearance="primary">
         Primary
-      </cui-button>
-      <cui-button toggle appearance="outline">
+      </CuiButton>
+      <CuiButton toggle appearance="outline">
         Outline
-      </cui-button>
-      <cui-button toggle appearance="subtle">
+      </CuiButton>
+      <CuiButton toggle appearance="subtle">
         Subtle
-      </cui-button>
-      <cui-button toggle appearance="transparent">
+      </CuiButton>
+      <CuiButton toggle appearance="transparent">
         Transparent
-      </cui-button>
+      </CuiButton>
     </div>
+  );
+};
 ```
 
 ### Compound Button
@@ -173,38 +209,44 @@ A button can be used as a toggle button, which can be clicked on and off.
 Add text to the subtext slot to create a "compound button". Since both primary and secondary textual contents are part of a compound button's name they should be kept concise.
 
 ```html
-<div class="d-flex flex-wrap gap-lg">
-      <cui-button>
+import { CuiButton, CuiIcon } from '@charm-ux/cui/react';
+
+export default () => {
+  return (
+    <div className="d-flex flex-wrap gap-lg">
+      <CuiButton>
         Default Text<span slot="subtext">Secondary content</span>
-      </cui-button>
+      </CuiButton>
 
-      <cui-button>
+      <CuiButton>
         With icon<span slot="subtext">Secondary content</span>
-        <cui-icon slot="start" name="search"></cui-icon>
-      </cui-button>
+        <CuiIcon slot="start" name="search" />
+      </CuiButton>
 
-      <cui-button appearance="primary">
+      <CuiButton appearance="primary">
         Primary<span slot="subtext">Secondary content</span>
-      </cui-button>
+      </CuiButton>
 
-      <cui-button appearance="primary">
+      <CuiButton appearance="primary">
         Primary<span slot="subtext">Secondary content</span>
-        <cui-icon slot="start" name="search"></cui-icon>
-      </cui-button>
-      <cui-button appearance="outline">
+        <CuiIcon slot="start" name="search" />
+      </CuiButton>
+      <CuiButton appearance="outline">
         Outline<span slot="subtext">Secondary content</span>
-      </cui-button>
+      </CuiButton>
 
-      <cui-button appearance="subtle">
+      <CuiButton appearance="subtle">
         Suble<span slot="subtext">Secondary content</span>
-      </cui-button>
-      <cui-button appearance="transparent">
+      </CuiButton>
+      <CuiButton appearance="transparent">
         Transparent<span slot="subtext">Secondary content</span>
-      </cui-button>
-      <cui-button appearance="primary" disabled>
+      </CuiButton>
+      <CuiButton appearance="primary" disabled>
         Primary<span slot="subtext">Secondary content</span>
-      </cui-button>
+      </CuiButton>
     </div>
+  );
+};
 ```
 
 ## API Reference

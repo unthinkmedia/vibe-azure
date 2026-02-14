@@ -23,6 +23,7 @@ import {
   CuiSideNav,
   CuiToolbar,
 } from '@charm-ux/cui/react';
+import CopilotButton from '../CopilotButton';
 
 export default function PatternResourceShell() {
   const styles = `
@@ -87,9 +88,7 @@ export default function PatternResourceShell() {
             hideLabel
             placeholder="Search resources, services, and docs (G+/)"
           />
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Copilot">
-            <CuiIcon name="bot" />
-          </CuiButton>
+          <CopilotButton slot="overflow-actions" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
             <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
           </CuiButton>

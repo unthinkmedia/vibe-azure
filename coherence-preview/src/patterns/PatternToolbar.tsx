@@ -117,7 +117,13 @@ export default function PatternToolbar() {
           <li>Group: primary actions → data actions → destructive → meta</li>
         </ul>
       </div>
-      <style>{`body { margin: 0; }`}</style>
+      <style>{`
+        body { margin: 0; }
+        cui-toolbar cui-button,
+        cui-toolbar cui-menu cui-button {
+          white-space: nowrap;
+        }
+      `}</style>
     </>
   );
 }

@@ -182,6 +182,23 @@ export default function APIsPage() {
             <CuiIcon name="bot" />
             <span className="visually-hidden">Copilot</span>
           </CuiButton>
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" label="Cloud Shell" />
+          </CuiButton>
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+            <CuiIcon name="alert" />
+            <span className="visually-hidden">Notifications</span>
+          </CuiButton>
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+            <CuiIcon url="https://api.iconify.design/fluent:settings-24-regular.svg" label="Settings" />
+          </CuiButton>
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" label="Help + support" />
+          </CuiButton>
+          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly>
+            <CuiIcon name="person-feedback" />
+            <span className="visually-hidden">Feedback</span>
+          </CuiButton>
           <CuiPopOver slot="actions-end" fixedPlacement>
             <CuiButton slot="anchor" appearance="subtle" shape="rounded" size="large" iconOnly>
               <CuiAvatar size={24} name="Alex Britez" />

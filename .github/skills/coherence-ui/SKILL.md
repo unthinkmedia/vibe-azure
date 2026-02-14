@@ -91,7 +91,7 @@ When the user asks to build UI or use a Coherence component:
 6. **For theming, colors, spacing, typography, or shadows** — fetch the theme CSS to get the exact token names and values
 7. **Output React by default** — generate a React component (`.tsx`) using `@charm-ux/cui/react` wrappers. Only output plain HTML web components (`<cui-*>`) if the user explicitly requests it.
 
-When composing a full page or layout, also read the relevant template and task flow references.
+When composing a full page or layout, also read the relevant template and task flow references. **For Azure portal pages specifically**, start with the composition patterns in `references/patterns/` — especially the Resource Page Shell — to avoid rebuilding the standard Azure chrome from scratch.
 
 ## Component Index
 
@@ -200,6 +200,32 @@ Multi-step interaction patterns. Read when implementing these specific user flow
 | Favorites | [references/task-flows/favorites.md](references/task-flows/favorites.md) |
 | Inline Edit | [references/task-flows/inline-edit.md](references/task-flows/inline-edit.md) |
 | Save Presets | [references/task-flows/save-presets.md](references/task-flows/save-presets.md) |
+
+## Composition Patterns
+
+Reusable multi-component patterns extracted from real Azure portal prototypes. Read when composing Azure-style pages to avoid re-inventing common layouts.
+
+| Pattern | Description | Reference |
+|---------|-------------|-----------|
+| Azure Portal Header | Header with search, Copilot button, avatar popover | [references/patterns/azure-portal-header.md](references/patterns/azure-portal-header.md) |
+| Azure Resource Page Shell | Full page scaffold: app frame + header + side nav + breadcrumb + title + toolbar | [references/patterns/azure-resource-page-shell.md](references/patterns/azure-resource-page-shell.md) |
+| Side Nav with Iconify Icons | Side navigation using Iconify SVG URLs with regular/filled pairs | [references/patterns/side-nav-with-iconify.md](references/patterns/side-nav-with-iconify.md) |
+| Resource Page Toolbar | Horizontal action bar with buttons, dividers, and dropdown menus | [references/patterns/resource-page-toolbar.md](references/patterns/resource-page-toolbar.md) |
+
+When building an Azure portal page prototype, **start with the Resource Page Shell** pattern and customize it. It composes the Header, Side Nav, and Toolbar patterns together.
+
+## Page Scaffolds
+
+Complete starter files for common Azure portal page types. Copy a scaffold to `coherence-preview/src/` and customize the TODOs.
+
+| Scaffold | Description | Asset |
+|----------|-------------|-------|
+| Resource Page | Standard resource blade with header, side nav, breadcrumb, toolbar, content area | [assets/scaffolds/azure-resource-page.tsx](assets/scaffolds/azure-resource-page.tsx) |
+| List Page | Two-column list + detail layout (APIs, Subscriptions, etc.) | [assets/scaffolds/azure-list-page.tsx](assets/scaffolds/azure-list-page.tsx) |
+| Create Flow | Multi-step wizard with tabbed form and action bar | [assets/scaffolds/azure-create-flow.tsx](assets/scaffolds/azure-create-flow.tsx) |
+| Overview Page | Essentials panel + card grid sections | [assets/scaffolds/azure-overview-page.tsx](assets/scaffolds/azure-overview-page.tsx) |
+
+**Usage:** Copy the scaffold file, rename it, fill in the TODO sections, and register it as an experiment in the preview app.
 
 ## UX Guides
 

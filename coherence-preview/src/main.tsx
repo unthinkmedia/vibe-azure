@@ -42,6 +42,69 @@ const experiments: { id: string; title: string; description: string; component: 
     description: 'Azure API Management APIs page with card grid and side panel',
     component: lazy(() => import('./APIsPage')),
   },
+  {
+    id: 'key-vault-page',
+    title: 'Key Vault Page',
+    description: 'Azure Key Vault resource page with essentials overview and secrets table',
+    component: lazy(() => import('./KeyVaultPage')),
+  },
+  // ─── Patterns Gallery ───
+  {
+    id: 'patterns-gallery',
+    title: '📐 Patterns & Scaffolds Gallery',
+    description: 'Browse all composition patterns and page scaffolds in one place',
+    component: lazy(() => import('./PatternsGallery')),
+  },
+  // ─── Composition Patterns ───
+  {
+    id: 'pattern-header',
+    title: 'Pattern: Azure Portal Header',
+    description: 'Header bar with search, Copilot button, and avatar popover',
+    component: lazy(() => import('./patterns/PatternHeader')),
+  },
+  {
+    id: 'pattern-side-nav',
+    title: 'Pattern: Side Nav with Iconify',
+    description: 'Side navigation with regular/filled Iconify icon pairs and section headings',
+    component: lazy(() => import('./patterns/PatternSideNav')),
+  },
+  {
+    id: 'pattern-toolbar',
+    title: 'Pattern: Resource Page Toolbar',
+    description: 'Horizontal action bar with buttons, dividers, and dropdown menus',
+    component: lazy(() => import('./patterns/PatternToolbar')),
+  },
+  {
+    id: 'pattern-resource-shell',
+    title: 'Pattern: Resource Page Shell',
+    description: 'Full page scaffold combining header, side nav, breadcrumb, title, and toolbar',
+    component: lazy(() => import('./patterns/PatternResourceShell')),
+  },
+  // ─── Page Scaffolds ───
+  {
+    id: 'scaffold-resource-page',
+    title: 'Scaffold: Resource Page',
+    description: 'Standard Azure resource blade with header, side nav, toolbar, and content area',
+    component: lazy(() => import('./patterns/ScaffoldResourcePage')),
+  },
+  {
+    id: 'scaffold-list-page',
+    title: 'Scaffold: List Page',
+    description: 'Two-column layout with scrollable list panel and detail area',
+    component: lazy(() => import('./patterns/ScaffoldListPage')),
+  },
+  {
+    id: 'scaffold-create-flow',
+    title: 'Scaffold: Create Flow',
+    description: 'Multi-step creation wizard with tabbed form and action bar',
+    component: lazy(() => import('./patterns/ScaffoldCreateFlow')),
+  },
+  {
+    id: 'scaffold-overview-page',
+    title: 'Scaffold: Overview Page',
+    description: 'Resource overview with essentials panel and card sections',
+    component: lazy(() => import('./patterns/ScaffoldOverviewPage')),
+  },
 ];
 
 function App() {

@@ -15,6 +15,20 @@ type Entry = {
 // ─── Experiments (with dates, newest first) ───
 const experiments: Entry[] = [
   {
+    id: 'api-management-page',
+    title: 'API Management Page',
+    description: 'Azure API Management service overview with essentials panel, stat cards, APIs table, and subscriptions',
+    component: lazy(() => import('./ApiManagementPage')),
+    date: '2026-02-17',
+  },
+  {
+    id: 'app-registration-page',
+    title: 'App Registration Page',
+    description: 'Azure Entra ID app registration form inside a full App frame with header, side nav, and search',
+    component: lazy(() => import('./AppRegistrationPage')),
+    date: '2026-02-17',
+  },
+  {
     id: 'copilot-button',
     title: 'Copilot Button',
     description: 'Custom Copilot button with gradient sparkle icon for the Azure portal header',

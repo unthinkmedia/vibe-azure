@@ -24,7 +24,7 @@ import {
   CuiSearchBox,
   CuiSideNav,
 } from '@charm-ux/cui/react';
-import CopilotButton from '../CopilotButton';
+import CopilotButton from '../experiments/copilot-button';
 
 export default function AzureListPage() {
   // TODO: Replace with your resource and page details

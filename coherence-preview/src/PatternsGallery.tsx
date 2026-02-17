@@ -39,6 +39,12 @@ export default function PatternsGallery() {
           description: 'Full page scaffold combining all patterns: app frame, header, side nav, breadcrumb, title, and toolbar.',
           tags: ['CuiAppFrame', 'All Patterns'],
         },
+        {
+          id: 'pattern-donut-gauge',
+          title: 'Donut Gauge Readiness Card',
+          description: 'SVG ring gauge with color-coded arc, centered score, category breakdown, and status badge.',
+          tags: ['CuiCard', 'CuiBadge', 'SVG', 'Gauge'],
+        },
       ],
     },
     {

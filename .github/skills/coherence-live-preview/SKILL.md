@@ -12,17 +12,25 @@ Manage the `coherence-preview/` Vite + React app that renders Coherence UI proto
 ```
 coherence-preview/
 ├── src/
-│   ├── main.tsx          ← experiment registry + router
-│   ├── TopNavigation.tsx
-│   ├── AzureFunctionCard.tsx
-│   └── …more experiments
+│   ├── main.tsx                  ← experiment registry + router
+│   ├── experiments/
+│   │   ├── api-management-page/
+│   │   │   └── index.tsx
+│   │   ├── copilot-button/
+│   │   │   └── index.tsx
+│   │   └── …more experiments
+│   └── patterns/
 ├── package.json
 └── vite.config.ts
 ```
 
 ## Workflow: Adding a New Experiment
 
-After generating a `.tsx` prototype file in `coherence-preview/src/`:
+After generating a `.tsx` prototype, create a new folder under `coherence-preview/src/experiments/` using the experiment's kebab-case `id` as the folder name, and place the component in an `index.tsx` file inside it:
+
+```
+coherence-preview/src/experiments/my-page/index.tsx
+```
 
 ### 1. Register in the Experiment Array
 
@@ -30,10 +38,10 @@ Open `coherence-preview/src/main.tsx` and add an entry to the `experiments` arra
 
 ```tsx
 {
-  id: 'my-page',                              // kebab-case, unique
-  title: 'My Page',                           // Display name
+  id: 'my-page',                                            // kebab-case, unique
+  title: 'My Page',                                          // Display name
   description: 'Short description of the prototype',
-  component: lazy(() => import('./MyPage')),   // Matches filename without .tsx
+  component: lazy(() => import('./experiments/my-page')),     // Folder path (resolves to index.tsx)
 },
 ```
 
@@ -68,14 +76,18 @@ const experiments: {
 
 **Requirements:**
 - `id` must be unique, kebab-case, and URL-safe (used as hash fragment)
-- `component` must use `lazy(() => import('./FileName'))` for code splitting
+- `component` must use `lazy(() => import('./experiments/<folder-name>'))` for code splitting
 - The imported file must have a `default` export (function component)
 
 ## Conventions
 
-- One experiment per `.tsx` file in `coherence-preview/src/`
-- Filenames use PascalCase matching the component name (e.g., `SubscriptionsPage.tsx`)
-- Each file exports a default function component
+- Each experiment lives in its own folder under `coherence-preview/src/experiments/<experiment-id>/`
+- The folder name matches the experiment's `id` (kebab-case)
+- The main component file is `index.tsx` inside that folder
+- Co-located files (mock data, helpers) go in the same folder
+- Each `index.tsx` exports a default function component
+- Filenames for the component use `index.tsx`; PascalCase is used for the exported component name
+- To import a sibling experiment (e.g., CopilotButton), use a relative path: `import CopilotButton from '../copilot-button'`
 - Theme CSS is already imported globally in `main.tsx` — individual experiments do not need to import it
 - The experiment picker shows all registered experiments as clickable cards with title and description
 

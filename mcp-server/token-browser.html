@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Design Token Browser</title>
+  <style>
+    :root {
+      --bg: #fff; --fg: #1a1a1a; --border: #e0e0e0; --accent: #0078d4;
+      --card-bg: #f5f5f5; --swatch-border: #ddd;
+    }
+    [data-theme="dark"] {
+      --bg: #1e1e1e; --fg: #e0e0e0; --border: #333; --accent: #4da6ff;
+      --card-bg: #2d2d2d; --swatch-border: #555;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+      background: var(--bg); color: var(--fg); padding: 16px;
+    }
+    h1 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+    .toolbar {
+      display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .toolbar input {
+      flex: 1; min-width: 200px; padding: 6px 10px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 13px; background: var(--bg); color: var(--fg);
+      outline: none;
+    }
+    .toolbar input:focus { border-color: var(--accent); }
+    .toolbar select {
+      padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px;
+      font-size: 13px; background: var(--bg); color: var(--fg);
+    }
+    .count { font-size: 13px; color: #888; margin-bottom: 12px; }
+    .tokens {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 8px;
+    }
+    .token {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-radius: 6px; background: var(--card-bg);
+      border: 1px solid var(--border); font-size: 12px;
+      cursor: pointer; transition: border-color 0.15s;
+    }
+    .token:hover { border-color: var(--accent); }
+    .swatch {
+      width: 28px; height: 28px; border-radius: 4px; border: 1px solid var(--swatch-border);
+      flex-shrink: 0;
+    }
+    .swatch-spacing {
+      width: 28px; height: 28px; display: flex; align-items: flex-end; flex-shrink: 0;
+    }
+    .swatch-spacing-bar {
+      background: var(--accent); border-radius: 2px; width: 100%;
+    }
+    .token-info { overflow: hidden; flex: 1; }
+    .token-name { font-weight: 600; font-size: 12px; word-break: break-all; }
+    .token-value { color: #888; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .category-chip {
+      display: inline-block; padding: 2px 8px; border-radius: 10px;
+      font-size: 10px; background: var(--accent); color: #fff; margin-top: 2px;
+      opacity: 0.8;
+    }
+    .copied {
+      position: fixed; top: 16px; right: 16px; background: var(--accent); color: #fff;
+      padding: 6px 16px; border-radius: 6px; font-size: 13px; opacity: 0;
+      transition: opacity 0.2s; pointer-events: none;
+    }
+    .copied.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <h1>Coherence Design Tokens</h1>
+  <div class="toolbar">
+    <input id="search" type="text" placeholder="Search tokens..." />
+    <select id="category-filter"><option value="">All categories</option></select>
+  </div>
+  <div class="count" id="count"></div>
+  <div class="tokens" id="tokens"></div>
+  <div class="copied" id="copied">Copied!</div>
+
+  <script type="module" src="/src/token-browser.ts"></script>
+</body>
+</html>

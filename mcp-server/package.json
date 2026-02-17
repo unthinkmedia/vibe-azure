@@ -1,0 +1,29 @@
+{
+  "name": "@vibe-azure/coherence-prototyper-mcp",
+  "version": "1.0.0",
+  "description": "MCP server + MCP App for Azure portal prototyping with Coherence UI — complements the VS Code skills",
+  "type": "module",
+  "main": "dist/main.js",
+  "bin": {
+    "coherence-prototyper-mcp": "dist/main.js"
+  },
+  "scripts": {
+    "build": "tsc --noEmit && tsc -p tsconfig.server.json && cross-env INPUT=token-browser.html vite build",
+    "start": "concurrently \"cross-env NODE_ENV=development INPUT=token-browser.html vite build --watch\" \"tsx watch main.ts\"",
+    "dev": "tsx main.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.0.1",
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-singlefile": "^2.0.6"
+  }
+}

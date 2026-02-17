@@ -28,7 +28,7 @@ import {
   CuiTabPanel,
   CuiTabs,
 } from '@charm-ux/cui/react';
-import CopilotButton from '../CopilotButton';
+import CopilotButton from '../experiments/copilot-button';
 
 export default function AzureCreateFlow() {
   const [activeTab, setActiveTab] = useState('basics');

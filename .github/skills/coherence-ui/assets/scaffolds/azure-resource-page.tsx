@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Azure Resource Page Scaffold
  *

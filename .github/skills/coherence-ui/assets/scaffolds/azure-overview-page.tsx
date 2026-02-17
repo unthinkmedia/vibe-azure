@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Azure Overview Page Scaffold
  *

@@ -14,14 +14,13 @@ import { ServiceCard } from '../patterns/PatternServiceCard';
 CuiCard (appearance="outline", --card-padding: 0, --card-content-gap: 0)
 ├── div.service-card-body (padding: 16px 16px 12px)
 │   ├── div.service-card-header (flex, gap: 8px)
-│   ├── div.service-card-icon (28×28, centered)
-│   │   └── CuiIcon (24px, Iconify URL)
-│   │   └── span.service-card-title (semibold, base-300)
-│   └── p.service-card-desc (base-200, neutral-foreground-2)
-└── div.service-card-actions (border-top: 1px solid neutral-stroke2, padding: 4px 8px)
-    ├── CuiButton (link, small) "View" with open icon
-    ├── CuiButton (subtle, small, iconOnly) "..." more-horizontal
-    └── CuiButton (link, small) "More"
+│   │   ├── div.service-card-icon (28×28, centered)
+│   │   │   └── CuiIcon (24px, Iconify URL)
+│   │   └── span.service-card-title (semibold, base300)
+│   └── p.service-card-desc (base200, neutral-foreground2)
+└── div.service-card-actions (border-top: 1px solid neutral-stroke2, padding: 0 10px)
+    ├── CuiButton (link, small) "View" with eye icon in slot="start"
+    └── CuiButton (link, small) "More" with more-horizontal icon in slot="start"
 ```
 
 ## React Example
@@ -91,12 +90,14 @@ import { ServiceCard } from '../patterns/PatternServiceCard';
 ## Key Design Details
 
 - Card uses `--card-padding: 0` and `--card-content-gap: 0`; body div gets `padding: 16px 16px 12px`
-- Action footer has `border-top: 1px solid var(--neutral-stroke2)` and `padding: 4px 8px`
+- Action footer has `border-top: 1px solid var(--neutral-stroke2)` and `padding: 0 10px`
 - Title uses `--font-weight-semi-bold` and `--font-size-base300`
 - Description uses `--font-size-base200` and `--neutral-foreground2`
-- "View" button uses `appearance="link"` with an open icon in `slot="start"`
-- "..." button uses `appearance="subtle"` with `iconOnly`
-- "More" button uses `appearance="link"`
+- "View" button uses `appearance="link"` with eye icon (`fluent:eye-24-regular`) in `slot="start"`
+- "More" button uses `appearance="link"` with more-horizontal icon in `slot="start"`
+- Button controls get `padding: 6px 8px`, `border-radius: 4px` via `::part(button-control)`
+- Hover: subtle grey background (`--neutral-background1-hover`) on button control
+- Buttons have `display: flex; align-items: center` on host for consistent vertical alignment
 - Styles are auto-injected once via `<style>` tag (id: `pattern-service-card-styles`)
 
 ## When to Use

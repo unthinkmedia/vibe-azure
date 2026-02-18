@@ -60,7 +60,7 @@ export const serviceCardStyles = `
   .service-card .service-card-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0;
     padding: 0 10px;
     border-top: 1px solid var(--neutral-stroke2);
   }
@@ -226,9 +226,10 @@ export default function PatternServiceCard() {
         </ul>
         <h3>Key details</h3>
         <ul style={{ lineHeight: 1.8 }}>
-          <li>Card padding set to <code>16px</code> (card default); actions use negative margins to extend border edge-to-edge</li>
-          <li>Action footer has <code>border-top: 1px solid var(--neutral-stroke-2)</code></li>
-          <li>Actions use <code>appearance="link"</code> for View/More and <code>appearance="subtle"</code> for the "…" button</li>
+          <li>Card uses <code>--card-padding: 0</code> and <code>--card-content-gap: 0</code>; body div handles padding</li>
+          <li>Action footer has <code>border-top: 1px solid var(--neutral-stroke2)</code>, padding <code>0 10px</code></li>
+          <li>Both buttons use <code>appearance="link"</code> with icons in <code>slot="start"</code></li>
+          <li>Button controls get <code>6px 8px</code> padding and subtle hover background via <code>::part(button-control)</code></li>
         </ul>
       </div>
     </div>

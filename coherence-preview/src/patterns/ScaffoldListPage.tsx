@@ -120,7 +120,7 @@ export default function AzureListPage() {
             hideLabel
             placeholder="Search resources, services, and docs (G+/)"
           />
-          <CopilotButton slot="overflow-actions" />
+          <CopilotButton slot="search" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
             <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
           </CuiButton>

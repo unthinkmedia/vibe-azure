@@ -228,7 +228,7 @@ export default function ScaffoldServiceBlade() {
             hideLabel
             placeholder="Search resources, services, and docs (G+/)"
           />
-          <CopilotButton slot="overflow-actions" />
+          <CopilotButton slot="search" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
             <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
           </CuiButton>
@@ -285,7 +285,6 @@ export default function ScaffoldServiceBlade() {
             <CuiButton appearance="subtle" iconOnly size="small" aria-label="More actions">
               <CuiIcon name="more-horizontal" />
             </CuiButton>
-            <CopilotButton />
             {/* Copilot suggestion pills */}
             <CopilotSuggestions
               suggestions={[
@@ -348,18 +347,16 @@ export default function ScaffoldServiceBlade() {
               </CuiButton>
 
               <div style={{ paddingLeft: 32 }}>
-                {/* Info banner — inside content area */}
+                {/* Info banner — arrow variant (navigable, not dismissible) */}
                 <CuiMessageBar
                   intent="info"
                   shape="square"
-                  dismissible
-                  open={bannerVisible}
-                  onMessageBarHide={() => setBannerVisible(false)}
+                  open
                 >
                   <CuiIcon slot="icon" name="info-filled" label="info" />
                   The Log Analytics agents, used by VM Insights, won't be supported as of August 31, 2024.
                   Plan to migrate to VM Insights on Azure Monitor agent prior to this date.
-                  <CuiButton slot="action" appearance="link" href="#">→</CuiButton>
+                  <CuiButton slot="action" appearance="link" href="#" aria-label="Learn about migration">→</CuiButton>
                 </CuiMessageBar>
 
                 {/* Tabs — inside content area */}

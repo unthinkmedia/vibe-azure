@@ -26,7 +26,7 @@ export default function PatternHeader() {
           hideLabel
           placeholder="Search resources, services, and docs (G+/)"
         />
-        <CopilotButton slot="overflow-actions" />
+        <CopilotButton slot="search" />
         <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
           <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
         </CuiButton>
@@ -65,8 +65,8 @@ export default function PatternHeader() {
         <p>Components used: <code>CuiHeader</code>, <code>CuiSearchBox</code>, <code>CuiAvatar</code>, <code>CuiPopOver</code>, <code>CuiPersona</code></p>
         <ul style={{ lineHeight: 1.8 }}>
           <li><strong>Title slot</strong> — transparent button with "Microsoft Azure" text</li>
-          <li><strong>Search slot</strong> — search box with keyboard shortcut hint</li>
-          <li><strong>Overflow actions</strong> — Copilot, Cloud Shell, Notifications, Settings, Help + support, Feedback</li>
+          <li><strong>Search slot</strong> — search box with keyboard shortcut hint + Copilot button</li>
+          <li><strong>Overflow actions</strong> — Cloud Shell, Notifications, Settings, Help + support, Feedback</li>
           <li><strong>Actions end</strong> — Avatar popover with persona card and profile links</li>
         </ul>
       </div>

@@ -192,6 +192,12 @@ const allEntries = [...experiments, ...patterns, ...scaffolds];
 
 type TabId = 'experiments' | 'patterns' | 'scaffolds';
 
+const tabDescriptions: Record<TabId, string> = {
+  experiments: 'Full-page prototypes exploring specific Azure portal pages and UI ideas. Each is a self-contained demo of a real scenario.',
+  patterns: 'Reusable UI building blocks (header, side nav, toolbar, cards) that can be composed together into full pages.',
+  scaffolds: 'Starter page templates with pre-wired layout structure. Clone and customize to kick-start a new prototype.',
+};
+
 const tabs: { id: TabId; label: string; count: number }[] = [
   { id: 'experiments', label: 'Experiments', count: experiments.length },
   { id: 'patterns', label: 'Patterns', count: patterns.length },
@@ -334,6 +340,11 @@ function App() {
           );
         })}
       </div>
+
+      {/* Tab description */}
+      <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--neutral-foreground-3)', lineHeight: 1.5 }}>
+        {tabDescriptions[activeTab]}
+      </p>
 
       {/* Tab content */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

@@ -1,35 +1,31 @@
 /**
  * Copilot Button for the Azure Portal header.
- * Uses standard CuiButton with a white pill shape and the native Coherence copilot icon.
+ * Uses CuiButton with CSS custom properties for a white pill shape.
  */
 import { CuiButton, CuiIcon } from '@charm-ux/cui/react';
 
+const copilotStyles: React.CSSProperties & Record<string, string> = {
+  '--button-bg-color': '#ffffff',
+  '--button-fg-color': '#242424',
+  '--button-border-color': 'transparent',
+  '--button-hover-bg-color': '#f0f0f0',
+  '--button-border-radius': '3px',
+  '--button-padding-x': '12px',
+  '--button-content-gap': '5px',
+  marginLeft: '12px',
+} as any;
+
 export default function CopilotButton({ slot }: { slot?: string }) {
   return (
-    <>
-      <style>{`
-        .copilot-btn::part(control) {
-          background: #fff !important;
-          color: #242424 !important;
-          border: 1px solid #d1d1d1 !important;
-          border-radius: 999px;
-          padding: 4px 14px;
-          gap: 6px;
-        }
-        .copilot-btn::part(control):hover {
-          background: #f0f0f0 !important;
-        }
-      `}</style>
-      <CuiButton
-        slot={slot}
-        appearance="outline"
-        size="large"
-        className="copilot-btn"
-        aria-label="Copilot"
-      >
-        <CuiIcon slot="start" name="copilot" label="Copilot" />
-        Copilot
-      </CuiButton>
-    </>
+    <CuiButton
+      slot={slot}
+      size="medium"
+      shape="square"
+      style={copilotStyles}
+      aria-label="Copilot"
+    >
+      <CuiIcon slot="start" name="copilot" label="Copilot" />
+      Copilot
+    </CuiButton>
   );
 }

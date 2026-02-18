@@ -1,0 +1,12 @@
+{
+  "experimentId": "registration-page",
+  "title": "Registration Page",
+  "vision": "Full-page form with app frame, side nav, and inputs",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-11T00:00:00.000Z",
+  "updatedAt": "2026-02-11T00:00:00.000Z",
+  "status": "draft"
+}

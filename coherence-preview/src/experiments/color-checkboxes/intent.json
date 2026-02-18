@@ -1,0 +1,12 @@
+{
+  "experimentId": "color-checkboxes",
+  "title": "Color Checkboxes",
+  "vision": "Checkbox group with selection state",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-10T00:00:00.000Z",
+  "updatedAt": "2026-02-10T00:00:00.000Z",
+  "status": "draft"
+}

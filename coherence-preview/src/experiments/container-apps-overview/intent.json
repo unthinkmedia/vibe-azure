@@ -1,0 +1,11 @@
+{
+  "title": "Azure Container Apps Resource Overview",
+  "vision": "Prototype the Container Apps resource blade showing running revisions, scaling metrics with sparklines, and ingress configuration at a glance",
+  "problem": "Need to visualize how the Container Apps overview page would display revision management, scaling health, and ingress settings in the Azure portal",
+  "successCriteria": [
+    "Revisions table shows active/inactive revisions with traffic split percentages",
+    "Scaling metrics cards display replica count, CPU, memory, and request rate with sparklines",
+    "Ingress configuration panel shows port, transport, FQDN, and security settings"
+  ],
+  "createdAt": "2026-02-18T12:00:00.000Z"
+}

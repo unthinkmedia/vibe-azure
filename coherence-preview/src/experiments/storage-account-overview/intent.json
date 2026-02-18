@@ -1,0 +1,22 @@
+{
+  "experimentId": "storage-account-overview",
+  "title": "Storage Account Overview",
+  "vision": "Azure Storage Account overview page with usage breakdown donut chart (blob/file/table/queue), cost-to-date card with month-over-month trend, and access keys section with copy-to-clipboard and 90-day key age warning.",
+  "problem": "Storage account admins need a single-glance overview of usage distribution, cost trends, and key rotation status to manage their storage resources effectively.",
+  "successCriteria": [
+    "Donut chart shows blob/file/table/queue usage distribution with legend",
+    "Cost card displays current month spend with MoM trend arrow",
+    "Access keys section with masked key values and copy buttons",
+    "Warning banner when any key is older than 90 days",
+    "Full Azure portal chrome (header, side nav, breadcrumb, toolbar)"
+  ],
+  "nonGoals": [],
+  "constraints": [
+    "Use Coherence UI components from @charm-ux/cui/react",
+    "Follow existing experiment file structure (data.ts, styles.ts, Navigation.tsx, PageContent.tsx, index.tsx)",
+    "Reuse PageHeader and CopilotButton shared patterns"
+  ],
+  "createdAt": "2026-02-18T19:50:31.740Z",
+  "updatedAt": "2026-02-18T19:50:31.740Z",
+  "status": "draft"
+}

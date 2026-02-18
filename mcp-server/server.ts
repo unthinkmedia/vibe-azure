@@ -56,12 +56,15 @@ export function createServer(): McpServer {
       title: "Design Intent",
       description:
         "Open the Design Intent app to capture What, Why, Success Criteria, and Non-Goals before prototyping. " +
-        "TRIGGER THIS TOOL when the user says anything about starting, creating, or beginning a new experiment " +
-        "(e.g. \"let's start a new experiment\", \"new experiment\", \"I want to prototype\", \"let's build something new\", " +
-        "\"begin a new prototype\", \"start fresh\"). " +
-        "Also trigger when the azure-portal-prototyper skill is about to scaffold a new experiment — " +
-        "offer the user the chance to set a design intent first. " +
-        "Inspired by the Specflow methodology — optional but recommended as a first step.",
+        "THIS IS MANDATORY — intent.json is the primary instruction source for the entire build. " +
+        "ALWAYS TRIGGER THIS TOOL when the user describes what they want to build — extract their prompt into the prefill fields " +
+        "(vision, problem, success criteria, constraints) so the intent form opens pre-populated with best guesses. " +
+        "The user reviews and edits the form, then clicks 'Make This' to confirm. " +
+        "After this tool returns, READ the intent.json file from coherence-preview/src/experiments/<experimentId>/intent.json " +
+        "to get the finalized intent document — use the full intent as PRIMARY INSTRUCTION SOURCE for building. " +
+        "If intent.json does not exist after calling this tool, DO NOT proceed with building — re-call this tool. " +
+        "Also tell the user they can view/edit intents anytime via the Intent button in the preview header or by calling this tool again. " +
+        "Also trigger when the user explicitly asks to open the intent form, manage intents, or says 'let me define the intent'.",
       inputSchema: {
         experimentId: z
           .string()
@@ -119,14 +122,14 @@ export function createServer(): McpServer {
         if (!intent) {
           return {
             content: [
-              { type: "text", text: `Intent for experiment "${experimentId}" not found.` },
+              { type: "text", text: `No intent found for "${experimentId}" yet. The form is open for the user to fill in and click "Make This". After they do, read coherence-preview/src/experiments/${experimentId}/intent.json for the full intent document.` },
             ],
             structuredContent: { intents: [], experiments, ...(prefill ? { prefill } : {}) },
           };
         }
         return {
           content: [
-            { type: "text", text: formatIntent(intent) },
+            { type: "text", text: formatIntent(intent) + "\n\n---\nThe user is reviewing this intent. If they click 'Make This', the intent.json will be updated. Read coherence-preview/src/experiments/" + experimentId + "/intent.json for the finalized version." },
           ],
           structuredContent: { intents: [intent], experiments },
         };
@@ -134,12 +137,13 @@ export function createServer(): McpServer {
       const intents = await listIntents();
       let text: string;
       if (intents.length === 0) {
-        text = "No design intents yet. Use the form to create your first one.";
+        text = "No design intents yet. The form is open for the user to define their intent and click 'Make This'. After they do, read the intent.json file from the experiment folder for full context.";
       } else {
         text = `# Design Intents (${intents.length})\n\n| Experiment | Title | Status | Updated |\n|------------|-------|--------|--------|\n`;
         for (const i of intents) {
           text += formatIntentSummary(i) + "\n";
         }
+        text += "\n---\nThe user is reviewing intents. If they click 'Make This' on a new or edited intent, read the corresponding intent.json file for the finalized version.";
       }
       return {
         content: [{ type: "text", text }],
@@ -213,13 +217,13 @@ export function createServer(): McpServer {
           };
         }
       } else {
-        if (!args.title || !args.vision) {
+        if (!args.vision) {
           return {
             isError: true,
             content: [
               {
                 type: "text",
-                text: "Title, vision, and experimentId are required to create an intent.",
+                text: "Vision and experimentId are required to create an intent.",
               },
             ],
           };

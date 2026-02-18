@@ -1,0 +1,12 @@
+{
+  "experimentId": "create-a-resource",
+  "title": "Create a Resource",
+  "vision": "Azure portal 'Create a resource' marketplace page with category sidebar, popular services, and marketplace products",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-18T00:00:00.000Z",
+  "updatedAt": "2026-02-18T00:00:00.000Z",
+  "status": "draft"
+}

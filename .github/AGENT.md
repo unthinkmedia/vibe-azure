@@ -27,6 +27,25 @@ This workspace includes agent skills under `.github/skills/`. **Always check if 
 
 **How to use it:** Read `.github/skills/pattern-creator/SKILL.md` and follow all four steps. Skipping the registration step means the pattern is invisible to future sessions.
 
+## design-intent
+
+**Trigger:** Any time a designer describes what they want to build, starts a new experiment, mentions prototyping a new page, or explicitly asks about "design intent", "intent", or "capture the goals".
+
+**What it provides:**
+- An interactive Design Intent capture form (MCP App UI) that records What, Why, Success Criteria, and Non-Goals for a prototype
+- Intent files are stored as `intent.json` inside each experiment folder and can be reviewed from the preview app header
+- Inspired by the Specflow methodology — keeps prototypes goal-oriented
+
+**How it works in the prototyping workflow:**
+1. When a designer describes what they want to build, **immediately call the `design_intent` MCP tool** with prefill parameters extracted from their prompt — map their description to `prefillVision`, `prefillProblem`, `prefillSuccessCriteria`, `prefillConstraints`, and a kebab-case `experimentId`
+2. The Intent form opens pre-populated with the AI's best guesses for all fields
+3. The designer reviews, edits the form, and clicks **"Make This"** to confirm (or "Save Draft" to save without building yet)
+4. After the tool returns, **read the finalized `intent.json`** from `coherence-preview/src/experiments/<experimentId>/intent.json`
+5. Use the full intent document (vision, problem, success criteria, non-goals, constraints) as **primary context** for all build decisions
+6. The intent is viewable anytime via the **Intent** button in the preview app header bar (next to Share)
+
+**Key principle:** The intent form is the designer's chance to review and refine the AI's interpretation of their request before building begins. The AI always makes a best guess from the prompt — the designer confirms or adjusts, then clicks "Make This" to kick off the build with full context.
+
 ## Guidance
 
 1. **UI questions → use coherence-ui skill.** If someone asks how to build a page, use a component, style with tokens, or follow accessibility rules, load the coherence-ui skill and consult its references rather than relying on general knowledge.

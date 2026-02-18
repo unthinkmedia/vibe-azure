@@ -13,9 +13,12 @@ Manage the `coherence-preview/` Vite + React app that renders Coherence UI proto
 coherence-preview/
 ├── src/
 │   ├── main.tsx                  ← experiment registry + router (supports sub-routes)
+│   ├── IntentButton.tsx          ← reads intent.json via Vite glob, shows popover in header
+│   ├── ShareButton.tsx           ← deploy/share experiment
 │   ├── experiments/
 │   │   ├── apim-flow/            ← multi-page flow example
 │   │   │   ├── index.tsx         ← router: switches pages based on subRoute prop
+│   │   │   ├── intent.json       ← design intent (enables Intent button in header)
 │   │   │   ├── data.ts           ← shared data for all pages
 │   │   │   ├── styles.ts         ← combined CSS for all pages
 │   │   │   └── pages/
@@ -32,13 +35,25 @@ coherence-preview/
 
 ## Workflow: Adding a New Experiment
 
+**Before creating any experiment files**, the design intent must be captured first. The intent.json is the primary instruction source for the entire build.
+
+### 0. Create Design Intent (MANDATORY — DO NOT SKIP)
+
+Call the `design_intent` MCP tool to open the Intent App UI. The user fills in their vision, problem, success criteria, and constraints, then clicks **"Make This"**. This creates `intent.json` inside the experiment folder.
+
+**If intent.json does not exist after this step: STOP.** Do not create any other experiment files. Tell the user to open the Intent MCP UI via the `design_intent` tool.
+
+Once the intent is saved, tell the user: _"Your design intent is saved. You can view and edit it anytime using the Intent button in the preview header bar, or by calling the `design_intent` tool to open the full Intent MCP App."_
+
+### 1. Create the Experiment Folder
+
 After generating a `.tsx` prototype, create a new folder under `coherence-preview/src/experiments/` using the experiment's kebab-case `id` as the folder name, and place the component in an `index.tsx` file inside it:
 
 ```
 coherence-preview/src/experiments/my-page/index.tsx
 ```
 
-### 1. Register in the Experiment Array
+### 2. Register in the Experiment Array
 
 Open `coherence-preview/src/main.tsx` and add an entry to the `experiments` array:
 
@@ -81,7 +96,7 @@ window.location.hash = 'my-flow';          // navigate back to browse (default)
 
 Register it the same way as a single-page experiment — no special registration needed.
 
-### 2. Start the Dev Server
+### 3. Start the Dev Server
 
 ```bash
 cd coherence-preview && npx vite
@@ -89,7 +104,7 @@ cd coherence-preview && npx vite
 
 Opens at `http://localhost:5173`. Navigate to the experiment by clicking its card or going to `http://localhost:5173#my-page`.
 
-### 3. Hot Reload
+### 4. Hot Reload
 
 Vite HMR updates the browser automatically when you save changes to any `.tsx` file. No restart needed.
 
@@ -112,6 +127,36 @@ const experiments: {
 - `id` must be unique, kebab-case, and URL-safe (used as hash fragment)
 - `component` must use `lazy(() => import('./experiments/<folder-name>'))` for code splitting
 - The imported file must have a `default` export (function component)
+
+## Intent Files & the Intent Button (MANDATORY)
+
+Every experiment **must** have an `intent.json` that captures the design vision, problem, success criteria, and constraints. This file is the **primary instruction source** for the entire build. This file:
+
+1. **Is created by the `design_intent` MCP tool** during Step 0 of the prototyper workflow
+2. **Must live at** `coherence-preview/src/experiments/<experiment-id>/intent.json` (co-located with the experiment)
+3. **Powers the Intent button** in the preview header bar — the `IntentButton` component uses `import.meta.glob('./experiments/*/intent.json', { eager: true })` to discover all intent files at build time
+4. **If the file is missing**, the Intent button will show a "Create Intent" prompt directing the user to the MCP UI instead of hiding
+
+**The intent.json must be created BEFORE any other experiment files.** It serves as the primary instruction source — every build decision should trace back to a field in the intent.
+
+To manually create an intent file (without the MCP tool), use this format:
+
+```json
+{
+  "experimentId": "my-experiment",
+  "title": "My Experiment",
+  "vision": "What this prototype demonstrates",
+  "problem": "The problem it solves",
+  "successCriteria": ["Criterion 1", "Criterion 2"],
+  "nonGoals": [],
+  "constraints": ["Constraint 1"],
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "updatedAt": "2026-01-01T00:00:00.000Z",
+  "status": "draft"
+}
+```
+
+**Troubleshooting:** If the Intent button doesn't appear after calling `design_intent`, check that the `intent.json` was created at `coherence-preview/src/experiments/<id>/intent.json` and NOT at `mcp-server/coherence-preview/...` (a known path-resolution edge case in the MCP server).
 
 ## Conventions
 

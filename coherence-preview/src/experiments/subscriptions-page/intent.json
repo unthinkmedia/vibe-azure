@@ -1,0 +1,12 @@
+{
+  "experimentId": "subscriptions-page",
+  "title": "Subscriptions Page",
+  "vision": "Azure IAM Access Control page with tabs and cards",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-12T00:00:00.000Z",
+  "updatedAt": "2026-02-12T00:00:00.000Z",
+  "status": "draft"
+}

@@ -1,0 +1,12 @@
+{
+  "experimentId": "key-vault-page",
+  "title": "Key Vault Page",
+  "vision": "Azure Key Vault resource page with essentials overview and secrets table",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-14T00:00:00.000Z",
+  "updatedAt": "2026-02-14T00:00:00.000Z",
+  "status": "draft"
+}

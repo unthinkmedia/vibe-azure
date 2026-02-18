@@ -1,0 +1,12 @@
+{
+  "experimentId": "functions-overview",
+  "title": "Azure Functions Overview",
+  "vision": "Function App resource page with essentials panel, monitoring metrics cards with sparklines, and functions list table",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-18T00:00:00.000Z",
+  "updatedAt": "2026-02-18T00:00:00.000Z",
+  "status": "draft"
+}

@@ -1,0 +1,12 @@
+{
+  "experimentId": "app-registration-page",
+  "title": "App Registration Page",
+  "vision": "Azure Entra ID app registration form inside a full App frame with header, side nav, and search",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-17T00:00:00.000Z",
+  "updatedAt": "2026-02-17T00:00:00.000Z",
+  "status": "draft"
+}

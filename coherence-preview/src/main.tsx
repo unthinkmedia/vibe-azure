@@ -3,6 +3,7 @@ import { useState, useEffect, lazy, Suspense, ComponentType } from 'react';
 import '@charm-ux/cui/dist/themes/cui/theme.css';
 import '@charm-ux/cui/dist/themes/cui/reset.css';
 import ShareButton from './ShareButton';
+import IntentButton from './IntentButton';
 
 // ─── Types ───
 type Entry = {
@@ -31,6 +32,34 @@ function parseHash(hash: string, entries: Entry[]): { entryId: string | null; su
 
 // ─── Experiments (with dates, newest first) ───
 const experiments: Entry[] = [
+  {
+    id: 'aks-cluster-overview',
+    title: 'AKS Cluster Overview',
+    description: 'Azure Kubernetes Service cluster overview with health summary, node pool utilization bars, recent deployments table, and certificate expiry warning',
+    component: lazy(() => import('./experiments/aks-cluster-overview')),
+    date: '2026-02-18',
+  },
+  {
+    id: 'storage-account-overview',
+    title: 'Storage Account Overview',
+    description: 'Storage account overview with usage donut chart (blob/file/table/queue), cost-to-date with MoM trend, and access keys with copy-to-clipboard and 90-day rotation warning',
+    component: lazy(() => import('./experiments/storage-account-overview')),
+    date: '2026-02-18',
+  },
+  {
+    id: 'container-apps-overview',
+    title: 'Container Apps Overview',
+    description: 'Container App resource page with revisions table, scaling metrics sparklines, and ingress configuration panel',
+    component: lazy(() => import('./experiments/container-apps-overview')),
+    date: '2026-02-18',
+  },
+  {
+    id: 'functions-overview',
+    title: 'Azure Functions Overview',
+    description: 'Function App resource page with essentials panel, monitoring metrics cards with sparklines, and functions list table',
+    component: lazy(() => import('./experiments/functions-overview')),
+    date: '2026-02-18',
+  },
   {
     id: 'create-a-resource',
     title: 'Create a Resource',
@@ -323,6 +352,7 @@ function App() {
           </a>
           <span style={{ color: 'var(--neutral-foreground3)', fontSize: 14 }}>|</span>
           <span style={{ fontSize: 14, fontWeight: 600 }}>{activeEntry.title}</span>
+          <IntentButton experimentId={activeEntry.id} />
           <ShareButton experimentId={activeEntry.id} experimentTitle={activeEntry.title} />
         </div>
         <Suspense fallback={<div style={{ padding: 32 }}>Loading…</div>}>

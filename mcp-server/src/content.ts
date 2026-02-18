@@ -7,8 +7,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-// Resolve the skills directory relative to this file
-const REPO_ROOT = path.resolve(import.meta.dirname, "..");
+// Go up two levels: src/ → mcp-server/ → workspace-root/
+const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
 const SKILLS_DIR = path.join(REPO_ROOT, ".github", "skills");
 const COHERENCE_UI_DIR = path.join(SKILLS_DIR, "coherence-ui");
 const PROTOTYPER_DIR = path.join(SKILLS_DIR, "azure-portal-prototyper");

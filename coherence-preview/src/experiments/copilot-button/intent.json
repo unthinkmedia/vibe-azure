@@ -1,0 +1,12 @@
+{
+  "experimentId": "copilot-button",
+  "title": "Copilot Button",
+  "vision": "Custom Copilot button with gradient sparkle icon for the Azure portal header",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-14T00:00:00.000Z",
+  "updatedAt": "2026-02-14T00:00:00.000Z",
+  "status": "draft"
+}

@@ -1,0 +1,20 @@
+{
+  "experimentId": "aks-cluster-overview",
+  "title": "AKS Cluster Overview",
+  "vision": "Azure Kubernetes Service cluster overview page with health summary, node pool utilization bars, recent deployments table, and certificate expiry warning",
+  "problem": "DevOps teams need a single-glance cluster health view showing node pool capacity, recent deployment activity, and upcoming certificate expirations to avoid downtime",
+  "successCriteria": [
+    "Shows cluster health status at a glance with essentials panel",
+    "Displays node pool utilization with visual progress bars",
+    "Lists recent deployments in a sortable table",
+    "Surfaces certificate expiry warnings prominently"
+  ],
+  "nonGoals": [],
+  "constraints": [
+    "Must use Coherence components",
+    "Desktop viewport only"
+  ],
+  "createdAt": "2026-02-18T00:00:00.000Z",
+  "updatedAt": "2026-02-18T00:00:00.000Z",
+  "status": "active"
+}

@@ -1,0 +1,12 @@
+{
+  "experimentId": "ai-hub-page",
+  "title": "AI Hub Page",
+  "vision": "Azure Web App AI Hub with Foundry connections card, readiness score, and diagnostic tools",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-17T00:00:00.000Z",
+  "updatedAt": "2026-02-17T00:00:00.000Z",
+  "status": "draft"
+}

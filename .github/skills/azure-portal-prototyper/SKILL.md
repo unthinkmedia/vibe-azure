@@ -9,7 +9,22 @@ Generate complete Azure portal page prototypes using Coherence UI components (`@
 
 ## Workflow
 
-0. **Offer Design Intent capture** — Before building, ask the user if they'd like to set a design intent for this experiment. If they agree (or if they explicitly asked to start a new experiment), call the `design_intent` MCP tool to open the interactive intent form. This captures What, Why, Success Criteria, and Non-Goals upfront. If the user declines, proceed to step 1.
+0. **Open Design Intent form (MANDATORY — DO NOT SKIP)** — **ALWAYS** call the `design_intent` MCP tool with prefill parameters extracted from the user's prompt. Map their description to: `prefillVision` (what they want to build), `prefillProblem` (the problem it solves), `prefillSuccessCriteria` (what "done" looks like), `prefillConstraints` (any stated limits), and `prefillExperimentId` (a kebab-case folder name derived from the description). **The AI generates the title automatically** from the experiment description — do NOT ask the user to provide a title. The Intent form opens pre-populated with your best guesses. The user reviews, edits, and clicks **"Make This"** to confirm.
+
+   > **⛔ NEVER skip this step.** The intent.json is the primary instruction source for the entire build. Without it, the IntentButton in the preview header will show a "Create Intent" prompt instead of the design context, and the experiment is considered incomplete.
+
+0b. **Read & verify the finalized intent (HARD GATE)** — After the `design_intent` tool returns, read the intent.json file from `coherence-preview/src/experiments/<experimentId>/intent.json`. **Verify this file exists at the correct path** — it must be inside `coherence-preview/src/experiments/`, NOT inside `mcp-server/`. If it ended up in the wrong location, copy it to the correct path.
+
+   **🚫 If intent.json does not exist: STOP. Do not proceed to Step 1.**
+   - Tell the user: _"Your experiment needs a design intent before building. Please open the Intent MCP UI to create one — use the `design_intent` tool or click the Intent button in the preview header."_
+   - Re-call the `design_intent` MCP tool so the user can fill in the form.
+   - Only proceed once intent.json exists at the correct path.
+
+   **Use the full intent document (vision, problem, success criteria, non-goals, constraints) as the PRIMARY INSTRUCTION SOURCE for all subsequent build decisions.** The intent drives what you build, what you prioritize, and what you skip. Every component choice, layout decision, and mock data selection should trace back to a field in the intent.
+
+   > **Why this matters:** The `IntentButton` component in the preview header bar uses Vite's `import.meta.glob('./experiments/*/intent.json')` to discover intent files. If the intent.json is missing, the IntentButton shows a "Create Intent" prompt directing the user to the MCP UI. The intent.json must be co-located with the experiment's other files at `coherence-preview/src/experiments/<experimentId>/intent.json`.
+
+0c. **Show the user the Intent MCP UI (onboarding)** — After the intent.json is confirmed, tell the user: _"Your design intent is saved. You can view and edit it anytime using the Intent button in the preview header bar, or by calling the `design_intent` tool to open the full Intent MCP App."_ This ensures every user knows about the Intent UI from their first experiment.
 1. **Identify page type** from the table below. If the user describes an **end-to-end flow** spanning multiple pages (e.g., "browse → create → overview"), use the **Multi-Page Flow** scaffold to keep everything in a single experiment folder.
 2. **Check shared patterns first** — before writing any UI, list `coherence-preview/src/patterns/` and read the Composition Patterns table in the coherence-ui SKILL.md. **Always reuse shared pattern components instead of hand-rolling equivalent UI.** Key patterns that must NEVER be reimplemented from scratch:
    - **`PageHeader`** — title row with icon, favorite, more actions, and Copilot suggestions. Import: `import PageHeader from '../../patterns/PageHeader'`
@@ -37,6 +52,7 @@ Every experiment is a **self-contained folder** with focused files. Each experim
 ```
 coherence-preview/src/experiments/<experiment-id>/
   index.tsx          # Main entry point — composes Header + Navigation + PageContent
+  intent.json        # MANDATORY — Design intent document (created by design_intent MCP tool, powers IntentButton in preview)
   data.ts            # Types, interfaces, mock data, nav config (swap for real APIs)
   styles.ts          # Scoped CSS as exported string
   Navigation.tsx     # CuiDrawer + CuiSideNav (driven by navSections from data.ts)
@@ -58,6 +74,7 @@ When a user wants to test an **end-to-end flow** (e.g., browse → create → re
 ```
 coherence-preview/src/experiments/<experiment-id>/
   index.tsx          # Router — switches between pages based on subRoute prop
+  intent.json        # MANDATORY — Design intent document (created by design_intent MCP tool, powers IntentButton in preview)
   data.ts            # Shared types, mock data for ALL pages
   styles.ts          # Combined CSS for ALL pages (organized by page section)
   pages/

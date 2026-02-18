@@ -1,0 +1,12 @@
+{
+  "experimentId": "apis-page",
+  "title": "APIs Page",
+  "vision": "Azure API Management APIs page with card grid and side panel",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-13T00:00:00.000Z",
+  "updatedAt": "2026-02-13T00:00:00.000Z",
+  "status": "draft"
+}

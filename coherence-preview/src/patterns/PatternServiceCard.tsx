@@ -15,6 +15,7 @@ import {
   CuiIcon,
 } from '@charm-ux/cui/react';
 import type { CSSProperties, ReactNode } from 'react';
+import { azureIcon } from './azure-icons';
 
 /* ─── Style sheet (injected once) ─── */
 const STYLE_ID = 'pattern-service-card-styles';
@@ -104,7 +105,7 @@ export interface ServiceCardProps {
   title: string;
   /** Card description text */
   description: string;
-  /** Fluent icon name (used via Iconify). Pass just the name, e.g. "app-generic" */
+  /** Azure icon key (e.g. "api-management") or Fluent icon name (e.g. "app-generic") */
   icon?: string;
   /** Direct icon URL (overrides `icon` prop) */
   iconUrl?: string;

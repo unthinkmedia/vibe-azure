@@ -1,0 +1,12 @@
+{
+  "experimentId": "monitor-overview",
+  "title": "Monitor | Overview",
+  "vision": "Azure Monitor service overview with full-width blade header, collapsible sidebar, and service card grid (Service Blade layout)",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-17T00:00:00.000Z",
+  "updatedAt": "2026-02-17T00:00:00.000Z",
+  "status": "draft"
+}

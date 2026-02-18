@@ -1,0 +1,12 @@
+{
+  "experimentId": "apim-flow",
+  "title": "API Management — End-to-End Flow",
+  "vision": "Multi-page flow: Browse → Create → Resource Overview. Navigate between pages using in-app buttons.",
+  "problem": "",
+  "successCriteria": [],
+  "nonGoals": [],
+  "constraints": [],
+  "createdAt": "2026-02-18T00:00:00.000Z",
+  "updatedAt": "2026-02-18T00:00:00.000Z",
+  "status": "draft"
+}

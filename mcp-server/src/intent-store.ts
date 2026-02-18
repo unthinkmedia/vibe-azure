@@ -11,7 +11,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const REPO_ROOT = path.resolve(import.meta.dirname, "..");
+// Go up two levels: src/ → mcp-server/ → workspace-root/
+const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
 const EXPERIMENTS_DIR = path.join(
   REPO_ROOT,
   "coherence-preview",
@@ -39,10 +40,10 @@ export interface DesignIntent {
 
 export type CreateIntentInput = Pick<
   DesignIntent,
-  "experimentId" | "title" | "vision" | "problem"
+  "experimentId" | "vision"
 > &
   Partial<
-    Pick<DesignIntent, "successCriteria" | "nonGoals" | "constraints">
+    Pick<DesignIntent, "title" | "problem" | "successCriteria" | "nonGoals" | "constraints">
   >;
 
 export type UpdateIntentInput = Partial<
@@ -58,6 +59,13 @@ function sanitizeId(id: string): string {
 function intentPath(experimentId: string): string {
   const safe = sanitizeId(experimentId);
   return path.join(EXPERIMENTS_DIR, safe, "intent.json");
+}
+
+/** Generate a human-readable title from an experiment folder name */
+function titleFromId(id: string): string {
+  return id
+    .replace(/[-_]/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 /** List experiment folder names that exist on disk */
@@ -81,9 +89,9 @@ export async function createIntent(
   const now = new Date().toISOString();
   const intent: DesignIntent = {
     experimentId: safe,
-    title: input.title,
+    title: input.title || titleFromId(safe),
     vision: input.vision,
-    problem: input.problem,
+    problem: input.problem ?? "",
     successCriteria: input.successCriteria ?? [],
     nonGoals: input.nonGoals ?? [],
     constraints: input.constraints ?? [],

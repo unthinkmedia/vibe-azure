@@ -119,13 +119,20 @@ async function fetchIntents(): Promise<void> {
   renderList();
 }
 
-async function saveIntent(intent: Record<string, unknown>): Promise<void> {
+async function saveIntent(intent: Record<string, unknown>, makeThis = false): Promise<void> {
+  if (makeThis) {
+    intent.status = "active";
+  }
   await app.callServerTool({
     name: "intent_save_data",
     arguments: intent,
   });
   await fetchIntents();
-  hideForm();
+  if (makeThis) {
+    showSuccessState(intent.experimentId as string);
+  } else {
+    hideForm();
+  }
 }
 
 async function deleteIntent(experimentId: string): Promise<void> {
@@ -342,12 +349,10 @@ function hideForm(): void {
   listSection.style.display = "block";
 }
 
-async function handleSubmit(e: Event): Promise<void> {
-  e.preventDefault();
+function collectFormData(): Record<string, unknown> | null {
   const experimentSelect = formEl.querySelector("#f-experiment") as HTMLSelectElement;
   const experimentInput = formEl.querySelector("#f-experiment-new") as HTMLInputElement;
 
-  // Prefer the new-name input; fall back to dropdown selection; fall back to editing ID
   const experimentId =
     experimentInput.value.trim() ||
     experimentSelect.value ||
@@ -355,10 +360,10 @@ async function handleSubmit(e: Event): Promise<void> {
 
   if (!experimentId) {
     alert("Please select an existing experiment or enter a new folder name.");
-    return;
+    return null;
   }
 
-  const data: Record<string, unknown> = {
+  return {
     experimentId,
     title: (formEl.querySelector("#f-title") as HTMLInputElement).value.trim(),
     vision: (
@@ -377,7 +382,43 @@ async function handleSubmit(e: Event): Promise<void> {
       (formEl.querySelector("#f-constraints") as HTMLTextAreaElement).value
     ),
   };
+}
+
+async function handleSubmit(e: Event): Promise<void> {
+  e.preventDefault();
+  const data = collectFormData();
+  if (!data) return;
   await saveIntent(data);
+}
+
+async function handleMakeThis(): Promise<void> {
+  const data = collectFormData();
+  if (!data) return;
+  await saveIntent(data, true);
+}
+
+function showSuccessState(experimentId: string): void {
+  formSection.style.display = "none";
+  listSection.style.display = "none";
+  const successEl = document.getElementById("success-section")!;
+  successEl.style.display = "block";
+  successEl.innerHTML = `
+    <div class="success-state">
+      <div class="success-icon">✨</div>
+      <h2>Intent Saved — Ready to Build!</h2>
+      <p class="success-exp">📁 ${esc(experimentId)}</p>
+      <p class="success-hint">
+        Your agent now has the full design intent as context.<br/>
+        It will use your vision, success criteria, and constraints to guide the build.
+      </p>
+      <div class="success-actions">
+        <button class="btn btn-secondary" id="back-to-list-btn">← Back to Intents</button>
+      </div>
+    </div>`;
+  document.getElementById("back-to-list-btn")?.addEventListener("click", () => {
+    successEl.style.display = "none";
+    listSection.style.display = "block";
+  });
 }
 
 // ── Helpers ──
@@ -523,6 +564,21 @@ function buildShell(): string {
     margin: 6px 0; text-transform: uppercase; letter-spacing: 0.5px;
   }
   .form-actions { display: flex; gap: 8px; margin-top: 18px; }
+
+  /* Success state */
+  #success-section { display: none; }
+  .success-state {
+    text-align: center; padding: 40px 16px;
+  }
+  .success-icon { font-size: 48px; margin-bottom: 12px; }
+  .success-state h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .success-exp {
+    font-size: 13px; color: var(--accent); margin-bottom: 12px;
+  }
+  .success-hint {
+    font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px;
+  }
+  .success-actions { display: flex; justify-content: center; gap: 8px; }
 </style>
 
 <div class="app-header">
@@ -536,6 +592,8 @@ function buildShell(): string {
 <div id="list-section">
   <div id="intent-list"></div>
 </div>
+
+<div id="success-section"></div>
 
 <div id="form-section">
   <div class="form-header">
@@ -551,8 +609,8 @@ function buildShell(): string {
       <div class="helper">The intent will be saved as intent.json inside this experiment folder.</div>
     </div>
     <div class="field">
-      <label for="f-title">Title</label>
-      <input id="f-title" type="text" placeholder="e.g. Azure Functions Overview Redesign" required />
+      <label for="f-title">Title <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--muted)">(optional — AI will generate if blank)</span></label>
+      <input id="f-title" type="text" placeholder="Leave blank to auto-generate from experiment name" />
     </div>
     <div class="field">
       <label for="f-vision">Vision</label>
@@ -577,7 +635,8 @@ function buildShell(): string {
       <textarea id="f-constraints" rows="2" placeholder="One per line, e.g.&#10;Must use Coherence components&#10;Desktop viewport only"></textarea>
     </div>
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Save Intent</button>
+      <button type="button" class="btn btn-primary" id="make-this-btn">✨ Make This</button>
+      <button type="submit" class="btn btn-secondary">Save Draft</button>
       <button type="button" class="btn btn-secondary" id="cancel-btn-form">Cancel</button>
     </div>
   </form>
@@ -585,5 +644,6 @@ function buildShell(): string {
 `;
 }
 
-// Wire the second cancel button inside the form
+// Wire form buttons
 document.getElementById("cancel-btn-form")?.addEventListener("click", hideForm);
+document.getElementById("make-this-btn")?.addEventListener("click", handleMakeThis);

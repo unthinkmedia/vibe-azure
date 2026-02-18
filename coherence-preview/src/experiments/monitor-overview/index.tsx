@@ -21,7 +21,7 @@ import {
   CuiSearchBox,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../copilot-button';
-import CopilotSuggestions from '../../patterns/CopilotSuggestions';
+import PageHeader from '../../patterns/PageHeader';
 import Navigation from './Navigation';
 import PageContent from './PageContent';
 import { serviceName, pageTitle } from './data';
@@ -96,22 +96,14 @@ export default function MonitorOverview() {
           </div>
 
           {/* Title bar — full width */}
-          <div className="monitor-title-bar">
-            <CuiIcon
-              url="https://api.iconify.design/fluent:pulse-24-regular.svg"
-              style={{ fontSize: '24px' }}
-            />
-            <h1 className="monitor-title">
-              <span className="monitor-title-bold">{serviceName}</span> | {pageTitle}
-            </h1>
-            <CuiButton appearance="subtle" iconOnly size="small" aria-label="More actions">
-              <CuiIcon name="more-horizontal" />
-            </CuiButton>
-            <CopilotSuggestions suggestions={monitorSuggestions} />
-          </div>
-
-          {/* Subtitle */}
-          <p className="monitor-subtitle">Microsoft</p>
+          <PageHeader
+            icon="https://api.iconify.design/fluent:pulse-24-regular.svg"
+            title={<><strong>{serviceName}</strong> | {pageTitle}</>}
+            subtitle="Microsoft"
+            copilotSuggestions={monitorSuggestions}
+            titleWeight="regular"
+            horizontalPadding="16px"
+          />
 
           {/* ─── Body: sidebar + content ─── */}
           <div className="monitor-body">

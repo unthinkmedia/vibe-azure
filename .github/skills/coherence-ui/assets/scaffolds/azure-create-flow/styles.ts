@@ -5,28 +5,17 @@ export const styles = `
   [slot='main'] {
     min-width: 320px;
     padding: 0;
-    background: var(--neutral-background-2);
+    background: var(--neutral-background2);
   }
-  .create-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 32px 0;
-  }
-  .create-title {
-    margin: 0;
-    font-size: var(--font-size-base-500);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
-  }
+  /* Page header styles are provided by the shared PageHeader component */
   .form-section {
     padding: 24px 32px;
     max-width: 640px;
   }
   .form-section h3 {
-    font-size: var(--font-size-base-400);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base400);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
     margin: 0 0 16px;
   }
   .field-row {
@@ -40,7 +29,7 @@ export const styles = `
     display: flex;
     gap: 12px;
     padding: 16px 32px;
-    border-top: 1px solid var(--neutral-stroke-2);
-    background: var(--neutral-background-1);
+    border-top: 1px solid var(--neutral-stroke2);
+    background: var(--neutral-background1);
   }
 `;

@@ -1,0 +1,14 @@
+{
+	"servers": {
+		"microsoft/playwright-mcp": {
+			"type": "stdio",
+			"command": "/Users/alexbritez/.nvm/versions/node/v22.18.0/bin/npx",
+			"args": [
+				"@playwright/mcp@latest"
+			],
+			"env": {
+				"PATH": "/Users/alexbritez/.nvm/versions/node/v22.18.0/bin:/usr/local/bin:/usr/bin:/bin"
+			}
+		}
+	}
+}

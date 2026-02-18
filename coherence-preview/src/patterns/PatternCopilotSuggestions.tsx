@@ -23,18 +23,18 @@ export default function PatternCopilotSuggestions() {
             alignItems: 'center',
             gap: 10,
             padding: '8px 0',
-            borderBottom: '1px solid var(--neutral-stroke-2)',
+            borderBottom: '1px solid var(--neutral-stroke2)',
           }}>
             <span style={{ fontWeight: 600, fontSize: 20, whiteSpace: 'nowrap' }}>Azure Cosmos DB</span>
-            <span style={{ color: 'var(--neutral-foreground-3)' }}>★</span>
-            <span style={{ color: 'var(--neutral-foreground-3)' }}>⋯</span>
+            <span style={{ color: 'var(--neutral-foreground3)' }}>★</span>
+            <span style={{ color: 'var(--neutral-foreground3)' }}>⋯</span>
             <CopilotSuggestions
               suggestions={exampleSuggestions}
               maxVisible={2}
               onSuggestionClick={(s) => alert(`Clicked: ${s}`)}
             />
           </div>
-          <p style={{ fontSize: 13, color: 'var(--neutral-foreground-3)', margin: '4px 0 0' }}>
+          <p style={{ fontSize: 13, color: 'var(--neutral-foreground3)', margin: '4px 0 0' }}>
             Microsoft (microsoft.onmicrosoft.com)
           </p>
         </div>

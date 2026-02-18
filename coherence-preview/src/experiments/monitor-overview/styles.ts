@@ -3,7 +3,7 @@ export const styles = `
   [slot='main'] {
     min-width: 320px;
     padding: 0;
-    background: var(--neutral-background-1);
+    background: var(--neutral-background1);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -12,27 +12,6 @@ export const styles = `
   /* ─── Full-width blade header area ─── */
   .monitor-breadcrumb {
     padding: 4px 16px 0;
-  }
-  .monitor-title-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 4px 16px 2px;
-  }
-  .monitor-title {
-    margin: 0;
-    font-size: 20px;
-    font-weight: var(--font-weight-regular);
-    color: var(--neutral-foreground-1);
-  }
-  .monitor-title-bold {
-    font-weight: var(--font-weight-semibold);
-  }
-  .monitor-subtitle {
-    font-size: var(--font-size-base-100);
-    color: var(--neutral-foreground-3);
-    margin: 0;
-    padding: 0 16px 4px;
   }
 
 
@@ -51,13 +30,13 @@ export const styles = `
     display: flex;
     gap: 0;
     padding: 0;
-    border-bottom: 1px solid var(--neutral-stroke-2);
+    border-bottom: 1px solid var(--neutral-stroke2);
   }
   .monitor-tab {
     padding: 8px 16px;
-    font-size: var(--font-size-base-300);
+    font-size: var(--font-size-base300);
     font-weight: var(--font-weight-regular);
-    color: var(--neutral-foreground-2);
+    color: var(--neutral-foreground2);
     border: none;
     background: none;
     border-bottom: 2px solid transparent;
@@ -67,7 +46,7 @@ export const styles = `
   .monitor-tab.active {
     color: var(--brand-foreground-link);
     border-bottom-color: var(--brand-foreground-link);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-semi-bold);
   }
 
   /* ─── Body: sidebar + content ─── */
@@ -81,8 +60,8 @@ export const styles = `
   .monitor-sidebar {
     width: 220px;
     min-width: 220px;
-    border-right: 1px solid var(--neutral-stroke-2);
-    background: var(--neutral-background-1);
+    border-right: 1px solid var(--neutral-stroke2);
+    background: var(--neutral-background1);
     overflow-y: auto;
     transition: width 0.2s ease, min-width 0.2s ease;
   }
@@ -104,7 +83,7 @@ export const styles = `
   .monitor-content {
     flex: 1;
     overflow-y: auto;
-    background: var(--neutral-background-1);
+    background: var(--neutral-background1);
     position: relative;
   }
   .monitor-content-inner {
@@ -117,13 +96,13 @@ export const styles = `
   }
   .monitor-section h2 {
     font-size: 18px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
     margin: 0 0 4px;
   }
   .monitor-section > p {
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
     margin: 0 0 14px;
   }
   .monitor-section > p a {
@@ -169,13 +148,13 @@ export const styles = `
     flex-shrink: 0;
   }
   .monitor-card-title {
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-base-300);
-    color: var(--neutral-foreground-1);
+    font-weight: var(--font-weight-semi-bold);
+    font-size: var(--font-size-base300);
+    color: var(--neutral-foreground1);
   }
   .monitor-card-desc {
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-2);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground2);
     margin: 0;
     line-height: 1.5;
   }

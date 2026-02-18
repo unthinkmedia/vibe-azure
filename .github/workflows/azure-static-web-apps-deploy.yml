@@ -10,6 +10,12 @@ on:
     branches: [main]
     paths:
       - 'coherence-preview/**'
+  workflow_dispatch:
+    inputs:
+      experiment_id:
+        description: 'Experiment ID being deployed (informational)'
+        required: false
+        type: string
 
 jobs:
   build_and_deploy:

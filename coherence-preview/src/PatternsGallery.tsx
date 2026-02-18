@@ -16,6 +16,12 @@ export default function PatternsGallery() {
       description: 'Focused demos of individual Azure portal UI patterns. Each pattern can be composed into full pages.',
       items: [
         {
+          id: 'pattern-page-header',
+          title: 'Page Header',
+          description: 'Consistent title bar with icon, title, favorite, more actions, and optional Copilot suggestions. Used by all page types.',
+          tags: ['PageHeader', 'CopilotSuggestions', 'CuiIcon', 'CuiButton'],
+        },
+        {
           id: 'pattern-header',
           title: 'Azure Portal Header',
           description: 'Header bar with search, Copilot button, and avatar popover with persona card.',
@@ -97,7 +103,7 @@ export default function PatternsGallery() {
         <h1 style={{ margin: '0 0 4px', fontSize: 28, fontWeight: 700 }}>
           Patterns & Scaffolds
         </h1>
-        <p style={{ margin: '0 0 40px', color: 'var(--neutral-foreground-3)', fontSize: 14 }}>
+        <p style={{ margin: '0 0 40px', color: 'var(--neutral-foreground3)', fontSize: 14 }}>
           {sections.reduce((sum, s) => sum + s.items.length, 0)} previewable patterns and scaffolds for Azure portal prototyping
         </p>
 
@@ -107,13 +113,13 @@ export default function PatternsGallery() {
               margin: '0 0 4px',
               fontSize: 20,
               fontWeight: 600,
-              color: 'var(--neutral-foreground-1)',
+              color: 'var(--neutral-foreground1)',
             }}>
               {section.title}
             </h2>
             <p style={{
               margin: '0 0 16px',
-              color: 'var(--neutral-foreground-3)',
+              color: 'var(--neutral-foreground3)',
               fontSize: 13,
             }}>
               {section.description}
@@ -133,32 +139,32 @@ export default function PatternsGallery() {
                     flexDirection: 'column',
                     padding: '20px',
                     borderRadius: 8,
-                    border: '1px solid var(--neutral-stroke-2)',
-                    background: 'var(--neutral-background-1)',
+                    border: '1px solid var(--neutral-stroke2)',
+                    background: 'var(--neutral-background1)',
                     textDecoration: 'none',
                     color: 'inherit',
                     transition: 'box-shadow 0.15s, border-color 0.15s',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.12)';
-                    e.currentTarget.style.borderColor = 'var(--brand-stroke-1)';
+                    e.currentTarget.style.borderColor = 'var(--brand-stroke1)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.boxShadow = 'none';
-                    e.currentTarget.style.borderColor = 'var(--neutral-stroke-2)';
+                    e.currentTarget.style.borderColor = 'var(--neutral-stroke2)';
                   }}
                 >
                   <div style={{
                     fontWeight: 600,
                     fontSize: 15,
                     marginBottom: 6,
-                    color: 'var(--neutral-foreground-1)',
+                    color: 'var(--neutral-foreground1)',
                   }}>
                     {item.title}
                   </div>
                   <div style={{
                     fontSize: 13,
-                    color: 'var(--neutral-foreground-3)',
+                    color: 'var(--neutral-foreground3)',
                     marginBottom: 12,
                     flex: 1,
                   }}>
@@ -172,8 +178,8 @@ export default function PatternsGallery() {
                           fontSize: 11,
                           padding: '2px 8px',
                           borderRadius: 4,
-                          background: 'var(--neutral-background-3)',
-                          color: 'var(--neutral-foreground-2)',
+                          background: 'var(--neutral-background3)',
+                          color: 'var(--neutral-foreground2)',
                         }}
                       >
                         {tag}

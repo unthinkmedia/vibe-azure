@@ -21,6 +21,12 @@ export const resourceName = 'myResource';
 export const pageTitle = 'Overview';
 export const resourceType = 'App Service';
 
+// TODO: Replace with Copilot suggestions relevant to your resource type
+export const copilotSuggestions = [
+  'Show me the health of this resource.',
+  'What are the recent changes to this resource?',
+];
+
 // TODO: Customize nav items for your resource type
 export const navSections: NavSectionConfig[] = [
   {

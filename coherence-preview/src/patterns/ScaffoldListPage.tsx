@@ -25,6 +25,7 @@ import {
   CuiSideNav,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../experiments/copilot-button';
+import PageHeader from './PageHeader';
 
 export default function AzureListPage() {
   // TODO: Replace with your resource and page details
@@ -37,7 +38,7 @@ export default function AzureListPage() {
     [slot='main'] {
       min-width: 320px;
       padding: 0;
-      background: var(--neutral-background-2);
+      background: var(--neutral-background2);
     }
 
     /* Two-column layout */
@@ -48,8 +49,8 @@ export default function AzureListPage() {
     .list-panel {
       width: 260px;
       min-width: 220px;
-      border-right: 1px solid var(--neutral-stroke-2);
-      background: var(--neutral-background-1);
+      border-right: 1px solid var(--neutral-stroke2);
+      background: var(--neutral-background1);
       padding: 12px 16px;
       display: flex;
       flex-direction: column;
@@ -62,34 +63,13 @@ export default function AzureListPage() {
       overflow-y: auto;
     }
 
-    /* Page header */
-    .page-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 16px 32px 0;
-    }
-    .resource-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0;
-      font-size: var(--font-size-base-500);
-      font-weight: var(--font-weight-semibold);
-      color: var(--neutral-foreground-1);
-    }
-    .resource-subtitle {
-      font-size: var(--font-size-base-200);
-      color: var(--neutral-foreground-3);
-      margin: 0 0 0 32px;
-      padding-bottom: 8px;
-    }
+    /* Page header styles provided by shared PageHeader component */
 
     /* List panel items */
     .list-heading {
-      font-size: var(--font-size-base-300);
-      font-weight: var(--font-weight-semibold);
-      color: var(--neutral-foreground-1);
+      font-size: var(--font-size-base300);
+      font-weight: var(--font-weight-semi-bold);
+      color: var(--neutral-foreground1);
       margin: 8px 0 4px;
     }
     .list-item {
@@ -98,8 +78,8 @@ export default function AzureListPage() {
       justify-content: space-between;
       padding: 6px 8px;
       border-radius: var(--border-radius-md);
-      font-size: var(--font-size-base-300);
-      color: var(--neutral-foreground-1);
+      font-size: var(--font-size-base300);
+      color: var(--neutral-foreground1);
       cursor: pointer;
     }
     .list-item:hover {
@@ -210,18 +190,15 @@ export default function AzureListPage() {
           </div>
 
           {/* Page title row */}
-          <div className="page-header">
-            <h1 className="resource-title">
-              {resourceName} | {pageTitle}
-            </h1>
-            <CuiButton appearance="subtle" iconOnly size="small">
-              <CuiIcon name="star" />
-            </CuiButton>
-            <CuiButton appearance="subtle" iconOnly size="small">
-              <CuiIcon name="more-horizontal" />
-            </CuiButton>
-          </div>
-          <p className="resource-subtitle">{resourceType}</p>
+          <PageHeader
+            title={`${resourceName} | ${pageTitle}`}
+            subtitle={resourceType}
+            showFavorite
+            copilotSuggestions={[
+              'Show me the health of this resource.',
+              'What are the recent changes to this resource?',
+            ]}
+          />
 
           <CuiDivider style={{ margin: 0 }} />
 
@@ -233,7 +210,7 @@ export default function AzureListPage() {
               <CuiSearchBox hideLabel placeholder="Search items" size="small" />
               <CuiSearchBox hideLabel placeholder="Filter by tags" size="small" />
               <CuiCheckbox>
-                <span style={{ fontSize: 'var(--font-size-base-200)' }}>Group by tag</span>
+                <span style={{ fontSize: 'var(--font-size-base200)' }}>Group by tag</span>
               </CuiCheckbox>
 
               <CuiButton appearance="subtle" size="small">
@@ -262,7 +239,7 @@ export default function AzureListPage() {
             {/* ─── Main Content (right) ─── */}
             {/* TODO: Replace with your detail view or card grid */}
             <div className="main-content">
-              <p style={{ color: 'var(--neutral-foreground-2)' }}>
+              <p style={{ color: 'var(--neutral-foreground2)' }}>
                 Select an item from the list or add a new one.
               </p>
             </div>

@@ -27,7 +27,7 @@ export default function PageContent() {
 
       {/* Page Content */}
       <div style={{ padding: '24px 32px' }}>
-        <p style={{ color: 'var(--neutral-foreground-2)' }}>
+        <p style={{ color: 'var(--neutral-foreground2)' }}>
           Page content goes here.
         </p>
       </div>

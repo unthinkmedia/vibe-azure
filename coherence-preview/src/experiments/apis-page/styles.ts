@@ -3,7 +3,7 @@ export const styles = `
   [slot='main'] {
     min-width: 320px;
     padding: 0;
-    background: var(--neutral-background-2);
+    background: var(--neutral-background2);
   }
 
   /* ─── Two-column layout: API list panel + main content ─── */
@@ -14,8 +14,8 @@ export const styles = `
   .apis-list-panel {
     width: 260px;
     min-width: 220px;
-    border-right: 1px solid var(--neutral-stroke-2);
-    background: var(--neutral-background-1);
+    border-right: 1px solid var(--neutral-stroke2);
+    background: var(--neutral-background1);
     padding: 12px 16px;
     display: flex;
     flex-direction: column;
@@ -40,13 +40,13 @@ export const styles = `
     align-items: center;
     gap: 8px;
     margin: 0;
-    font-size: var(--font-size-base-500);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base500);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
   }
   .apis-resource-subtitle {
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
     margin: 0 0 0 32px;
     padding-bottom: 8px;
   }
@@ -55,14 +55,14 @@ export const styles = `
     align-items: center;
     gap: 16px;
     padding: 0 32px 12px;
-    font-size: var(--font-size-base-200);
+    font-size: var(--font-size-base200);
   }
 
   /* ─── API list panel items ─── */
   .api-list-heading {
-    font-size: var(--font-size-base-300);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base300);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
     margin: 8px 0 4px;
   }
   .api-list-item {
@@ -71,8 +71,8 @@ export const styles = `
     justify-content: space-between;
     padding: 6px 8px;
     border-radius: var(--border-radius-md);
-    font-size: var(--font-size-base-300);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base300);
+    color: var(--neutral-foreground1);
     cursor: pointer;
   }
   .api-list-item:hover {
@@ -81,9 +81,9 @@ export const styles = `
 
   /* ─── Card grid sections ─── */
   .api-section-title {
-    font-size: var(--font-size-base-500);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base500);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
     margin: 0 0 16px;
   }
   .api-card-grid {
@@ -122,14 +122,14 @@ export const styles = `
     padding: 12px;
   }
   .api-card-title {
-    font-size: var(--font-size-base-300);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base300);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
     margin: 0 0 4px;
   }
   .api-card-desc {
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
     margin: 0;
     line-height: 1.4;
   }

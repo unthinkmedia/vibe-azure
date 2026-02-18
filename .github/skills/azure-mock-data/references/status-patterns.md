@@ -29,9 +29,9 @@ function StatusIndicator({ status, color }: { status: string; color: string }) {
 | Online | `--success-foreground-1` | `#0f7b0f` | SQL Database, API Management |
 | Succeeded | `--success-foreground-1` | `#0f7b0f` | Deployments, Operations |
 | Enabled | `--success-foreground-1` | `#0f7b0f` | Subscriptions, Features |
-| Stopped | `--neutral-foreground-3` | `#707070` | App Service, VM |
-| Stopped (deallocated) | `--neutral-foreground-3` | `#707070` | VM |
-| Disabled | `--neutral-foreground-3` | `#707070` | Subscriptions |
+| Stopped | `--neutral-foreground3` | `#707070` | App Service, VM |
+| Stopped (deallocated) | `--neutral-foreground3` | `#707070` | VM |
+| Disabled | `--neutral-foreground3` | `#707070` | Subscriptions |
 | Starting | `--warning-foreground-1` | `#c4750c` | App Service, VM |
 | Updating | `--warning-foreground-1` | `#c4750c` | Any resource |
 | Warned | `--warning-foreground-1` | `#c4750c` | Subscriptions |
@@ -39,7 +39,7 @@ function StatusIndicator({ status, color }: { status: string; color: string }) {
 | Error | `--danger-foreground-1` | `#b10e1c` | Health checks |
 | Degraded | `--severe-foreground-1` | `#d13438` | Health |
 | PastDue | `--danger-foreground-1` | `#b10e1c` | Subscriptions |
-| Preview | `--brand-foreground-1` | `#0078d4` | Feature flags, APIs |
+| Preview | `--brand-foreground1` | `#0078d4` | Feature flags, APIs |
 
 ## Badge Pattern
 

@@ -3,7 +3,7 @@ export const styles = `
   [slot='main'] {
     min-width: 320px;
     padding: 0;
-    background: var(--neutral-background-2);
+    background: var(--neutral-background2);
   }
   .aihub-page-header {
     display: flex;
@@ -16,13 +16,13 @@ export const styles = `
     align-items: center;
     gap: 8px;
     margin: 0;
-    font-size: var(--font-size-base-500);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base500);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
   }
   .aihub-resource-subtitle {
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
     margin: 0 0 0 32px;
     padding-bottom: 8px;
   }
@@ -74,7 +74,7 @@ export const styles = `
   }
   .v1-donut-max {
     font-size: 11px;
-    color: var(--neutral-foreground-3);
+    color: var(--neutral-foreground3);
   }
   .v1-cats {
     flex: 1;
@@ -86,7 +86,7 @@ export const styles = `
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: var(--font-size-base-200);
+    font-size: var(--font-size-base200);
   }
   .v1-cat-dot {
     width: 10px;
@@ -96,7 +96,7 @@ export const styles = `
   }
   .v1-cat-label {
     flex: 1;
-    color: var(--neutral-foreground-1);
+    color: var(--neutral-foreground1);
   }
   .v1-cat-score {
     font-weight: 600;
@@ -114,9 +114,9 @@ export const styles = `
     padding: 16px 20px 12px;
   }
   .connections-title {
-    font-size: var(--font-size-base-400);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base400);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
     margin: 0;
     display: flex;
     align-items: center;
@@ -136,7 +136,7 @@ export const styles = `
     grid-template-columns: 1fr auto;
     gap: 12px;
     padding: 14px 20px;
-    border-top: 1px solid var(--neutral-stroke-2);
+    border-top: 1px solid var(--neutral-stroke2);
     align-items: start;
   }
   .connection-item:hover {
@@ -149,8 +149,8 @@ export const styles = `
     min-width: 0;
   }
   .connection-project {
-    font-size: var(--font-size-base-300);
-    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-base300);
+    font-weight: var(--font-weight-semi-bold);
     color: var(--brand-foreground-link);
     text-decoration: none;
     cursor: pointer;
@@ -162,8 +162,8 @@ export const styles = `
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
   }
   .connection-meta-item {
     display: flex;
@@ -172,11 +172,11 @@ export const styles = `
     min-width: 0;
   }
   .connection-meta-label {
-    color: var(--neutral-foreground-3);
+    color: var(--neutral-foreground3);
     flex-shrink: 0;
   }
   .connection-meta-value {
-    color: var(--neutral-foreground-1);
+    color: var(--neutral-foreground1);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -190,7 +190,7 @@ export const styles = `
   }
   .connections-footer {
     padding: 12px 20px 16px;
-    border-top: 1px solid var(--neutral-stroke-2);
+    border-top: 1px solid var(--neutral-stroke2);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -198,9 +198,9 @@ export const styles = `
 
   /* ─── Features Section ─── */
   .section-heading {
-    font-size: var(--font-size-base-400);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base400);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
     margin: 0;
   }
   .features-row {
@@ -212,29 +212,29 @@ export const styles = `
     --card-padding: 20px;
   }
   .feature-card-title {
-    font-size: var(--font-size-base-300);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base300);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
     margin: 0 0 4px;
   }
   .feature-card-desc {
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
     margin: 0 0 12px;
   }
   .feature-status {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
     margin-bottom: 4px;
   }
   .feature-status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    border: 1px solid var(--neutral-foreground-3);
+    border: 1px solid var(--neutral-foreground3);
     background: transparent;
   }
   .feature-status-dot--active {
@@ -242,8 +242,8 @@ export const styles = `
     background: var(--success-foreground-1);
   }
   .feature-hint {
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
     margin: 4px 0 12px;
   }
 
@@ -259,17 +259,17 @@ export const styles = `
     min-width: 160px;
   }
   .diagnostics-card-title {
-    font-size: var(--font-size-base-300);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base300);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
     margin: 0 0 8px;
     display: flex;
     align-items: center;
     gap: 6px;
   }
   .diagnostics-hint {
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
     margin: 0;
   }
 

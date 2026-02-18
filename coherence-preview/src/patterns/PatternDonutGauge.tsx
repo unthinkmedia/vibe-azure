@@ -86,7 +86,7 @@ const styles = `
   }
   .donut-gauge-max {
     font-size: 11px;
-    color: var(--neutral-foreground-3);
+    color: var(--neutral-foreground3);
   }
   .donut-gauge-cats {
     flex: 1;
@@ -98,7 +98,7 @@ const styles = `
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: var(--font-size-base-200);
+    font-size: var(--font-size-base200);
   }
   .donut-gauge-cat-dot {
     width: 10px;
@@ -108,7 +108,7 @@ const styles = `
   }
   .donut-gauge-cat-label {
     flex: 1;
-    color: var(--neutral-foreground-1);
+    color: var(--neutral-foreground1);
   }
   .donut-gauge-cat-score {
     font-weight: 600;
@@ -118,30 +118,30 @@ const styles = `
   .pattern-info {
     margin-top: 32px;
     padding: 20px;
-    background: var(--neutral-background-1);
-    border: 1px solid var(--neutral-stroke-2);
+    background: var(--neutral-background1);
+    border: 1px solid var(--neutral-stroke2);
     border-radius: var(--border-radius-md);
   }
   .pattern-info h3 {
     margin: 0 0 8px;
-    font-size: var(--font-size-base-400);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base400);
+    color: var(--neutral-foreground1);
   }
   .pattern-info p {
     margin: 0 0 8px;
-    color: var(--neutral-foreground-2);
-    font-size: var(--font-size-base-300);
+    color: var(--neutral-foreground2);
+    font-size: var(--font-size-base300);
     line-height: 1.6;
   }
   .pattern-info ul {
     margin: 0;
     padding-left: 20px;
-    color: var(--neutral-foreground-2);
-    font-size: var(--font-size-base-200);
+    color: var(--neutral-foreground2);
+    font-size: var(--font-size-base200);
     line-height: 1.8;
   }
   .pattern-info code {
-    background: var(--neutral-background-3);
+    background: var(--neutral-background3);
     padding: 1px 5px;
     border-radius: 3px;
     font-size: 12px;
@@ -166,7 +166,7 @@ export function DonutGaugeCard({
       <div className="donut-gauge-body">
         <div className="donut-gauge-wrap">
           <svg width="100" height="100" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r={r} fill="none" stroke="var(--neutral-background-5)" strokeWidth="8" />
+            <circle cx="50" cy="50" r={r} fill="none" stroke="var(--neutral-background5)" strokeWidth="8" />
             <circle
               cx="50" cy="50" r={r}
               fill="none"

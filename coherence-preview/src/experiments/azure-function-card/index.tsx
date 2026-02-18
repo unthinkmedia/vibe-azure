@@ -7,7 +7,7 @@ export default function AzureFunctionCard() {
       heading="Azure Function"
       style={{
         maxWidth: '320px',
-        borderLeft: '3px solid var(--brand-background-1)',
+        borderLeft: '3px solid var(--brand-background1)',
       }}
     >
       <CuiIcon
@@ -16,10 +16,10 @@ export default function AzureFunctionCard() {
         label="Azure Function icon"
         style={{
           fontSize: '32px',
-          color: 'var(--brand-background-1)',
+          color: 'var(--brand-background1)',
         }}
       />
-      <p style={{ margin: 0, color: 'var(--neutral-foreground-2)' }}>
+      <p style={{ margin: 0, color: 'var(--neutral-foreground2)' }}>
         A serverless compute service that lets you run event-triggered code
         without having to explicitly provision or manage infrastructure.
       </p>

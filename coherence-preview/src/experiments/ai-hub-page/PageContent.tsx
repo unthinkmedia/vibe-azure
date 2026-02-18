@@ -45,7 +45,7 @@ export default function PageContent() {
             <div className="v1-body">
               <div className="v1-donut-wrap">
                 <svg width="100" height="100" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r={40} fill="none" stroke="var(--neutral-background-5)" strokeWidth="8" />
+                  <circle cx="50" cy="50" r={40} fill="none" stroke="var(--neutral-background5)" strokeWidth="8" />
                   <circle
                     cx="50" cy="50" r={40}
                     fill="none"
@@ -87,7 +87,7 @@ export default function PageContent() {
 
           {/* Get Started with AI */}
           <CuiCard appearance="outline" heading="Get Started with AI">
-            <p style={{ margin: '0 0 12px', fontSize: 'var(--font-size-base-200)', color: 'var(--neutral-foreground-3)' }}>
+            <p style={{ margin: '0 0 12px', fontSize: 'var(--font-size-base200)', color: 'var(--neutral-foreground3)' }}>
               No AI Foundry project connected. Easy Agent provisions Foundry resources
               and connects them to your app in one click.
             </p>
@@ -157,7 +157,7 @@ export default function PageContent() {
             ))}
           </div>
           <div className="connections-footer">
-            <span style={{ fontSize: 'var(--font-size-base-200)', color: 'var(--neutral-foreground-3)' }}>
+            <span style={{ fontSize: 'var(--font-size-base200)', color: 'var(--neutral-foreground3)' }}>
               {foundryConnections.length} connection{foundryConnections.length !== 1 ? 's' : ''}
             </span>
             <CuiButton appearance="link" size="small" href="#">

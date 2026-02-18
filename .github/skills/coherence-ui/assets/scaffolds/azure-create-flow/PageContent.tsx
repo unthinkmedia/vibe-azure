@@ -76,7 +76,7 @@ export default function PageContent() {
           <CuiTabPanel id="networking">
             <div className="form-section">
               <h3>Network configuration</h3>
-              <p style={{ color: 'var(--neutral-foreground-2)' }}>
+              <p style={{ color: 'var(--neutral-foreground2)' }}>
                 Configure networking options for this resource.
               </p>
             </div>
@@ -86,7 +86,7 @@ export default function PageContent() {
           <CuiTabPanel id="advanced">
             <div className="form-section">
               <h3>Advanced settings</h3>
-              <p style={{ color: 'var(--neutral-foreground-2)' }}>
+              <p style={{ color: 'var(--neutral-foreground2)' }}>
                 Configure advanced settings.
               </p>
             </div>
@@ -96,7 +96,7 @@ export default function PageContent() {
           <CuiTabPanel id="tags">
             <div className="form-section">
               <h3>Tags</h3>
-              <p style={{ color: 'var(--neutral-foreground-2)', marginBottom: 16 }}>
+              <p style={{ color: 'var(--neutral-foreground2)', marginBottom: 16 }}>
                 Tags are name/value pairs that enable you to categorize resources.
               </p>
               <div className="field-row">
@@ -110,7 +110,7 @@ export default function PageContent() {
           <CuiTabPanel id="review">
             <div className="form-section">
               <h3>Review + create</h3>
-              <p style={{ color: 'var(--neutral-foreground-2)' }}>
+              <p style={{ color: 'var(--neutral-foreground2)' }}>
                 Review your selections before creating the resource.
               </p>
             </div>

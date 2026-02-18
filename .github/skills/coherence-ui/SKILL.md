@@ -215,6 +215,18 @@ Reusable multi-component patterns extracted from real Azure portal prototypes. R
 
 When building an Azure portal page prototype, **start with the Resource Page Shell** pattern and customize it. It composes the Header, Side Nav, and Toolbar patterns together.
 
+### Shared Pattern Components (MUST USE — never re-implement)
+
+These live React components exist in `coherence-preview/src/patterns/` and **must be imported** instead of hand-building equivalent UI. Re-implementing them from scratch is a recurring mistake that produces inconsistent, non-dismissible, unstyleable results.
+
+| Component | Import path (from experiment root) | What it does | When to use |
+|-----------|-----------------------------------|--------------|-------------|
+| **PageHeader** | `../../patterns/PageHeader` | Title row: icon + h1 + star + more actions + CopilotSuggestions | **Every page** that has a title. Pass `copilotSuggestions={[...]}` prop to include Copilot pills. |
+| **CopilotSuggestions** | `../../patterns/CopilotSuggestions` | Dismissible pill bar with `CuiIcon name="copilot"`, `CuiTag` pills, `+N` overflow, dismiss button | Automatically used when you pass `copilotSuggestions` to `PageHeader`. Import directly only if placing suggestions outside the title row. |
+| **CopilotButton** | `../copilot-button` | White pill button for the header's `slot="search"` area | **Every page** with an Azure portal header. |
+
+**Anti-pattern:** Do NOT create custom `<button>`, `<div>`, or `<span>` elements styled to look like Copilot suggestion pills. Always use the `CopilotSuggestions` pattern or pass the `copilotSuggestions` prop to `PageHeader`.
+
 ## Page Scaffolds
 
 Complete starter files for common Azure portal page types. Copy a scaffold to `coherence-preview/src/` and customize the TODOs.

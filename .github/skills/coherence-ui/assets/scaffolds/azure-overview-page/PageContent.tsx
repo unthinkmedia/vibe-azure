@@ -48,7 +48,7 @@ export default function PageContent() {
         <div className="card-row">
           <CuiCard appearance="outline" className="overview-card">
             <div slot="heading">Quick start</div>
-            <p style={{ margin: '0 0 8px', color: 'var(--neutral-foreground-2)' }}>
+            <p style={{ margin: '0 0 8px', color: 'var(--neutral-foreground2)' }}>
               Get started with step-by-step instructions.
             </p>
             <CuiButton appearance="link">Learn more</CuiButton>
@@ -56,7 +56,7 @@ export default function PageContent() {
 
           <CuiCard appearance="outline" className="overview-card">
             <div slot="heading">Monitoring</div>
-            <p style={{ margin: '0 0 8px', color: 'var(--neutral-foreground-2)' }}>
+            <p style={{ margin: '0 0 8px', color: 'var(--neutral-foreground2)' }}>
               View metrics and logs for this resource.
             </p>
             <CuiButton appearance="link">View metrics</CuiButton>
@@ -64,7 +64,7 @@ export default function PageContent() {
 
           <CuiCard appearance="outline" className="overview-card">
             <div slot="heading">Documentation</div>
-            <p style={{ margin: '0 0 8px', color: 'var(--neutral-foreground-2)' }}>
+            <p style={{ margin: '0 0 8px', color: 'var(--neutral-foreground2)' }}>
               Read the documentation for this resource type.
             </p>
             <CuiButton appearance="link">Open docs</CuiButton>

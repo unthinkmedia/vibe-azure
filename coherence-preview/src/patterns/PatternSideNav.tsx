@@ -38,7 +38,7 @@ export default function PatternSideNav() {
           inline
           position="start"
           open
-          style={{ borderRight: '1px solid var(--neutral-stroke-2)' }}
+          style={{ borderRight: '1px solid var(--neutral-stroke2)' }}
         >
           <CuiSideNav size="small">
             {navItems.map((item, i) => {
@@ -78,15 +78,15 @@ export default function PatternSideNav() {
           </CuiSideNav>
         </CuiDrawer>
 
-        <div style={{ flex: 1, padding: 32, color: 'var(--neutral-foreground-2)' }}>
+        <div style={{ flex: 1, padding: 32, color: 'var(--neutral-foreground2)' }}>
           <h2 style={{ marginTop: 0 }}>Side Nav with Iconify Icons Pattern</h2>
           <p>
-            Selected: <strong style={{ color: 'var(--neutral-foreground-1)' }}>{selected}</strong>
+            Selected: <strong style={{ color: 'var(--neutral-foreground1)' }}>{selected}</strong>
           </p>
           <p>Components: <code>CuiDrawer</code>, <code>CuiSideNav</code>, <code>CuiNavItem</code>, <code>CuiNavHeading</code>, <code>CuiIcon</code></p>
           <h3>Icon URL Pattern</h3>
           <pre style={{
-            background: 'var(--neutral-background-3)',
+            background: 'var(--neutral-background3)',
             padding: 12,
             borderRadius: 6,
             fontSize: 13,

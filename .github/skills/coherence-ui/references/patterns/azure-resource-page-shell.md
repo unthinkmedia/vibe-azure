@@ -46,7 +46,7 @@ export default function AzureResourcePage() {
     [slot='main'] {
       min-width: 320px;
       padding: 0;
-      background: var(--neutral-background-2);
+      background: var(--neutral-background2);
     }
     .page-header {
       display: flex;
@@ -59,13 +59,13 @@ export default function AzureResourcePage() {
       align-items: center;
       gap: 8px;
       margin: 0;
-      font-size: var(--font-size-base-500);
-      font-weight: var(--font-weight-semibold);
-      color: var(--neutral-foreground-1);
+      font-size: var(--font-size-base500);
+      font-weight: var(--font-weight-semi-bold);
+      color: var(--neutral-foreground1);
     }
     .resource-subtitle {
-      font-size: var(--font-size-base-200);
-      color: var(--neutral-foreground-3);
+      font-size: var(--font-size-base200);
+      color: var(--neutral-foreground3);
       margin: 0 0 0 32px;
       padding-bottom: 12px;
     }
@@ -152,7 +152,7 @@ export default function AzureResourcePage() {
 ## Layout Rules
 
 - `body { margin: 0; }` — required to remove default browser margin.
-- `[slot='main']` uses `background: var(--neutral-background-2)` for the standard Azure grey surface.
+- `[slot='main']` uses `background: var(--neutral-background2)` for the standard Azure grey surface.
 - Breadcrumb sits at `padding: 8px 32px 0` — consistent top-left positioning.
 - Page header row uses `padding: 16px 32px 0` with `gap: 12px` for icon-title-actions alignment.
 - Title follows **"Resource Name | Page Title"** naming convention (e.g. `"myApp | Access control (IAM)"`).

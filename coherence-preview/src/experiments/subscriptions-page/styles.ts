@@ -4,7 +4,7 @@ export const styles = `
   [slot='main'] {
     min-width: 320px;
     padding: 0;
-    background: var(--neutral-background-2);
+    background: var(--neutral-background2);
   }
   .iam-content {
     padding: 24px 32px;
@@ -20,13 +20,13 @@ export const styles = `
     align-items: center;
     gap: 8px;
     margin: 0;
-    font-size: var(--font-size-base-500);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base500);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
   }
   .iam-resource-subtitle {
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
     margin: 0 0 0 32px;
     padding-bottom: 12px;
   }

@@ -14,8 +14,8 @@ import {
 export default function PatternToolbar() {
   return (
     <>
-      <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--neutral-stroke-2)' }}>
-        <h3 style={{ margin: '0 0 12px', fontSize: 'var(--font-size-base-400)', fontWeight: 'var(--font-weight-semibold)' }}>
+      <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--neutral-stroke2)' }}>
+        <h3 style={{ margin: '0 0 12px', fontSize: 'var(--font-size-base400)', fontWeight: 'var(--font-weight-semi-bold)' }}>
           Full Toolbar (with dropdown)
         </h3>
         <CuiToolbar size="small" label="Resource actions">
@@ -59,8 +59,8 @@ export default function PatternToolbar() {
         </CuiToolbar>
       </div>
 
-      <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--neutral-stroke-2)' }}>
-        <h3 style={{ margin: '0 0 12px', fontSize: 'var(--font-size-base-400)', fontWeight: 'var(--font-weight-semibold)' }}>
+      <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--neutral-stroke2)' }}>
+        <h3 style={{ margin: '0 0 12px', fontSize: 'var(--font-size-base400)', fontWeight: 'var(--font-weight-semi-bold)' }}>
           Simple Toolbar (buttons only)
         </h3>
         <CuiToolbar size="small" label="Actions">
@@ -74,8 +74,8 @@ export default function PatternToolbar() {
         </CuiToolbar>
       </div>
 
-      <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--neutral-stroke-2)' }}>
-        <h3 style={{ margin: '0 0 12px', fontSize: 'var(--font-size-base-400)', fontWeight: 'var(--font-weight-semibold)' }}>
+      <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--neutral-stroke2)' }}>
+        <h3 style={{ margin: '0 0 12px', fontSize: 'var(--font-size-base400)', fontWeight: 'var(--font-weight-semi-bold)' }}>
           Toolbar with Multiple Menus
         </h3>
         <CuiToolbar size="small" label="IAM actions">
@@ -102,7 +102,7 @@ export default function PatternToolbar() {
         </CuiToolbar>
       </div>
 
-      <div style={{ padding: 32, color: 'var(--neutral-foreground-2)' }}>
+      <div style={{ padding: 32, color: 'var(--neutral-foreground2)' }}>
         <h2 style={{ marginTop: 0 }}>Resource Page Toolbar Pattern</h2>
         <p>Components: <code>CuiToolbar</code>, <code>CuiButton</code>, <code>CuiDivider</code>, <code>CuiMenu</code>, <code>CuiMenuItem</code></p>
         <h3>Layout Rules</h3>

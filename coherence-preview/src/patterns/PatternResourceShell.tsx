@@ -31,7 +31,7 @@ export default function PatternResourceShell() {
     [slot='main'] {
       min-width: 320px;
       padding: 0;
-      background: var(--neutral-background-2);
+      background: var(--neutral-background2);
     }
     .page-header {
       display: flex;
@@ -44,33 +44,33 @@ export default function PatternResourceShell() {
       align-items: center;
       gap: 8px;
       margin: 0;
-      font-size: var(--font-size-base-500);
-      font-weight: var(--font-weight-semibold);
-      color: var(--neutral-foreground-1);
+      font-size: var(--font-size-base500);
+      font-weight: var(--font-weight-semi-bold);
+      color: var(--neutral-foreground1);
     }
     .resource-subtitle {
-      font-size: var(--font-size-base-200);
-      color: var(--neutral-foreground-3);
+      font-size: var(--font-size-base200);
+      color: var(--neutral-foreground3);
       margin: 0 0 0 32px;
       padding-bottom: 12px;
     }
     .content-area { padding: 24px 32px; }
     .pattern-note {
-      background: var(--neutral-background-1);
-      border: 1px solid var(--neutral-stroke-2);
+      background: var(--neutral-background1);
+      border: 1px solid var(--neutral-stroke2);
       border-radius: var(--border-radius-md);
       padding: 20px;
       margin-bottom: 16px;
     }
     .pattern-note h3 {
       margin: 0 0 8px;
-      font-size: var(--font-size-base-400);
-      color: var(--neutral-foreground-1);
+      font-size: var(--font-size-base400);
+      color: var(--neutral-foreground1);
     }
     .pattern-note p {
       margin: 0;
-      color: var(--neutral-foreground-2);
-      font-size: var(--font-size-base-300);
+      color: var(--neutral-foreground2);
+      font-size: var(--font-size-base300);
       line-height: 1.6;
     }
   `;
@@ -246,25 +246,25 @@ export default function PatternResourceShell() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <CuiCard appearance="outline">
                 <div slot="heading">Pattern: Header</div>
-                <p style={{ margin: 0, color: 'var(--neutral-foreground-2)', fontSize: 13 }}>
+                <p style={{ margin: 0, color: 'var(--neutral-foreground2)', fontSize: 13 }}>
                   CuiHeader with search, Copilot button, and avatar popover
                 </p>
               </CuiCard>
               <CuiCard appearance="outline">
                 <div slot="heading">Pattern: Side Nav</div>
-                <p style={{ margin: 0, color: 'var(--neutral-foreground-2)', fontSize: 13 }}>
+                <p style={{ margin: 0, color: 'var(--neutral-foreground2)', fontSize: 13 }}>
                   CuiDrawer + CuiSideNav with Iconify regular/filled icon pairs
                 </p>
               </CuiCard>
               <CuiCard appearance="outline">
                 <div slot="heading">Pattern: Toolbar</div>
-                <p style={{ margin: 0, color: 'var(--neutral-foreground-2)', fontSize: 13 }}>
+                <p style={{ margin: 0, color: 'var(--neutral-foreground2)', fontSize: 13 }}>
                   CuiToolbar with subtle buttons, dividers, and menus
                 </p>
               </CuiCard>
               <CuiCard appearance="outline">
                 <div slot="heading">Pattern: Page Shell</div>
-                <p style={{ margin: 0, color: 'var(--neutral-foreground-2)', fontSize: 13 }}>
+                <p style={{ margin: 0, color: 'var(--neutral-foreground2)', fontSize: 13 }}>
                   CuiAppFrame + breadcrumb + resource title + subtitle
                 </p>
               </CuiCard>

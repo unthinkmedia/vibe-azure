@@ -29,6 +29,7 @@ import {
   CuiTabs,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../experiments/copilot-button';
+import PageHeader from './PageHeader';
 
 export default function AzureCreateFlow() {
   const [activeTab, setActiveTab] = useState('basics');
@@ -41,28 +42,17 @@ export default function AzureCreateFlow() {
     [slot='main'] {
       min-width: 320px;
       padding: 0;
-      background: var(--neutral-background-2);
+      background: var(--neutral-background2);
     }
-    .create-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 32px 0;
-    }
-    .create-title {
-      margin: 0;
-      font-size: var(--font-size-base-500);
-      font-weight: var(--font-weight-semibold);
-      color: var(--neutral-foreground-1);
-    }
+    /* Page header styles provided by shared PageHeader component */
     .form-section {
       padding: 24px 32px;
       max-width: 640px;
     }
     .form-section h3 {
-      font-size: var(--font-size-base-400);
-      font-weight: var(--font-weight-semibold);
-      color: var(--neutral-foreground-1);
+      font-size: var(--font-size-base400);
+      font-weight: var(--font-weight-semi-bold);
+      color: var(--neutral-foreground1);
       margin: 0 0 16px;
     }
     .field-row {
@@ -76,8 +66,8 @@ export default function AzureCreateFlow() {
       display: flex;
       gap: 12px;
       padding: 16px 32px;
-      border-top: 1px solid var(--neutral-stroke-2);
-      background: var(--neutral-background-1);
+      border-top: 1px solid var(--neutral-stroke2);
+      background: var(--neutral-background1);
     }
   `;
 
@@ -163,9 +153,7 @@ export default function AzureCreateFlow() {
           </div>
 
           {/* Page title */}
-          <div className="create-header">
-            <h1 className="create-title">Create {resourceTypeLabel}</h1>
-          </div>
+          <PageHeader title={`Create ${resourceTypeLabel}`} subtitle={resourceTypeLabel} />
 
           <CuiDivider style={{ margin: '12px 0 0' }} />
 
@@ -228,7 +216,7 @@ export default function AzureCreateFlow() {
                 <CuiTabPanel id="networking">
                   <div className="form-section">
                     <h3>Network configuration</h3>
-                    <p style={{ color: 'var(--neutral-foreground-2)' }}>
+                    <p style={{ color: 'var(--neutral-foreground2)' }}>
                       Configure networking options for this resource.
                     </p>
                   </div>
@@ -238,7 +226,7 @@ export default function AzureCreateFlow() {
                 <CuiTabPanel id="advanced">
                   <div className="form-section">
                     <h3>Advanced settings</h3>
-                    <p style={{ color: 'var(--neutral-foreground-2)' }}>
+                    <p style={{ color: 'var(--neutral-foreground2)' }}>
                       Configure advanced settings.
                     </p>
                   </div>
@@ -248,7 +236,7 @@ export default function AzureCreateFlow() {
                 <CuiTabPanel id="tags">
                   <div className="form-section">
                     <h3>Tags</h3>
-                    <p style={{ color: 'var(--neutral-foreground-2)', marginBottom: 16 }}>
+                    <p style={{ color: 'var(--neutral-foreground2)', marginBottom: 16 }}>
                       Tags are name/value pairs that enable you to categorize resources.
                     </p>
                     <div className="field-row">
@@ -262,7 +250,7 @@ export default function AzureCreateFlow() {
                 <CuiTabPanel id="review">
                   <div className="form-section">
                     <h3>Review + create</h3>
-                    <p style={{ color: 'var(--neutral-foreground-2)' }}>
+                    <p style={{ color: 'var(--neutral-foreground2)' }}>
                       Review your selections before creating the resource.
                     </p>
                   </div>

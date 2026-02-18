@@ -45,7 +45,7 @@ const styles = `
   }
   .copilot-suggestions__overflow {
     --tag-border-color: var(--brand-stroke2);
-    --tag-fg-color: var(--neutral-foreground-3);
+    --tag-fg-color: var(--neutral-foreground3);
     cursor: pointer;
   }
   .copilot-suggestions__dismiss {

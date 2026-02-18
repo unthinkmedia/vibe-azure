@@ -26,6 +26,12 @@ export interface EssentialsRow {
 export const resourceName = 'myStorageAccount';
 export const resourceType = 'Storage account';
 
+// TODO: Replace with Copilot suggestions relevant to your resource type
+export const copilotSuggestions = [
+  'Show me the health of this resource.',
+  'What are the recent changes to this resource?',
+];
+
 // TODO: Replace with your resource's key properties
 export const essentialsData: EssentialsRow[] = [
   { label: 'Resource group', value: 'rg-production', href: '#' },

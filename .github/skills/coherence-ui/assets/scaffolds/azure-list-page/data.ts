@@ -27,6 +27,12 @@ export const resourceName = 'myResource';
 export const pageTitle = 'Items';
 export const resourceType = 'Service type';
 
+// TODO: Replace with Copilot suggestions relevant to your resource type
+export const copilotSuggestions = [
+  'Show me the health of this resource.',
+  'What are the recent changes to this resource?',
+];
+
 // TODO: Populate with your list items
 export const listItems: ListItem[] = [
   { id: '1', name: 'Item 1' },

@@ -38,7 +38,7 @@ import {
 } from '@charm-ux/cui/react';
 import { ServiceCard } from './PatternServiceCard';
 import CopilotButton from '../experiments/copilot-button';
-import CopilotSuggestions from './CopilotSuggestions';
+import PageHeader from './PageHeader';
 
 /* ─── Service nav items (customize per service) ─── */
 const navSections = [
@@ -85,7 +85,7 @@ export default function ScaffoldServiceBlade() {
     [slot='main'] {
       min-width: 320px;
       padding: 0;
-      background: var(--neutral-background-1);
+      background: var(--neutral-background1);
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -95,27 +95,7 @@ export default function ScaffoldServiceBlade() {
     .blade-breadcrumb {
       padding: 4px 16px 0;
     }
-    .blade-title-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 4px 16px 2px;
-    }
-    .blade-title {
-      margin: 0;
-      font-size: 20px;
-      font-weight: var(--font-weight-regular);
-      color: var(--neutral-foreground-1);
-    }
-    .blade-title-bold {
-      font-weight: var(--font-weight-semibold);
-    }
-    .blade-subtitle {
-      font-size: var(--font-size-base-100);
-      color: var(--neutral-foreground-3);
-      margin: 0;
-      padding: 0 16px 4px;
-    }
+    /* Title bar styles provided by shared PageHeader component */
 
     /* Info message bar — blue Azure style for intent="info" */
     cui-message-bar[intent='info'] {
@@ -129,13 +109,13 @@ export default function ScaffoldServiceBlade() {
       display: flex;
       gap: 0;
       padding: 0;
-      border-bottom: 1px solid var(--neutral-stroke-2);
+      border-bottom: 1px solid var(--neutral-stroke2);
     }
     .blade-tab {
       padding: 8px 16px;
-      font-size: var(--font-size-base-300);
+      font-size: var(--font-size-base300);
       font-weight: var(--font-weight-regular);
-      color: var(--neutral-foreground-2);
+      color: var(--neutral-foreground2);
       border: none;
       background: none;
       border-bottom: 2px solid transparent;
@@ -145,7 +125,7 @@ export default function ScaffoldServiceBlade() {
     .blade-tab.active {
       color: var(--brand-foreground-link);
       border-bottom-color: var(--brand-foreground-link);
-      font-weight: var(--font-weight-semibold);
+      font-weight: var(--font-weight-semi-bold);
     }
 
     /* ─── Body: sidebar + content ─── */
@@ -159,8 +139,8 @@ export default function ScaffoldServiceBlade() {
     .blade-sidebar {
       width: 220px;
       min-width: 220px;
-      border-right: 1px solid var(--neutral-stroke-2);
-      background: var(--neutral-background-1);
+      border-right: 1px solid var(--neutral-stroke2);
+      background: var(--neutral-background1);
       overflow-y: auto;
       transition: width 0.2s ease, min-width 0.2s ease;
     }
@@ -182,7 +162,7 @@ export default function ScaffoldServiceBlade() {
     .blade-content {
       flex: 1;
       overflow-y: auto;
-      background: var(--neutral-background-1);
+      background: var(--neutral-background1);
       position: relative;
     }
     .blade-content-inner {
@@ -195,13 +175,13 @@ export default function ScaffoldServiceBlade() {
     }
     .blade-card-section h2 {
       font-size: 18px;
-      font-weight: var(--font-weight-semibold);
-      color: var(--neutral-foreground-1);
+      font-weight: var(--font-weight-semi-bold);
+      color: var(--neutral-foreground1);
       margin: 0 0 4px;
     }
     .blade-card-section p {
-      font-size: var(--font-size-base-200);
-      color: var(--neutral-foreground-3);
+      font-size: var(--font-size-base200);
+      color: var(--neutral-foreground3);
       margin: 0 0 14px;
     }
     .blade-card-section p a {
@@ -274,29 +254,18 @@ export default function ScaffoldServiceBlade() {
           </div>
 
           {/* Title bar — full width */}
-          <div className="blade-title-bar">
-            <CuiIcon
-              url="https://api.iconify.design/fluent:pulse-24-regular.svg"
-              style={{ fontSize: '24px' }}
-            />
-            <h1 className="blade-title">
-              <span className="blade-title-bold">{serviceName}</span> | {pageTitle}
-            </h1>
-            <CuiButton appearance="subtle" iconOnly size="small" aria-label="More actions">
-              <CuiIcon name="more-horizontal" />
-            </CuiButton>
-            {/* Copilot suggestion pills */}
-            <CopilotSuggestions
-              suggestions={[
-                'Summarize these Monitor services in a table',
-                'Run an anomaly investigation into my resource',
-                'Catch me up on my alerts',
-              ]}
-            />
-          </div>
-
-          {/* Subtitle */}
-          <p className="blade-subtitle">Microsoft</p>
+          <PageHeader
+            icon="https://api.iconify.design/fluent:pulse-24-regular.svg"
+            title={<><strong>{serviceName}</strong> | {pageTitle}</>}
+            subtitle="Microsoft"
+            titleWeight="regular"
+            copilotSuggestions={[
+              'Summarize these Monitor services in a table',
+              'Run an anomaly investigation into my resource',
+              'Catch me up on my alerts',
+            ]}
+            horizontalPadding="16px"
+          />
 
           {/* ─── Body: sidebar + content ─── */}
           <div className="blade-body">

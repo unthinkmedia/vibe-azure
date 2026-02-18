@@ -25,9 +25,10 @@ import {
   CuiPopOver,
   CuiSearchBox,
 } from '@charm-ux/cui/react';
+import PageHeader from '../../patterns/PageHeader';
 import Navigation from './Navigation';
 import PageContent from './PageContent';
-import { resourceName, pageTitle, resourceType } from './data';
+import { resourceName, pageTitle, resourceType, copilotSuggestions } from './data';
 import { styles } from './styles';
 
 export default function AzureResourcePage() {
@@ -92,20 +93,14 @@ export default function AzureResourcePage() {
             </CuiBreadcrumb>
           </div>
 
-          <div className="page-header">
-            {/* TODO: Change icon to match your resource type */}
-            <CuiIcon
-              url="https://api.iconify.design/fluent:app-generic-24-regular.svg"
-              style={{ fontSize: '24px' }}
-            />
-            <h1 className="resource-title">
-              {resourceName} | {pageTitle}
-            </h1>
-            <CuiButton appearance="subtle" iconOnly size="small">
-              <CuiIcon name="star" />
-            </CuiButton>
-          </div>
-          <p className="resource-subtitle">{resourceType}</p>
+          {/* TODO: Customize icon, title, and suggestions for your resource */}
+          <PageHeader
+            icon="https://api.iconify.design/fluent:app-generic-24-regular.svg"
+            title={`${resourceName} | ${pageTitle}`}
+            subtitle={resourceType}
+            showFavorite
+            copilotSuggestions={copilotSuggestions}
+          />
 
           <PageContent />
         </div>

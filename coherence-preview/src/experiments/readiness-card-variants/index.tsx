@@ -32,7 +32,7 @@ function DonutGaugeCard() {
         <div className="v1-body">
           <div className="v1-donut-wrap">
             <svg width="100" height="100" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r={r} fill="none" stroke="var(--neutral-background-5)" strokeWidth="8" />
+              <circle cx="50" cy="50" r={r} fill="none" stroke="var(--neutral-background5)" strokeWidth="8" />
               <circle
                 cx="50" cy="50" r={r}
                 fill="none"
@@ -181,7 +181,7 @@ function SegmentedMeterCard() {
                 className="v4-segment"
                 style={{
                   flex,
-                  background: `linear-gradient(to right, ${c} ${fillPct}%, var(--neutral-background-5) ${fillPct}%)`,
+                  background: `linear-gradient(to right, ${c} ${fillPct}%, var(--neutral-background5) ${fillPct}%)`,
                 }}
                 title={`${cat.label}: ${cat.score}/${cat.maxScore}`}
               />

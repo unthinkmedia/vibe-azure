@@ -60,7 +60,7 @@ export default function PatternHeader() {
         </CuiPopOver>
       </CuiHeader>
 
-      <div style={{ padding: 32, color: 'var(--neutral-foreground-2)' }}>
+      <div style={{ padding: 32, color: 'var(--neutral-foreground2)' }}>
         <h2 style={{ marginTop: 0 }}>Azure Portal Header Pattern</h2>
         <p>Components used: <code>CuiHeader</code>, <code>CuiSearchBox</code>, <code>CuiAvatar</code>, <code>CuiPopOver</code>, <code>CuiPersona</code></p>
         <ul style={{ lineHeight: 1.8 }}>

@@ -17,7 +17,7 @@ Canonical styling rules extracted from the Coherence component library, manifest
 
 **Violation examples:**
 - `--myComp-backgroundColor` → should be `--my-comp-bg-color`
-- `background: #f0f0f0` → should use `var(--neutral-background-2)` or similar token
+- `background: #f0f0f0` → should use `var(--neutral-background2)` or similar token
 - `--card-textColor` → should be `--card-fg-color`
 
 ---
@@ -37,19 +37,19 @@ Canonical styling rules extracted from the Coherence component library, manifest
 
 | Purpose | Token |
 |---------|-------|
-| Primary text | `var(--neutral-foreground-1)` |
-| Secondary text | `var(--neutral-foreground-2)` |
-| Tertiary/caption text | `var(--neutral-foreground-3)` |
+| Primary text | `var(--neutral-foreground1)` |
+| Secondary text | `var(--neutral-foreground2)` |
+| Tertiary/caption text | `var(--neutral-foreground3)` |
 | Disabled text | `var(--neutral-foreground-disabled)` |
-| Page surface | `var(--neutral-background-2)` |
-| Card/panel surface | `var(--neutral-background-1)` |
-| Elevated surface | `var(--neutral-background-3)` |
-| Brand primary | `var(--brand-background-1)` |
+| Page surface | `var(--neutral-background2)` |
+| Card/panel surface | `var(--neutral-background1)` |
+| Elevated surface | `var(--neutral-background3)` |
+| Brand primary | `var(--brand-background1)` |
 | Brand text | `var(--brand-foreground-link)` |
 | Danger/error | `var(--danger-foreground-1)` |
 | Success | `var(--success-foreground-1)` |
 | Warning | `var(--warning-foreground-1)` |
-| Borders | `var(--neutral-stroke-1)`, `var(--neutral-stroke-2)` |
+| Borders | `var(--neutral-stroke1)`, `var(--neutral-stroke2)` |
 
 ---
 
@@ -59,11 +59,11 @@ Canonical styling rules extracted from the Coherence component library, manifest
 |------|----------|--------|
 | Font family | Never set explicitly — inherited from `--body-font-family` / `--font-family-base` | All components |
 | Font size scale | `--font-size-base-{100-600}` for body, `--font-size-hero-{700-1000}` for heroes | Theme CSS |
-| Page title | `--font-size-base-500` + `--font-weight-semibold` | Resource Page Shell pattern |
-| Section heading | `--font-size-base-400` + `--font-weight-semibold` | Dashboard template |
-| Card title | `--font-size-base-300` + `--font-weight-semi-bold` | Service Card pattern, Card reference |
-| Body text | `--font-size-base-300` (14px) — default, no override needed | Theme CSS |
-| Caption/secondary text | `--font-size-base-200` (12px) | Service Card, Card reference |
+| Page title | `--font-size-base500` + `--font-weight-semi-bold` | Resource Page Shell pattern |
+| Section heading | `--font-size-base400` + `--font-weight-semi-bold` | Dashboard template |
+| Card title | `--font-size-base300` + `--font-weight-semi-bold` | Service Card pattern, Card reference |
+| Body text | `--font-size-base300` (14px) — default, no override needed | Theme CSS |
+| Caption/secondary text | `--font-size-base200` (12px) | Service Card, Card reference |
 | Line-height on controls | `line-height: 1` on interactive elements (button, tab, input) | Button, Tab, Form-control styles |
 | No hardcoded font-size | Use `var(--font-size-base-*)` tokens, never `14px` or `0.875rem` directly | All components |
 
@@ -73,7 +73,7 @@ Canonical styling rules extracted from the Coherence component library, manifest
 |-------|-------------|
 | `--font-weight-regular` | Body text |
 | `--font-weight-semi-bold` | Card titles, section headings, labels |
-| `--font-weight-semibold` | Page titles, emphasis |
+| `--font-weight-semi-bold` | Page titles, emphasis |
 | `--font-weight-bold` | Hero text, strong emphasis |
 
 ---
@@ -114,7 +114,7 @@ Canonical styling rules extracted from the Coherence component library, manifest
 |------|----------|--------|
 | Default border | `var(--default-border-size) var(--default-border-style) var(--default-border-color)` | Theme CSS, all components |
 | Component override | `--{component}-border-size`, `--{component}-border-style`, `--{component}-border-color` | Card, Button, Input, Tab |
-| Divider borders | `1px solid var(--neutral-stroke-2)` | Service Card footer border |
+| Divider borders | `1px solid var(--neutral-stroke2)` | Service Card footer border |
 | Border-radius | Per-component token: `--{component}-border-radius` | All components |
 | No shared radius scale | Each component defines its own radius — don't assume a global value | All components |
 | Circular shape | `--border-radius-circular` (50%) for pill shapes | Switch, Avatar |
@@ -176,9 +176,9 @@ Canonical styling rules extracted from the Coherence component library, manifest
 
 | Rule | Standard | Source |
 |------|----------|--------|
-| Main surface color | `var(--neutral-background-2)` (grey) for `[slot='main']` | Resource Page Shell |
+| Main surface color | `var(--neutral-background2)` (grey) for `[slot='main']` | Resource Page Shell |
 | Card appearance | `appearance="outline"` for service cards | Service Card pattern |
-| Card action footer | border-top `1px solid var(--neutral-stroke-2)`, padding `4px 8px` | Service Card pattern |
+| Card action footer | border-top `1px solid var(--neutral-stroke2)`, padding `4px 8px` | Service Card pattern |
 | Title convention | `"Resource Name \| Page Title"` (pipe separator) | Resource Page Shell |
 | Primary action labels | "Create", "Add", "Save" | Portal Prototyper conventions |
 | Destructive action labels | "Delete", "Remove" | Portal Prototyper conventions |

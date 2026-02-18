@@ -24,6 +24,7 @@ import {
   CuiPopOver,
   CuiSearchBox,
 } from '@charm-ux/cui/react';
+import PageHeader from '../../patterns/PageHeader';
 import Navigation from './Navigation';
 import PageContent from './PageContent';
 import { resourceTypeLabel } from './data';
@@ -91,9 +92,7 @@ export default function AzureCreateFlow() {
             </CuiBreadcrumb>
           </div>
 
-          <div className="create-header">
-            <h1 className="create-title">Create {resourceTypeLabel}</h1>
-          </div>
+          <PageHeader title={`Create ${resourceTypeLabel}`} subtitle={resourceTypeLabel} />
 
           <CuiDivider style={{ margin: '12px 0 0' }} />
 

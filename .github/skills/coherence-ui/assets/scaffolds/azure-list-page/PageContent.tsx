@@ -17,7 +17,7 @@ export default function PageContent() {
         <CuiSearchBox hideLabel placeholder="Search items" size="small" />
         <CuiSearchBox hideLabel placeholder="Filter by tags" size="small" />
         <CuiCheckbox>
-          <span style={{ fontSize: 'var(--font-size-base-200)' }}>Group by tag</span>
+          <span style={{ fontSize: 'var(--font-size-base200)' }}>Group by tag</span>
         </CuiCheckbox>
 
         <CuiButton appearance="subtle" size="small">
@@ -41,7 +41,7 @@ export default function PageContent() {
 
       {/* ─── Detail Content (right) ─── */}
       <div className="main-content">
-        <p style={{ color: 'var(--neutral-foreground-2)' }}>
+        <p style={{ color: 'var(--neutral-foreground2)' }}>
           Select an item from the list or add a new one.
         </p>
       </div>

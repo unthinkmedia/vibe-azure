@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { useState, useEffect, lazy, Suspense, ComponentType } from 'react';
 import '@charm-ux/cui/dist/themes/cui/theme.css';
 import '@charm-ux/cui/dist/themes/cui/reset.css';
+import ShareButton from './ShareButton';
 
 // ─── Types ───
 type Entry = {
@@ -12,8 +13,38 @@ type Entry = {
   date?: string; // ISO date string for experiments
 };
 
+// ─── Hash Routing Helpers ───
+// Supports sub-routes for multi-page experiments: "#apim-flow/create" → entry "apim-flow", subRoute "create"
+function parseHash(hash: string, entries: Entry[]): { entryId: string | null; subRoute?: string } {
+  // Exact match first
+  if (entries.find(e => e.id === hash)) return { entryId: hash };
+  // Prefix match for sub-routes
+  const slashIdx = hash.indexOf('/');
+  if (slashIdx > 0) {
+    const prefix = hash.slice(0, slashIdx);
+    if (entries.find(e => e.id === prefix)) {
+      return { entryId: prefix, subRoute: hash.slice(slashIdx + 1) };
+    }
+  }
+  return { entryId: null };
+}
+
 // ─── Experiments (with dates, newest first) ───
 const experiments: Entry[] = [
+  {
+    id: 'create-a-resource',
+    title: 'Create a Resource',
+    description: 'Azure portal "Create a resource" marketplace page with category sidebar, popular services, and marketplace products',
+    component: lazy(() => import('./experiments/create-a-resource')),
+    date: '2026-02-18',
+  },
+  {
+    id: 'apim-flow',
+    title: 'API Management — End-to-End Flow',
+    description: 'Multi-page flow: Browse → Create → Resource Overview. Navigate between pages using in-app buttons.',
+    component: lazy(() => import('./experiments/apim-flow')),
+    date: '2026-02-18',
+  },
   {
     id: 'monitor-overview',
     title: 'Monitor | Overview',
@@ -33,13 +64,6 @@ const experiments: Entry[] = [
     title: 'AI Hub Page',
     description: 'Azure Web App AI Hub with Foundry connections card, readiness score, and diagnostic tools',
     component: lazy(() => import('./experiments/ai-hub-page')),
-    date: '2026-02-17',
-  },
-  {
-    id: 'api-management-page',
-    title: 'API Management Page',
-    description: 'Azure API Management service overview with essentials panel, stat cards, APIs table, and subscriptions',
-    component: lazy(() => import('./experiments/api-management-page')),
     date: '2026-02-17',
   },
   {
@@ -109,6 +133,12 @@ const experiments: Entry[] = [
 
 // ─── Composition Patterns ───
 const patterns: Entry[] = [
+  {
+    id: 'pattern-page-header',
+    title: 'Page Header',
+    description: 'Consistent title bar with icon, title, favorite, more actions, and Copilot suggestions',
+    component: lazy(() => import('./patterns/PatternPageHeader')),
+  },
   {
     id: 'pattern-header',
     title: 'Azure Portal Header',
@@ -185,6 +215,12 @@ const scaffolds: Entry[] = [
     description: 'Alternate layout with full-width title bar above a collapsible service sidebar + content area (matches Monitor, Defender, etc.)',
     component: lazy(() => import('./patterns/ScaffoldServiceBlade')),
   },
+  {
+    id: 'scaffold-multi-page-flow',
+    title: 'Multi-Page Flow',
+    description: 'End-to-end flow with Browse → Create → Detail pages in a single experiment using sub-routes',
+    component: lazy(() => import('./patterns/ScaffoldMultiPageFlow')),
+  },
 ];
 
 // All entries combined for lookup
@@ -217,8 +253,8 @@ function EntryCard({ entry }: { entry: Entry }) {
         display: 'block',
         padding: '16px 20px',
         borderRadius: 8,
-        border: '1px solid var(--neutral-stroke-2)',
-        background: 'var(--neutral-background-1)',
+        border: '1px solid var(--neutral-stroke2)',
+        background: 'var(--neutral-background1)',
         textDecoration: 'none',
         color: 'inherit',
         transition: 'box-shadow 0.15s',
@@ -229,27 +265,30 @@ function EntryCard({ entry }: { entry: Entry }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
         <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>{entry.title}</div>
         {entry.date && (
-          <div style={{ fontSize: 12, color: 'var(--neutral-foreground-3)', whiteSpace: 'nowrap', marginLeft: 12 }}>
+          <div style={{ fontSize: 12, color: 'var(--neutral-foreground3)', whiteSpace: 'nowrap', marginLeft: 12 }}>
             {formatDate(entry.date)}
           </div>
         )}
       </div>
-      <div style={{ fontSize: 13, color: 'var(--neutral-foreground-3)' }}>{entry.description}</div>
+      <div style={{ fontSize: 13, color: 'var(--neutral-foreground3)' }}>{entry.description}</div>
     </a>
   );
 }
 
 function App() {
   const [activeId, setActiveId] = useState<string | null>(() => {
-    const hash = window.location.hash.slice(1);
-    return allEntries.find(e => e.id === hash)?.id ?? null;
+    return parseHash(window.location.hash.slice(1), allEntries).entryId;
+  });
+  const [subRoute, setSubRoute] = useState<string | undefined>(() => {
+    return parseHash(window.location.hash.slice(1), allEntries).subRoute;
   });
   const [activeTab, setActiveTab] = useState<TabId>('experiments');
 
   useEffect(() => {
     const onHashChange = () => {
-      const hash = window.location.hash.slice(1);
-      setActiveId(allEntries.find(e => e.id === hash)?.id ?? null);
+      const parsed = parseHash(window.location.hash.slice(1), allEntries);
+      setActiveId(parsed.entryId);
+      setSubRoute(parsed.subRoute);
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
@@ -263,8 +302,8 @@ function App() {
       <>
         <div style={{
           padding: '8px 16px',
-          borderBottom: '1px solid var(--neutral-stroke-2)',
-          background: 'var(--neutral-background-1)',
+          borderBottom: '1px solid var(--neutral-stroke2)',
+          background: 'var(--neutral-background1)',
           display: 'flex',
           alignItems: 'center',
           gap: 8,
@@ -276,11 +315,12 @@ function App() {
           >
             ← Back
           </a>
-          <span style={{ color: 'var(--neutral-foreground-3)', fontSize: 14 }}>|</span>
+          <span style={{ color: 'var(--neutral-foreground3)', fontSize: 14 }}>|</span>
           <span style={{ fontSize: 14, fontWeight: 600 }}>{activeEntry.title}</span>
+          <ShareButton experimentId={activeEntry.id} experimentTitle={activeEntry.title} />
         </div>
         <Suspense fallback={<div style={{ padding: 32 }}>Loading…</div>}>
-          <Comp />
+          <Comp subRoute={subRoute} />
         </Suspense>
       </>
     );
@@ -297,7 +337,7 @@ function App() {
   return (
     <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
       <h1 style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 600 }}>Coherence Preview</h1>
-      <p style={{ margin: '0 0 24px', color: 'var(--neutral-foreground-3)', fontSize: 14 }}>
+      <p style={{ margin: '0 0 24px', color: 'var(--neutral-foreground3)', fontSize: 14 }}>
         {allEntries.length} total items
       </p>
 
@@ -305,7 +345,7 @@ function App() {
       <div style={{
         display: 'flex',
         gap: 0,
-        borderBottom: '2px solid var(--neutral-stroke-2)',
+        borderBottom: '2px solid var(--neutral-stroke2)',
         marginBottom: 24,
       }}>
         {tabs.map(tab => {
@@ -318,7 +358,7 @@ function App() {
                 padding: '10px 20px',
                 fontSize: 14,
                 fontWeight: isActive ? 600 : 400,
-                color: isActive ? 'var(--brand-foreground-link)' : 'var(--neutral-foreground-2)',
+                color: isActive ? 'var(--brand-foreground-link)' : 'var(--neutral-foreground2)',
                 background: 'none',
                 border: 'none',
                 borderBottom: isActive ? '2px solid var(--brand-foreground-link)' : '2px solid transparent',
@@ -331,7 +371,7 @@ function App() {
               <span style={{
                 marginLeft: 6,
                 fontSize: 12,
-                color: isActive ? 'var(--brand-foreground-link)' : 'var(--neutral-foreground-3)',
+                color: isActive ? 'var(--brand-foreground-link)' : 'var(--neutral-foreground3)',
                 fontWeight: 400,
               }}>
                 {tab.count}
@@ -342,7 +382,7 @@ function App() {
       </div>
 
       {/* Tab description */}
-      <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--neutral-foreground-3)', lineHeight: 1.5 }}>
+      <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--neutral-foreground3)', lineHeight: 1.5 }}>
         {tabDescriptions[activeTab]}
       </p>
 

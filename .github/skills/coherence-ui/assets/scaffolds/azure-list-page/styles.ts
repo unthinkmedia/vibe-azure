@@ -5,7 +5,7 @@ export const styles = `
   [slot='main'] {
     min-width: 320px;
     padding: 0;
-    background: var(--neutral-background-2);
+    background: var(--neutral-background2);
   }
 
   /* Two-column layout */
@@ -16,8 +16,8 @@ export const styles = `
   .list-panel {
     width: 260px;
     min-width: 220px;
-    border-right: 1px solid var(--neutral-stroke-2);
-    background: var(--neutral-background-1);
+    border-right: 1px solid var(--neutral-stroke2);
+    background: var(--neutral-background1);
     padding: 12px 16px;
     display: flex;
     flex-direction: column;
@@ -30,34 +30,13 @@ export const styles = `
     overflow-y: auto;
   }
 
-  /* Page header */
-  .page-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 16px 32px 0;
-  }
-  .resource-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
-    font-size: var(--font-size-base-500);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
-  }
-  .resource-subtitle {
-    font-size: var(--font-size-base-200);
-    color: var(--neutral-foreground-3);
-    margin: 0 0 0 32px;
-    padding-bottom: 8px;
-  }
+  /* Page header styles are provided by the shared PageHeader component */
 
   /* List panel items */
   .list-heading {
-    font-size: var(--font-size-base-300);
-    font-weight: var(--font-weight-semibold);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base300);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--neutral-foreground1);
     margin: 8px 0 4px;
   }
   .list-item {
@@ -66,8 +45,8 @@ export const styles = `
     justify-content: space-between;
     padding: 6px 8px;
     border-radius: var(--border-radius-md);
-    font-size: var(--font-size-base-300);
-    color: var(--neutral-foreground-1);
+    font-size: var(--font-size-base300);
+    color: var(--neutral-foreground1);
     cursor: pointer;
   }
   .list-item:hover {

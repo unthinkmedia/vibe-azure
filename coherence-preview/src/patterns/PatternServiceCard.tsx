@@ -206,10 +206,10 @@ const demoCards = [
 export default function PatternServiceCard() {
   return (
     <div style={{ padding: 32 }}>
-      <h2 style={{ margin: '0 0 4px', fontSize: 18, fontWeight: 600, color: 'var(--neutral-foreground-1)' }}>
+      <h2 style={{ margin: '0 0 4px', fontSize: 18, fontWeight: 600, color: 'var(--neutral-foreground1)' }}>
         Insights
       </h2>
-      <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--neutral-foreground-3)' }}>
+      <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--neutral-foreground3)' }}>
         Use curated monitoring views for specific Azure resources.{' '}
         <a href="#" style={{ color: 'var(--brand-foreground-link)', textDecoration: 'none' }}>View all insights</a>
       </p>
@@ -223,7 +223,7 @@ export default function PatternServiceCard() {
         ))}
       </div>
 
-      <div style={{ padding: '32px 0 0', color: 'var(--neutral-foreground-2)' }}>
+      <div style={{ padding: '32px 0 0', color: 'var(--neutral-foreground2)' }}>
         <h2 style={{ marginTop: 0 }}>Service Card Pattern</h2>
         <p>Components: <code>CuiCard</code>, <code>CuiButton</code>, <code>CuiIcon</code></p>
         <h3>Props</h3>

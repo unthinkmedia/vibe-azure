@@ -61,7 +61,7 @@ export default function PageContent() {
               <h3 className="font-base400 font-semi-bold" style={{ margin: '0 0 4px' }}>
                 My access
               </h3>
-              <p className="font-base300" style={{ margin: '0 0 12px', color: 'var(--neutral-foreground-2)' }}>
+              <p className="font-base300" style={{ margin: '0 0 12px', color: 'var(--neutral-foreground2)' }}>
                 View my level of access to this resource.
               </p>
               <CuiButton appearance="primary" size="medium">
@@ -73,7 +73,7 @@ export default function PageContent() {
               <h3 className="font-base400 font-semi-bold" style={{ margin: '0 0 4px' }}>
                 Check access
               </h3>
-              <p className="font-base300" style={{ margin: '0 0 12px', color: 'var(--neutral-foreground-2)' }}>
+              <p className="font-base300" style={{ margin: '0 0 12px', color: 'var(--neutral-foreground2)' }}>
                 Review the level of access a user, group, service principal, or managed identity
                 has to this resource.{' '}
                 <CuiButton appearance="link" href="https://learn.microsoft.com" target="_blank">
@@ -88,7 +88,7 @@ export default function PageContent() {
               <div className="card-grid">
                 <CuiCard appearance="outline" className="section-card">
                   <div slot="heading">Grant access to this resource</div>
-                  <p className="font-base300" style={{ margin: '0 0 8px', color: 'var(--neutral-foreground-2)' }}>
+                  <p className="font-base300" style={{ margin: '0 0 8px', color: 'var(--neutral-foreground2)' }}>
                     Grant access to resources by assigning a role.
                   </p>
                   <CuiButton appearance="link" href="https://learn.microsoft.com" target="_blank">
@@ -103,7 +103,7 @@ export default function PageContent() {
 
                 <CuiCard appearance="outline" className="section-card">
                   <div slot="heading">View access to this resource</div>
-                  <p className="font-base300" style={{ margin: '0 0 8px', color: 'var(--neutral-foreground-2)' }}>
+                  <p className="font-base300" style={{ margin: '0 0 8px', color: 'var(--neutral-foreground2)' }}>
                     View the role assignments that grant access to this and other resources.
                   </p>
                   <CuiButton appearance="link" href="https://learn.microsoft.com" target="_blank">
@@ -118,7 +118,7 @@ export default function PageContent() {
 
                 <CuiCard appearance="outline" className="section-card">
                   <div slot="heading">View deny assignments</div>
-                  <p className="font-base300" style={{ margin: '0 0 8px', color: 'var(--neutral-foreground-2)' }}>
+                  <p className="font-base300" style={{ margin: '0 0 8px', color: 'var(--neutral-foreground2)' }}>
                     View the role assignments that have been denied access to specific actions at
                     this scope.
                   </p>
@@ -133,7 +133,7 @@ export default function PageContent() {
           {/* ─── Placeholder Tab Panels ─── */}
           <CuiTabPanel id="role-assignments">
             <div style={{ padding: '24px 0' }}>
-              <p className="font-base300" style={{ color: 'var(--neutral-foreground-2)' }}>
+              <p className="font-base300" style={{ color: 'var(--neutral-foreground2)' }}>
                 Role assignments for this resource will appear here.
               </p>
             </div>
@@ -141,7 +141,7 @@ export default function PageContent() {
 
           <CuiTabPanel id="roles">
             <div style={{ padding: '24px 0' }}>
-              <p className="font-base300" style={{ color: 'var(--neutral-foreground-2)' }}>
+              <p className="font-base300" style={{ color: 'var(--neutral-foreground2)' }}>
                 Available roles will appear here.
               </p>
             </div>
@@ -149,7 +149,7 @@ export default function PageContent() {
 
           <CuiTabPanel id="deny-assignments">
             <div style={{ padding: '24px 0' }}>
-              <p className="font-base300" style={{ color: 'var(--neutral-foreground-2)' }}>
+              <p className="font-base300" style={{ color: 'var(--neutral-foreground2)' }}>
                 Deny assignments will appear here.
               </p>
             </div>
@@ -157,7 +157,7 @@ export default function PageContent() {
 
           <CuiTabPanel id="classic-admins">
             <div style={{ padding: '24px 0' }}>
-              <p className="font-base300" style={{ color: 'var(--neutral-foreground-2)' }}>
+              <p className="font-base300" style={{ color: 'var(--neutral-foreground2)' }}>
                 Classic administrators will appear here.
               </p>
             </div>

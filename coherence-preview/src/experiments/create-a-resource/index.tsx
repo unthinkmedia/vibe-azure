@@ -1,8 +1,6 @@
 import {
   CuiAppFrame,
   CuiAvatar,
-  CuiBreadcrumb,
-  CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
   CuiHeader,
@@ -12,26 +10,28 @@ import {
   CuiSearchBox,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../copilot-button';
-import Navigation from './Navigation';
+import PageHeader from '../../patterns/PageHeader';
 import PageContent from './PageContent';
-import { resourceName, pageTitle, resourceType } from './data';
+import { headerTitle, pageTitle, breadcrumb, copilotSuggestions } from './data';
 import { styles } from './styles';
 
-export default function ApiManagementPage() {
+export default function CreateAResourcePage() {
   return (
     <>
       <CuiAppFrame skipToMainText="Skip to main content">
         {/* ─── Header ─── */}
         <CuiHeader slot="header" navigationIconLabel="toggle navigation">
           <CuiButton slot="title" appearance="transparent">
-            <span className="font-base400">Microsoft Azure</span>
+            <span className="font-base400">{headerTitle}</span>
           </CuiButton>
+
           <CuiSearchBox
             slot="search"
             hideLabel
             placeholder="Search resources, services, and docs (G+/)"
           />
           <CopilotButton slot="search" />
+
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
             <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
           </CuiButton>
@@ -47,55 +47,44 @@ export default function ApiManagementPage() {
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
           </CuiButton>
+
           <CuiPopOver slot="actions-end" fixedPlacement>
             <CuiButton slot="anchor" appearance="subtle" shape="rounded" size="large" iconOnly>
               <CuiAvatar size={24} name="Alex Britez" />
             </CuiButton>
             <CuiPersona>
               <CuiAvatar name="Alex Britez" />
-              <div slot="primary">alexbritez@microsoft.co...</div>
-              <div slot="secondary">MICROSOFT (MICROSOFT.ONM...)</div>
+              <div slot="primary">Alex Britez</div>
+              <div slot="secondary">alexbritez@microsoft.com</div>
             </CuiPersona>
-            <CuiDivider className="my-xl" />
-            <div className="d-flex flex-column align-start">
-              <CuiButton appearance="link">Your profile</CuiButton>
+            <CuiDivider style={{ margin: '12px 0' }} />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               <CuiButton appearance="link">View account</CuiButton>
-              <CuiButton appearance="link">Sign Out</CuiButton>
+              <CuiButton appearance="link">Sign out</CuiButton>
             </div>
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── Side Navigation ─── */}
-        <Navigation />
-
-        {/* ─── Main Content ─── */}
-        <div slot="main">
-          <div style={{ padding: '8px 32px 0' }}>
-            <CuiBreadcrumb label="Navigation" size="small">
-              <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
-              <CuiBreadcrumbItem href="#">API Management services</CuiBreadcrumbItem>
-              <CuiBreadcrumbItem active current="page">{resourceName}</CuiBreadcrumbItem>
-            </CuiBreadcrumb>
-          </div>
-
-          <div className="apim-page-header">
-            <CuiIcon
-              url="https://api.iconify.design/fluent:plug-connected-24-regular.svg"
-              style={{ fontSize: '24px' }}
+        {/* ─── Main Slot ─── */}
+        <div slot="main" className="create-resource-page">
+          {/* Breadcrumb + Title + Suggestions */}
+          <div className="page-header-area">
+            <div className="page-breadcrumb">{breadcrumb}</div>
+            <PageHeader
+              title={pageTitle}
+              copilotSuggestions={copilotSuggestions}
+              horizontalPadding="0"
             />
-            <h1 className="apim-resource-title">
-              {resourceName} | {pageTitle}
-            </h1>
-            <CuiButton appearance="subtle" iconOnly size="small">
-              <CuiIcon name="star" />
-            </CuiButton>
-            <CuiButton appearance="subtle" iconOnly size="small">
-              <CuiIcon name="more-horizontal" />
-            </CuiButton>
           </div>
-          <p className="apim-resource-subtitle">{resourceType}</p>
 
+          {/* Page Body */}
           <PageContent />
+
+          {/* Feedback */}
+          <a className="feedback-link" href="javascript:;" aria-label="Give feedback">
+            <CuiIcon name="person-feedback" style={{ width: 14, height: 14 }} />
+            Give feedback
+          </a>
         </div>
       </CuiAppFrame>
       <style>{styles}</style>

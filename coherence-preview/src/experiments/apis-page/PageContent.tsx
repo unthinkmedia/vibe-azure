@@ -36,7 +36,7 @@ export default function PageContent() {
           <CuiSearchBox hideLabel placeholder="Search APIs" size="small" />
           <CuiSearchBox hideLabel placeholder="Filter by tags" size="small" />
           <CuiCheckbox>
-            <span style={{ fontSize: 'var(--font-size-base-200)' }}>Group by tag</span>
+            <span style={{ fontSize: 'var(--font-size-base200)' }}>Group by tag</span>
           </CuiCheckbox>
 
           <CuiButton appearance="subtle" size="small">

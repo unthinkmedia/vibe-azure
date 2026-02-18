@@ -22,9 +22,9 @@ export default function PageContent() {
       </h1>
       <p
         style={{
-          fontSize: 'var(--font-size-base-300)',
+          fontSize: 'var(--font-size-base300)',
           lineHeight: 'var(--line-height-base-300)',
-          color: 'var(--neutral-foreground-2)',
+          color: 'var(--neutral-foreground2)',
           margin: '0 0 24px',
         }}
       >
@@ -67,8 +67,8 @@ export default function PageContent() {
         </h2>
         <p
           style={{
-            fontSize: 'var(--font-size-base-200)',
-            color: 'var(--neutral-foreground-3)',
+            fontSize: 'var(--font-size-base200)',
+            color: 'var(--neutral-foreground3)',
             margin: '0 0 12px',
           }}
         >
@@ -100,8 +100,8 @@ export default function PageContent() {
         </h2>
         <p
           style={{
-            fontSize: 'var(--font-size-base-200)',
-            color: 'var(--neutral-foreground-3)',
+            fontSize: 'var(--font-size-base200)',
+            color: 'var(--neutral-foreground3)',
             margin: '0 0 12px',
           }}
         >

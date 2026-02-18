@@ -7,8 +7,9 @@ description: "Verify custom UI components against Coherence styling standards be
 
 Two-phase verification for any custom UI built with Coherence components:
 
-1. **Static analysis** (Steps 1–5) — scan source code against the styling standards registry, manifest API, and theme CSS
-2. **Visual verification** (Step 6) — render the component in the Playwright browser and VS Code Simple Browser, then extract computed styles, check the accessibility tree, take screenshots, and test interactive states
+1. **Custom Code Audit** (Step 0) — scan for custom HTML/CSS that should use native components, existing patterns, or established experiment approaches
+2. **Static analysis** (Steps 1–5) — scan source code against the styling standards registry, manifest API, and theme CSS
+3. **Visual verification** (Step 6) — render the component in the Playwright browser and VS Code Simple Browser, then extract computed styles, check the accessibility tree, take screenshots, and test interactive states
 
 Ensures consistency with established standards and captures new decisions for future use.
 
@@ -40,6 +41,78 @@ Additionally, consult these when relevant:
 | **UX Guides** | Accessibility, AI patterns, data viz, writing guidelines | `.github/skills/coherence-ui/references/guides/<guide>.md` |
 
 ## Required Steps
+
+### Step 0: Custom Code Audit — "Should This Be Custom?"
+
+Before checking styling standards, audit every piece of custom code for **unnecessary reinvention**. This is the most impactful check — it catches the #1 recurring mistake (building custom UI when a native component or shared pattern already exists).
+
+#### 0a. Scan for Custom HTML That Should Be a Native Component
+
+Read through each file in the experiment. For every custom HTML element (`<div>`, `<span>`, `<button>`, `<ul>`, `<table>`, etc.) that renders visible UI, ask: **"Does a `cui-*` component already do this?"**
+
+Fetch the manifest and search for components whose description or tag matches the function. Common misses:
+
+| Custom code pattern | Should be | Component |
+|---|---|---|
+| Custom pill/chip `<button>` or `<span>` with `border-radius` | `CuiTag` (circular, outline) | `cui-tag` |
+| Custom toggle switch | `CuiSwitch` | `cui-switch` |
+| Custom tooltip `<div>` on hover | `CuiTooltip` | `cui-tooltip` |
+| Custom dropdown/select `<div>` | `CuiSelect` or `CuiMenu` | `cui-select` / `cui-menu` |
+| Custom progress indicator | `CuiProgressBar` or `CuiSpinner` | `cui-progress-bar` / `cui-spinner` |
+| Custom tab bar | `CuiTabs` + `CuiTab` + `CuiTabPanel` | `cui-tabs` |
+| Custom data table `<table>` | `CuiTable` or `CuiDataGrid` | `cui-table` / `cui-data-grid` |
+| Custom dialog/modal `<div>` | `CuiDialog` | `cui-dialog` |
+| Custom icon `<img>` or `<svg>` | `CuiIcon` (with name or url) | `cui-icon` |
+| Custom badge/status indicator | `CuiBadge` | `cui-badge` |
+| Custom search input | `CuiSearchBox` | `cui-search-box` |
+| Custom accordion/collapsible | `CuiAccordion` + `CuiAccordionItem` | `cui-accordion` |
+| Custom breadcrumb trail | `CuiBreadcrumb` + `CuiBreadcrumbItem` | `cui-breadcrumb` |
+| Custom message/alert banner | `CuiMessageBar` | `cui-message-bar` |
+
+**Action:** For each match, replace the custom code with the native component. Read the component's reference doc for correct usage.
+
+#### 0b. Scan for Code That Should Use a Shared Pattern
+
+List `coherence-preview/src/patterns/` and check whether any shared pattern component already handles what you built. Key patterns to check:
+
+| Custom code pattern | Shared pattern | Import path |
+|---|---|---|
+| Title row with icon/star/actions | `PageHeader` | `../../patterns/PageHeader` |
+| Copilot suggestion pills | `CopilotSuggestions` (or `copilotSuggestions` prop on `PageHeader`) | `../../patterns/CopilotSuggestions` |
+| Header Copilot button | `CopilotButton` | `../copilot-button` |
+| Resource card with icon + title + action footer | `ServiceCard` pattern | Check `PatternServiceCard.tsx` |
+| SVG donut/gauge chart | `DonutGauge` pattern | Check `PatternDonutGauge.tsx` |
+
+Also read the `references/patterns/*.md` docs from the coherence-ui skill to check for documented patterns that may not have a shared component yet.
+
+**Action:** Replace custom implementations with the shared pattern. If no shared pattern exists but the code is reusable, consider creating one via the pattern-creator skill.
+
+#### 0c. Compare Against Similar Experiments
+
+Browse `coherence-preview/src/experiments/` and identify experiments with similar page structure or content. Read their code to check:
+
+- **Layout approach** — Do similar pages use the same grid/flex structure? If existing experiments use a 2-column grid with `grid-template-columns: 1fr 1fr`, don't invent a different approach.
+- **Component composition** — Do existing experiments compose the same components the same way? Follow established patterns.
+- **Data modeling** — Do existing `data.ts` files export the same shape (e.g., `navSections`, `copilotSuggestions`)? Follow the convention.
+- **Style organization** — Do existing `styles.ts` files use the same class naming and structure?
+
+**Action:** Align with existing experiment conventions wherever possible. Diverge only when the page genuinely requires a different approach.
+
+#### 0d. Report Audit Findings
+
+Present the audit as a table:
+
+```markdown
+## Custom Code Audit
+
+| Custom code | File:Line | Verdict | Action |
+|---|---|---|---|
+| `<button className="copilot-pill">` | index.tsx:85 | ❌ Should be `CuiTag` via `CopilotSuggestions` pattern | Replace with `PageHeader copilotSuggestions={[...]}` |
+| `<div className="service-row">` | PageContent.tsx:42 | ✅ No native component for this layout | Keep — verified against apis-page experiment |
+| Custom sidebar category links | PageContent.tsx:15 | ⚠️ Could use `CuiSideNav` | Evaluate — sidebar here is categories, not navigation |
+```
+
+Fix all ❌ items before proceeding to Step 1.
 
 ### Step 1: Load All Sources
 
@@ -84,15 +157,15 @@ Cross-reference against **theme CSS** font token names.
 
 | What to check | Expected | Source |
 |----------------|----------|--------|
-| Page titles | `var(--font-size-base-500)` + `var(--font-weight-semibold)` | Standards §3 |
-| Section headings | `var(--font-size-base-400)` + `var(--font-weight-semibold)` | Standards §3 |
-| Card/item titles | `var(--font-size-base-300)` + `var(--font-weight-semi-bold)` | Standards §3 |
-| Caption/secondary text | `var(--font-size-base-200)` | Standards §3 |
+| Page titles | `var(--font-size-base500)` + `var(--font-weight-semi-bold)` | Standards §3 |
+| Section headings | `var(--font-size-base400)` + `var(--font-weight-semi-bold)` | Standards §3 |
+| Card/item titles | `var(--font-size-base300)` + `var(--font-weight-semi-bold)` | Standards §3 |
+| Caption/secondary text | `var(--font-size-base200)` | Standards §3 |
 | No hardcoded font-size | Use `var(--font-size-base-*)` or `var(--font-size-hero-*)` | Standards §3 + Theme CSS |
 | No hardcoded font-weight | Use `var(--font-weight-*)` tokens | Standards §3 + Theme CSS |
 | font-family never set | Inherited from `--body-font-family` / `--font-family-base` | Standards §3 |
 | Interactive controls | `line-height: 1` internally | Standards §3 |
-| Token exists in theme | Verify spelling: `--font-size-base-300` not `--font-size-300` | Theme CSS |
+| Token exists in theme | Verify spelling: `--font-size-base300` not `--font-size-300` | Theme CSS |
 
 #### 2d. Spacing Check
 
@@ -116,7 +189,7 @@ Cross-reference against **theme CSS** font token names.
 |----------------|----------|--------|
 | Borders use tokens | `--default-border-*` or `--{component}-border-*` | Standards §5 |
 | No hardcoded borders | No `border: 1px solid #ccc` | Standards §5 |
-| Dividers | `1px solid var(--neutral-stroke-2)` or `CuiDivider` | Standards §5 |
+| Dividers | `1px solid var(--neutral-stroke2)` or `CuiDivider` | Standards §5 |
 | Border-radius per component | `--{component}-border-radius` | Standards §5 |
 | Circular shapes | `--border-radius-circular` | Standards §5 |
 
@@ -161,7 +234,7 @@ Cross-reference against **component reference docs** and **manifest**.
 | What to check | Expected | Source |
 |----------------|----------|--------|
 | `body { margin: 0 }` | Present in full-page prototypes | Standards §8 |
-| Main surface color | `var(--neutral-background-2)` for Azure pages | Standards §8 + §10 |
+| Main surface color | `var(--neutral-background2)` for Azure pages | Standards §8 + §10 |
 | Card grids | `display: grid` with `auto-fill` / `minmax()` | Standards §8 |
 | Flex rows | `align-items: center` for horizontal alignment | Standards §8 |
 | Form controls | `width: 100%` | Standards §8 |
@@ -202,8 +275,8 @@ Present the verification results as a summary:
 | Category | Check | Status | Detail |
 |----------|-------|--------|--------|
 | Spacing | Card padding | ✅ | Uses 16px via --card-padding |
-| Typography | Title font size | ❌ | Uses `18px` — should be `var(--font-size-base-500)` |
-| Color | Background | ✅ | Uses --neutral-background-2 |
+| Typography | Title font size | ❌ | Uses `18px` — should be `var(--font-size-base500)` |
+| Color | Background | ✅ | Uses --neutral-background2 |
 | States | Icon button a11y | ⚠️ | No standard for this context |
 ```
 
@@ -364,8 +437,8 @@ Add a **Visual Verification** section to the report:
 |-------|--------|--------|
 | Page renders without errors | ✅ | No console errors |
 | All icons visible | ✅ | 12 icons, 0 fallbacks |
-| Background color correct | ✅ | rgb(242,242,242) matches --neutral-background-2 |
-| Title font-size | ✅ | 20px matches --font-size-base-500 |
+| Background color correct | ✅ | rgb(242,242,242) matches --neutral-background2 |
+| Title font-size | ✅ | 20px matches --font-size-base500 |
 | Accessibility tree | ⚠️ | Missing landmark on sidebar |
 | Responsive @ 686px | ✅ | Nav collapses to hamburger |
 ```
@@ -393,9 +466,9 @@ Never allow these in verified UI:
 
 | Anti-pattern | Fix |
 |-------------|-----|
-| Hardcoded hex/rgb colors (`#333`, `rgb(0,0,0)`) | Use `var(--neutral-foreground-1)` etc. |
-| Hardcoded pixel font sizes (`font-size: 14px`) | Use `var(--font-size-base-300)` |
-| Hardcoded font weights (`font-weight: 600`) | Use `var(--font-weight-semibold)` |
+| Hardcoded hex/rgb colors (`#333`, `rgb(0,0,0)`) | Use `var(--neutral-foreground1)` etc. |
+| Hardcoded pixel font sizes (`font-size: 14px`) | Use `var(--font-size-base300)` |
+| Hardcoded font weights (`font-weight: 600`) | Use `var(--font-weight-semi-bold)` |
 | Missing `aria-label` on icon-only buttons | Add `label="Description"` to `CuiIcon` |
 | Missing `body { margin: 0 }` in full-page layouts | Add to styles string |
 | Inline color literal (`style={{ color: '#0078d4' }}`) | Use CSS class with token variable |

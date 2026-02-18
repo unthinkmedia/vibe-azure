@@ -12,10 +12,16 @@ Manage the `coherence-preview/` Vite + React app that renders Coherence UI proto
 ```
 coherence-preview/
 ├── src/
-│   ├── main.tsx                  ← experiment registry + router
+│   ├── main.tsx                  ← experiment registry + router (supports sub-routes)
 │   ├── experiments/
-│   │   ├── api-management-page/
-│   │   │   └── index.tsx
+│   │   ├── apim-flow/            ← multi-page flow example
+│   │   │   ├── index.tsx         ← router: switches pages based on subRoute prop
+│   │   │   ├── data.ts           ← shared data for all pages
+│   │   │   ├── styles.ts         ← combined CSS for all pages
+│   │   │   └── pages/
+│   │   │       ├── BrowsePage.tsx
+│   │   │       ├── CreatePage.tsx
+│   │   │       └── OverviewPage.tsx
 │   │   ├── copilot-button/
 │   │   │   └── index.tsx
 │   │   └── …more experiments
@@ -46,6 +52,34 @@ Open `coherence-preview/src/main.tsx` and add an entry to the `experiments` arra
 ```
 
 Insert it at the end of the array, before the closing `]`.
+
+### Multi-Page Flow Experiments
+
+For experiments that contain multiple pages (e.g., Browse → Create → Detail), the `index.tsx` must accept a `subRoute` prop:
+
+```tsx
+// experiments/my-flow/index.tsx
+import BrowsePage from './pages/BrowsePage';
+import CreatePage from './pages/CreatePage';
+import DetailPage from './pages/DetailPage';
+
+export default function MyFlow({ subRoute }: { subRoute?: string }) {
+  switch (subRoute) {
+    case 'create': return <CreatePage />;
+    case 'detail': return <DetailPage />;
+    default: return <BrowsePage />;
+  }
+}
+```
+
+The main.tsx router automatically parses hash sub-routes (e.g., `#my-flow/create`) and passes the `subRoute` prop. Pages navigate between each other using:
+
+```tsx
+window.location.hash = 'my-flow/create';  // navigate to create page
+window.location.hash = 'my-flow';          // navigate back to browse (default)
+```
+
+Register it the same way as a single-page experiment — no special registration needed.
 
 ### 2. Start the Dev Server
 
@@ -84,10 +118,14 @@ const experiments: {
 - Each experiment lives in its own folder under `coherence-preview/src/experiments/<experiment-id>/`
 - The folder name matches the experiment's `id` (kebab-case)
 - The main component file is `index.tsx` inside that folder
+- **Single-page experiments**: `index.tsx` is the full page with `Navigation.tsx`, `PageContent.tsx`, `data.ts`, `styles.ts`
+- **Multi-page experiments**: `index.tsx` is a router with a `pages/` subdirectory. Shared `data.ts` and `styles.ts` live at the root. Sub-routes use `#<id>/<page>` hash format.
 - Co-located files (mock data, helpers) go in the same folder
 - Each `index.tsx` exports a default function component
 - Filenames for the component use `index.tsx`; PascalCase is used for the exported component name
 - To import a sibling experiment (e.g., CopilotButton), use a relative path: `import CopilotButton from '../copilot-button'`
+- To import a shared pattern (e.g., PageHeader), use: `import PageHeader from '../../patterns/PageHeader'` (from experiment root) or `import PageHeader from '../../../patterns/PageHeader'` (from `pages/` subdirectory)
+- **MANDATORY**: Always use shared patterns from `src/patterns/` instead of re-implementing equivalent UI. At minimum, every Azure page must use `PageHeader` (with `copilotSuggestions` prop) and `CopilotButton`. Never hand-roll custom pill buttons, suggestion bars, or title rows. See the coherence-ui skill's "Shared Pattern Components" section for the full list.
 - Theme CSS is already imported globally in `main.tsx` — individual experiments do not need to import it
 - The experiment picker shows all registered experiments as clickable cards with title and description
 

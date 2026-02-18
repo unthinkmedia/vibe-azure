@@ -3,45 +3,41 @@ name: azure-portal-prototyper
 description: Rapidly scaffold Azure portal page prototypes using Coherence UI components. Use when the user asks to build, mock, prototype, or wireframe an Azure portal page, blade, resource page, create flow, settings page, or any Azure-style UI. Also triggers on requests like "build me an Azure X page", "prototype a resource blade", or "create an Azure portal mockup". Works in tandem with the coherence-ui skill for component APIs and design tokens.
 ---
 
-# Azure Portal Prototyper
+# Azure Portal Prototyper — Facade
 
-Generate complete Azure portal page prototypes using Coherence UI components (`@charm-ux/cui/react`). Produces ready-to-run `.tsx` files for the `coherence-preview/` app.
+> **This skill has been decomposed into four phase-specific skills with an orchestrator.**
+> It exists as a trigger surface — when activated, it delegates to the `experiment-orchestrator` skill.
 
-## Workflow
+## What to Do
 
-0. **Open Design Intent form (MANDATORY — DO NOT SKIP)** — **ALWAYS** call the `design_intent` MCP tool with prefill parameters extracted from the user's prompt. Map their description to: `prefillVision` (what they want to build), `prefillProblem` (the problem it solves), `prefillSuccessCriteria` (what "done" looks like), `prefillConstraints` (any stated limits), and `prefillExperimentId` (a kebab-case folder name derived from the description). **The AI generates the title automatically** from the experiment description — do NOT ask the user to provide a title. The Intent form opens pre-populated with your best guesses. The user reviews, edits, and clicks **"Make This"** to confirm.
+**Invoke the `experiment-orchestrator` skill** with the user's full request. The orchestrator will:
 
-   > **⛔ NEVER skip this step.** The intent.json is the primary instruction source for the entire build. Without it, the IntentButton in the preview header will show a "Create Intent" prompt instead of the design context, and the experiment is considered incomplete.
+1. **INTENT** — Capture design intent via the MCP UI (`design-intent` skill)
+2. **BUILD** — Generate the experiment files (`azure-portal-builder` skill)
+3. **VERIFY** — Run UI verification (`experiment-verify` skill)
+4. **DEPLOY** — Publish to Azure Static Web Apps (`experiment-deploy` skill)
 
-0b. **Read & verify the finalized intent (HARD GATE)** — After the `design_intent` tool returns, read the intent.json file from `coherence-preview/src/experiments/<experimentId>/intent.json`. **Verify this file exists at the correct path** — it must be inside `coherence-preview/src/experiments/`, NOT inside `mcp-server/`. If it ended up in the wrong location, copy it to the correct path.
+The orchestrator detects which phase the experiment is in and dispatches to the correct skill automatically.
 
-   **🚫 If intent.json does not exist: STOP. Do not proceed to Step 1.**
-   - Tell the user: _"Your experiment needs a design intent before building. Please open the Intent MCP UI to create one — use the `design_intent` tool or click the Intent button in the preview header."_
-   - Re-call the `design_intent` MCP tool so the user can fill in the form.
-   - Only proceed once intent.json exists at the correct path.
+## Why This Changed
 
-   **Use the full intent document (vision, problem, success criteria, non-goals, constraints) as the PRIMARY INSTRUCTION SOURCE for all subsequent build decisions.** The intent drives what you build, what you prioritize, and what you skip. Every component choice, layout decision, and mock data selection should trace back to a field in the intent.
+The monolithic workflow allowed phases to be skipped (e.g., bypassing the intent MCP tool). By decomposing into separate skills with hard boundaries, each phase skill is physically incapable of performing another phase's work. The orchestrator manages transitions between phases.
 
-   > **Why this matters:** The `IntentButton` component in the preview header bar uses Vite's `import.meta.glob('./experiments/*/intent.json')` to discover intent files. If the intent.json is missing, the IntentButton shows a "Create Intent" prompt directing the user to the MCP UI. The intent.json must be co-located with the experiment's other files at `coherence-preview/src/experiments/<experimentId>/intent.json`.
+## Skill Map
 
-0c. **Show the user the Intent MCP UI (onboarding)** — After the intent.json is confirmed, tell the user: _"Your design intent is saved. You can view and edit it anytime using the Intent button in the preview header bar, or by calling the `design_intent` tool to open the full Intent MCP App."_ This ensures every user knows about the Intent UI from their first experiment.
-1. **Identify page type** from the table below. If the user describes an **end-to-end flow** spanning multiple pages (e.g., "browse → create → overview"), use the **Multi-Page Flow** scaffold to keep everything in a single experiment folder.
-2. **Check shared patterns first** — before writing any UI, list `coherence-preview/src/patterns/` and read the Composition Patterns table in the coherence-ui SKILL.md. **Always reuse shared pattern components instead of hand-rolling equivalent UI.** Key patterns that must NEVER be reimplemented from scratch:
-   - **`PageHeader`** — title row with icon, favorite, more actions, and Copilot suggestions. Import: `import PageHeader from '../../patterns/PageHeader'`
-   - **`CopilotSuggestions`** — dismissible pill-shaped suggestion bar with CuiTag, CuiIcon name="copilot", overflow indicator, and dismiss button. **Never hand-roll custom pill buttons.** Import: `import CopilotSuggestions from '../../patterns/CopilotSuggestions'` (or just pass `copilotSuggestions` prop to `PageHeader`)
-   - **`CopilotButton`** — header Copilot button. Import: `import CopilotButton from '../copilot-button'`
-3. **Copy the matching scaffold or flow folder** from `assets/scaffolds/<scaffold-name>/` (pages) or `assets/flows/<flow-name>/` (flows) into `coherence-preview/src/experiments/<experiment-id>/` — each is a multi-file folder (see File Structure below)
-4. **Customize each file** — fill in TODOs with real resource names, nav items, toolbar actions, mock data, and page content
-5. **Use the coherence-ui skill** to look up component APIs (fetch the manifest) and design guidance (read reference files)
-6. **Use the azure-mock-data skill** (if installed) to generate realistic fake data for tables, cards, and lists
-7. **Register the experiment** in `coherence-preview/src/main.tsx` so it appears in the experiment picker (see coherence-live-preview skill)
-8. **Self-review: Custom Code Audit** — before running UI verification, review every piece of custom code you wrote and ask three questions for each:
-   - **A) Native component?** — Could a `cui-*` component from the manifest replace this custom HTML/CSS? (e.g., custom `<button>` pills → `CuiTag`, custom list → `CuiTable`, custom toggle → `CuiSwitch`, custom tooltip → `CuiTooltip`). Fetch the manifest and search for components that match the function.
-   - **B) Existing pattern?** — Does `coherence-preview/src/patterns/` already have a shared component that does this? List the directory and check each file. Also check `references/patterns/*.md` docs.
-   - **C) Azure-authentic?** — For genuinely custom UI, verify it follows established approaches: read the component reference docs for each `cui-*` component used (dos/don'ts), compare against similar experiments in `coherence-preview/src/experiments/` for layout conventions, and cross-check attribute values against the manifest's enum types.
-   
-   Fix any issues found before proceeding. This step catches the most common mistake: re-implementing something that already exists.
-9. **Run UI verification** — use the **ui-verification** skill to check all custom styling against the codified standards in `references/standards/styling-standards.md`. Fix any ❌ violations. For any ⚠️ (no standard exists), ask the user if it should be saved as a new standard.
+| Phase | Skill | Responsibility |
+|-------|-------|----------------|
+| Intent | `design-intent` | Call `design_intent` MCP tool, save intent.json |
+| Build | `azure-portal-builder` | Read intent.json, generate experiment files, register |
+| Verify | `experiment-verify` | Run ui-verification, fix violations |
+| Deploy | `experiment-deploy` | Run share-experiment, return URL |
+| **Orchestrator** | `experiment-orchestrator` | Detect phase, dispatch to correct skill |
+
+## References
+
+Page type reference and icon maps are maintained in the builder skill:
+- [references/page-types.md](references/page-types.md)
+- [references/azure-icons.md](references/azure-icons.md)
 
 ## File Structure
 

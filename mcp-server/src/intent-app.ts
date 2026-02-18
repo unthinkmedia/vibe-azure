@@ -68,7 +68,6 @@ const countEl = document.getElementById("intent-count")!;
 
 newBtn.addEventListener("click", () => showForm(null));
 cancelBtn.addEventListener("click", () => hideForm());
-formEl.addEventListener("submit", handleSubmit);
 
 // Handle initial tool result (model calls design_intent)
 // The host may re-deliver this on scroll/resize — deduplicate to prevent scroll reset.
@@ -85,6 +84,8 @@ app.ontoolresult = (result) => {
   // If prefill data was provided, auto-open the form with those values
   if (data.prefill) {
     showFormWithPrefill(data.prefill);
+    // Auto-save prefilled data immediately so intent.json exists right away
+    scheduleAutoSave();
   }
 };
 
@@ -119,19 +120,23 @@ async function fetchIntents(): Promise<void> {
   renderList();
 }
 
-async function saveIntent(intent: Record<string, unknown>, makeThis = false): Promise<void> {
-  if (makeThis) {
-    intent.status = "active";
-  }
-  await app.callServerTool({
-    name: "intent_save_data",
-    arguments: intent,
-  });
-  await fetchIntents();
-  if (makeThis) {
-    showSuccessState(intent.experimentId as string);
-  } else {
-    hideForm();
+async function saveIntent(intent: Record<string, unknown>): Promise<void> {
+  try {
+    await app.callServerTool({
+      name: "intent_save_data",
+      arguments: intent,
+    });
+    // Refresh the list in the background (don't re-render form)
+    const result = await app.callServerTool({
+      name: "intent_list_data",
+      arguments: {},
+    });
+    const data = result.structuredContent as IntentListData | undefined;
+    if (data?.intents) allIntents = data.intents;
+    if (data?.experiments) allExperiments = data.experiments;
+  } catch (err) {
+    console.error("Failed to save intent:", err);
+    throw err;
   }
 }
 
@@ -384,41 +389,43 @@ function collectFormData(): Record<string, unknown> | null {
   };
 }
 
-async function handleSubmit(e: Event): Promise<void> {
-  e.preventDefault();
-  const data = collectFormData();
-  if (!data) return;
-  await saveIntent(data);
+// ── Auto-save (debounced) ──
+
+let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+let lastAutoSaveJson = "";
+
+function scheduleAutoSave(): void {
+  if (autoSaveTimer) clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(async () => {
+    const data = collectFormData();
+    if (!data) return;
+    const json = JSON.stringify(data);
+    if (json === lastAutoSaveJson) return; // no change
+    lastAutoSaveJson = json;
+    showSaveIndicator("saving");
+    try {
+      await saveIntent(data);
+      showSaveIndicator("saved");
+    } catch {
+      showSaveIndicator("error");
+    }
+  }, 800);
 }
 
-async function handleMakeThis(): Promise<void> {
-  const data = collectFormData();
-  if (!data) return;
-  await saveIntent(data, true);
-}
-
-function showSuccessState(experimentId: string): void {
-  formSection.style.display = "none";
-  listSection.style.display = "none";
-  const successEl = document.getElementById("success-section")!;
-  successEl.style.display = "block";
-  successEl.innerHTML = `
-    <div class="success-state">
-      <div class="success-icon">✨</div>
-      <h2>Intent Saved — Ready to Build!</h2>
-      <p class="success-exp">📁 ${esc(experimentId)}</p>
-      <p class="success-hint">
-        Your agent now has the full design intent as context.<br/>
-        It will use your vision, success criteria, and constraints to guide the build.
-      </p>
-      <div class="success-actions">
-        <button class="btn btn-secondary" id="back-to-list-btn">← Back to Intents</button>
-      </div>
-    </div>`;
-  document.getElementById("back-to-list-btn")?.addEventListener("click", () => {
-    successEl.style.display = "none";
-    listSection.style.display = "block";
-  });
+function showSaveIndicator(state: "saving" | "saved" | "error"): void {
+  const el = document.getElementById("auto-save-status");
+  if (!el) return;
+  if (state === "saving") {
+    el.textContent = "Saving...";
+    el.className = "save-status save-saving";
+  } else if (state === "saved") {
+    el.textContent = "Saved ✓";
+    el.className = "save-status save-saved";
+    setTimeout(() => { el.textContent = ""; el.className = "save-status"; }, 2000);
+  } else {
+    el.textContent = "Save failed";
+    el.className = "save-status save-error";
+  }
 }
 
 // ── Helpers ──
@@ -563,7 +570,16 @@ function buildShell(): string {
     text-align: center; font-size: 11px; color: var(--muted);
     margin: 6px 0; text-transform: uppercase; letter-spacing: 0.5px;
   }
-  .form-actions { display: flex; gap: 8px; margin-top: 18px; }
+  /* Save status indicator */
+  .save-status {
+    font-size: 12px; transition: opacity 0.3s;
+  }
+  .save-saving { color: var(--muted); }
+  .save-saved { color: var(--success); }
+  .save-error { color: var(--danger); }
+
+  /* Form actions */
+  .form-actions { display: flex; gap: 8px; margin-top: 18px; align-items: center; justify-content: space-between; }
 
   /* Success state */
   #success-section { display: none; }
@@ -579,6 +595,28 @@ function buildShell(): string {
     font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px;
   }
   .success-actions { display: flex; justify-content: center; gap: 8px; }
+
+  /* Intent summary in success state */
+  .intent-summary {
+    text-align: left;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; margin: 16px 0;
+    max-width: 540px; margin-left: auto; margin-right: auto;
+  }
+  .summary-section { margin-bottom: 12px; }
+  .summary-section:last-child { margin-bottom: 0; }
+  .summary-label {
+    display: block; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; color: var(--muted);
+    letter-spacing: 0.3px; margin-bottom: 2px;
+  }
+  .summary-section p {
+    font-size: 13px; color: var(--fg); line-height: 1.5; margin: 0;
+  }
+  .summary-section ul {
+    padding-left: 18px; font-size: 13px; margin-top: 2px;
+  }
+  .summary-section li { margin-bottom: 2px; }
 </style>
 
 <div class="app-header">
@@ -635,9 +673,8 @@ function buildShell(): string {
       <textarea id="f-constraints" rows="2" placeholder="One per line, e.g.&#10;Must use Coherence components&#10;Desktop viewport only"></textarea>
     </div>
     <div class="form-actions">
-      <button type="button" class="btn btn-primary" id="make-this-btn">✨ Make This</button>
-      <button type="submit" class="btn btn-secondary">Save Draft</button>
-      <button type="button" class="btn btn-secondary" id="cancel-btn-form">Cancel</button>
+      <span id="auto-save-status" class="save-status"></span>
+      <button type="button" class="btn btn-secondary" id="cancel-btn-form">← Back</button>
     </div>
   </form>
 </div>
@@ -646,4 +683,9 @@ function buildShell(): string {
 
 // Wire form buttons
 document.getElementById("cancel-btn-form")?.addEventListener("click", hideForm);
-document.getElementById("make-this-btn")?.addEventListener("click", handleMakeThis);
+
+// Wire auto-save on all form fields
+formEl.addEventListener("input", scheduleAutoSave);
+formEl.addEventListener("change", scheduleAutoSave);
+// Prevent default submit (Enter key in text fields)
+formEl.addEventListener("submit", (e) => { e.preventDefault(); scheduleAutoSave(); });

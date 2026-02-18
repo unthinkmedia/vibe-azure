@@ -1,0 +1,28 @@
+{
+  "experimentId": "cost-anomaly-waste-detector",
+  "title": "Cost Anomaly & Waste Detector",
+  "vision": "An Azure portal page that helps users instantly spot unexpected spending spikes and idle/underutilized resources burning money. Features a summary strip with 4 metric cards (Total Monthly Spend, MoM Change %, Active Anomalies, Estimated Monthly Waste), a 30-day daily spend chart with anomaly highlights and expected baseline threshold, an anomaly alerts table with severity filtering and cost-impact sorting, an idle resources table with usage bars and Take Action buttons, and an info message bar recommending Azure Advisor.",
+  "problem": "Azure users lack a single unified view to identify both cost anomalies (unexpected spikes, drift, new charges) and idle resources (underutilized VMs, databases, caches) that are wasting budget. Today they must navigate between Cost Management, Advisor, and individual resource blades to piece together this picture.",
+  "successCriteria": [
+    "Summary strip shows 4 metric cards: Total Monthly Spend, Month-over-Month Change (%), Active Anomalies, Estimated Monthly Waste",
+    "Cost anomaly chart displays 30-day daily spend with anomaly points highlighted and expected spend baseline threshold line",
+    "Anomaly alerts table with 8+ rows: Date, Resource Group, Service, Anomaly Type (spike/drift/new), Cost Impact, Severity (critical/warning/info) — filterable by severity, sortable by cost impact",
+    "Idle resources table with 10+ rows: Resource Name, Type, Resource Group, Subscription, Avg CPU/Usage (7-day), Monthly Cost, Recommended Action (resize/deallocate/delete) — each row has a Take Action button",
+    "Info message bar at top recommending Azure Advisor enablement",
+    "Copilot suggestions in header: 'Which resource group has the highest anomaly count?', 'Show me resources I can safely delete', 'What caused last week's cost spike?'",
+    "Realistic mock data with plausible Azure service names, resource groups, and dollar amounts"
+  ],
+  "nonGoals": [
+    "Actual Azure API integration or live data",
+    "Multi-page flows or drill-down sub-pages",
+    "Budget creation or alert rule management"
+  ],
+  "constraints": [
+    "Use Coherence cui-* components and shared patterns (PageHeader, CopilotSuggestions)",
+    "Standard Cost Management side nav structure",
+    "Self-contained experiment folder with data.ts, styles.ts, Navigation.tsx, PageContent.tsx, index.tsx"
+  ],
+  "createdAt": "2026-02-18T22:46:50.854Z",
+  "updatedAt": "2026-02-18T22:50:08.874Z",
+  "status": "draft"
+}

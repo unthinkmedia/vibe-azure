@@ -1,0 +1,26 @@
+{
+  "experimentId": "cost-anomaly-investigator",
+  "title": "Azure Cost Anomaly Investigator",
+  "vision": "A diagnostic page for platform engineers to investigate unexpected spending spikes. Features a cost delta heatmap showing resource group spending changes week-over-week (green < 10%, yellow 10-50%, red > 50%), a top movers table ranking 15 resources by largest absolute cost increase with cause tags, an anomaly timeline of flagged cost events over 30 days plotted against budget threshold with expandable markers, and a recommendations panel with actionable savings cards that include one-click alert rule creation.",
+  "problem": "Platform engineers lack a single pane of glass to diagnose unexpected Azure spending spikes. They must cross-reference multiple blades (Cost Management, Activity Log, Advisor) to understand what changed and why costs jumped. This delays root-cause analysis and leads to budget overruns.",
+  "successCriteria": [
+    "Cost delta heatmap with resource groups color-coded by severity (green < 10%, yellow 10-50%, red > 50%)",
+    "Top 15 movers table with resource name, type, last week cost, this week cost, delta %, and cause tag (scale-out, new deployment, idle but running, storage growth)",
+    "Anomaly timeline showing 30-day flagged cost events against budget threshold line with clickable expandable markers",
+    "Recommendations panel with savings cards showing estimated monthly savings, affected resource, and Create Alert Rule button"
+  ],
+  "nonGoals": [
+    "Real Azure Cost Management API integration",
+    "Actual alert rule creation",
+    "Multi-subscription support"
+  ],
+  "constraints": [
+    "Single page prototype",
+    "Mock data only",
+    "Coherence UI components",
+    "Resource page layout with side navigation"
+  ],
+  "createdAt": "2026-02-18T22:09:45.747Z",
+  "updatedAt": "2026-02-18T22:10:21.912Z",
+  "status": "active"
+}

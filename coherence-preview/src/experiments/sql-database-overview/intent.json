@@ -1,0 +1,24 @@
+{
+  "experimentId": "sql-database-overview",
+  "title": "Azure SQL Database",
+  "vision": "Azure SQL Database overview page with DTU usage gauge, active connections count, geo-replication status map, and recent audit log entries",
+  "problem": "Database administrators need a single-pane view of SQL Database health — current DTU consumption, connection load, replication status across regions, and recent security audit events — to quickly triage performance and compliance issues",
+  "successCriteria": [
+    "Shows DTU usage as a visual gauge with percentage and threshold indicators",
+    "Displays active connections count with trend indicator",
+    "Renders geo-replication status for each replica region",
+    "Lists recent audit log entries in a sortable table",
+    "Includes standard essentials panel with database metadata"
+  ],
+  "nonGoals": [
+    "none"
+  ],
+  "constraints": [
+    "Must use Coherence components",
+    "Desktop viewport only",
+    "Mock data only — no real API calls"
+  ],
+  "createdAt": "2026-02-18T21:18:05.480Z",
+  "updatedAt": "2026-02-18T21:19:12.457Z",
+  "status": "active"
+}

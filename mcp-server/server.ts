@@ -59,9 +59,10 @@ export function createServer(): McpServer {
         "THIS IS MANDATORY — intent.json is the primary instruction source for the entire build. " +
         "ALWAYS TRIGGER THIS TOOL when the user describes what they want to build — extract their prompt into the prefill fields " +
         "(vision, problem, success criteria, constraints) so the intent form opens pre-populated with best guesses. " +
-        "The user reviews and edits the form, then clicks 'Make This' to confirm. " +
-        "After this tool returns, READ the intent.json file from coherence-preview/src/experiments/<experimentId>/intent.json " +
-        "to get the finalized intent document — use the full intent as PRIMARY INSTRUCTION SOURCE for building. " +
+        "The user's edits are AUTO-SAVED to intent.json in real-time — there are no Save/Accept buttons in the UI. " +
+        "After this tool returns, wait a moment for the user to review/edit the form, then ASK the user in chat: " +
+        "'Do you accept this intent?' — once they confirm, READ coherence-preview/src/experiments/<experimentId>/intent.json " +
+        "and use the full intent as PRIMARY INSTRUCTION SOURCE for building. " +
         "If intent.json does not exist after calling this tool, DO NOT proceed with building — re-call this tool. " +
         "Also tell the user they can view/edit intents anytime via the Intent button in the preview header or by calling this tool again. " +
         "Also trigger when the user explicitly asks to open the intent form, manage intents, or says 'let me define the intent'.",
@@ -122,14 +123,14 @@ export function createServer(): McpServer {
         if (!intent) {
           return {
             content: [
-              { type: "text", text: `No intent found for "${experimentId}" yet. The form is open for the user to fill in and click "Make This". After they do, read coherence-preview/src/experiments/${experimentId}/intent.json for the full intent document.` },
+              { type: "text", text: `No intent found for "${experimentId}" yet. The Intent form is now open for the user to fill in — edits are auto-saved to intent.json in real-time. ASK the user in chat: "Do you accept this intent?" Once they confirm, read coherence-preview/src/experiments/${experimentId}/intent.json for the full intent document. If the file does not exist, re-call this tool.` },
             ],
             structuredContent: { intents: [], experiments, ...(prefill ? { prefill } : {}) },
           };
         }
         return {
           content: [
-            { type: "text", text: formatIntent(intent) + "\n\n---\nThe user is reviewing this intent. If they click 'Make This', the intent.json will be updated. Read coherence-preview/src/experiments/" + experimentId + "/intent.json for the finalized version." },
+            { type: "text", text: formatIntent(intent) + "\n\n---\nThe user is reviewing this intent in the Intent MCP UI. Edits are auto-saved to intent.json in real-time. ASK the user in chat: 'Do you accept this intent?' Once they confirm, read coherence-preview/src/experiments/" + experimentId + "/intent.json for the finalized version. DO NOT start building until the user confirms acceptance in chat." },
           ],
           structuredContent: { intents: [intent], experiments },
         };
@@ -137,13 +138,13 @@ export function createServer(): McpServer {
       const intents = await listIntents();
       let text: string;
       if (intents.length === 0) {
-        text = "No design intents yet. The form is open for the user to define their intent and click 'Make This'. After they do, read the intent.json file from the experiment folder for full context.";
+        text = "No design intents yet. The Intent form is now open for the user to define their intent — edits are auto-saved in real-time. ASK the user in chat: 'Do you accept this intent?' Once they confirm, read the intent.json file from the experiment folder for full context. If the file does not exist, re-call this tool.";
       } else {
         text = `# Design Intents (${intents.length})\n\n| Experiment | Title | Status | Updated |\n|------------|-------|--------|--------|\n`;
         for (const i of intents) {
           text += formatIntentSummary(i) + "\n";
         }
-        text += "\n---\nThe user is reviewing intents. If they click 'Make This' on a new or edited intent, read the corresponding intent.json file for the finalized version.";
+        text += "\n---\nThe user is reviewing intents in the Intent MCP UI. Edits are auto-saved in real-time. ASK the user in chat: 'Do you accept this intent?' Once they confirm, read the corresponding intent.json file for the finalized version. DO NOT start building until the user confirms acceptance in chat.";
       }
       return {
         content: [{ type: "text", text }],

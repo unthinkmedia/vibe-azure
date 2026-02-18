@@ -1,0 +1,28 @@
+{
+  "experimentId": "cosmos-db-explorer",
+  "title": "Cosmos DB Data Explorer",
+  "vision": "An Azure Cosmos DB data explorer page that lets users browse databases, containers, and documents with inline JSON editing, query execution, and real-time throughput metrics.",
+  "problem": "Developers need to quickly inspect and modify Cosmos DB documents without switching to the full Data Explorer app. A lightweight embedded explorer reduces context-switching and speeds up debugging workflows.",
+  "successCriteria": [
+    "Database and container tree navigation in a left sidebar",
+    "Document list with sortable columns (id, partition key, timestamp)",
+    "Inline JSON viewer/editor for selected documents",
+    "Query bar with execute button and results table",
+    "Throughput/RU usage sparkline chart in the header",
+    "Pagination for large result sets"
+  ],
+  "nonGoals": [
+    "No real Cosmos DB API integration — mock data only",
+    "No cross-partition query support",
+    "No stored procedures or triggers management"
+  ],
+  "constraints": [
+    "Must use Coherence components exclusively",
+    "Desktop viewport only",
+    "Single-page layout with resizable panels",
+    "Mock data for all documents and metrics"
+  ],
+  "createdAt": "2026-02-18T22:38:01.271Z",
+  "updatedAt": "2026-02-18T22:38:01.271Z",
+  "status": "draft"
+}

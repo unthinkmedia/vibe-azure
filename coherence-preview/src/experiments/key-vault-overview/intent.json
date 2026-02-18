@@ -1,0 +1,23 @@
+{
+  "experimentId": "key-vault-overview",
+  "title": "Key Vault Overview Dashboard",
+  "vision": "A comprehensive Azure Key Vault overview page that surfaces security-critical information at a glance: upcoming secret expirations, certificate health with auto-renewal status, access policy summaries grouped by principal type, and a filtered operations log for sensitive actions.",
+  "problem": "Vault administrators need to quickly assess the health and security posture of their Key Vault without navigating through multiple blades. Expired secrets, unhealthy certificates, and unauthorized sensitive operations are common sources of outages and security incidents.",
+  "successCriteria": [
+    "Secrets expiration timeline with 30/60/90-day buckets and visual urgency indicators",
+    "Certificate health dashboard showing validity status, expiry dates, and auto-renewal indicators",
+    "Access policy summary cards grouped by principal type (user, application, managed identity)",
+    "Recent operations log filtered to sensitive actions (purge, delete, recover) with sortable columns",
+    "Uses PageHeader pattern with Copilot suggestions",
+    "Follows Azure portal visual conventions"
+  ],
+  "nonGoals": [],
+  "constraints": [
+    "Single-page experiment",
+    "Mock data only — no live API calls",
+    "Coherence UI components from @charm-ux/cui/react"
+  ],
+  "createdAt": "2026-02-18T00:00:00.000Z",
+  "updatedAt": "2026-02-18T00:00:00.000Z",
+  "status": "draft"
+}

@@ -33,6 +33,48 @@ function parseHash(hash: string, entries: Entry[]): { entryId: string | null; su
 // ─── Experiments (with dates, newest first) ───
 const experiments: Entry[] = [
   {
+    id: 'deployment-risk-scorecard',
+    title: 'Deployment Risk Scorecard',
+    description: 'Assess blast radius and risk level of pending infrastructure deployments with risk summary, deployments queue, dependency graph, risk breakdown, and config diff preview',
+    component: lazy(() => import('./experiments/deployment-risk-scorecard')),
+    date: '2026-02-18',
+  },
+  {
+    id: 'api-health-dashboard',
+    title: 'API Health Dashboard',
+    description: 'Real-time API endpoint health monitoring with status grid, latency distribution chart, failure log table, and service dependency map',
+    component: lazy(() => import('./experiments/api-health-dashboard')),
+    date: '2026-02-18',
+  },
+  {
+    id: 'cost-anomaly-investigator',
+    title: 'Cost Anomaly Investigator',
+    description: 'Azure Cost Management diagnostic page with cost delta heatmap, top movers table, anomaly timeline, and recommendations panel',
+    component: lazy(() => import('./experiments/cost-anomaly-investigator')),
+    date: '2026-02-18',
+  },
+  {
+    id: 'key-vault-overview',
+    title: 'Key Vault Overview Dashboard',
+    description: 'Azure Key Vault overview with secrets expiration timeline (30/60/90-day buckets), certificate health dashboard with auto-renewal indicators, access policy cards grouped by principal type, and sensitive operations log',
+    component: lazy(() => import('./experiments/key-vault-overview')),
+    date: '2026-02-18',
+  },
+  {
+    id: 'cosmos-db-overview',
+    title: 'Cosmos DB Account Overview',
+    description: 'Azure Cosmos DB overview with RU/s consumption gauge, partition key heat map, global distribution map with latency indicators, consistency level selector, and recent operations table',
+    component: lazy(() => import('./experiments/cosmos-db-overview')),
+    date: '2026-02-18',
+  },
+  {
+    id: 'sql-database-overview',
+    title: 'SQL Database Overview',
+    description: 'Azure SQL Database overview with DTU usage gauge, active connections count, geo-replication status cards, and sortable audit log table',
+    component: lazy(() => import('./experiments/sql-database-overview')),
+    date: '2026-02-18',
+  },
+  {
     id: 'aks-cluster-overview',
     title: 'AKS Cluster Overview',
     description: 'Azure Kubernetes Service cluster overview with health summary, node pool utilization bars, recent deployments table, and certificate expiry warning',

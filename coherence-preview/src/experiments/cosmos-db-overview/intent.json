@@ -1,0 +1,28 @@
+{
+  "experimentId": "cosmos-db-overview",
+  "title": "Azure Cosmos DB Account Overview",
+  "vision": "An Azure Cosmos DB account overview page featuring a request units (RU/s) consumption gauge, partition key distribution heat map, global distribution map showing read/write regions with latency indicators, a consistency level selector showing current vs. recommended settings, and a recent operations table with throughput and latency columns.",
+  "problem": "Cosmos DB administrators need a single overview page to monitor RU consumption, understand partition hotspots, visualize global distribution and latencies, validate consistency settings, and review recent operation performance — currently scattered across multiple Azure portal blades.",
+  "successCriteria": [
+    "RU/s gauge with color-coded thresholds (warning/critical)",
+    "Partition key heat map showing hot vs cold partitions",
+    "Global distribution map with read/write region indicators and latency badges",
+    "Consistency level selector comparing current vs recommended",
+    "Recent operations table with sortable throughput (RU) and latency (ms) columns",
+    "Standard Azure overview page layout with essentials panel, breadcrumb, side nav"
+  ],
+  "nonGoals": [
+    "Real API integration",
+    "Interactive consistency level changes",
+    "Real-time data updates"
+  ],
+  "constraints": [
+    "Use Coherence UI components (cui-*) via @charm-ux/cui/react",
+    "Follow Azure portal overview page conventions",
+    "Single-page experiment in coherence-preview",
+    "Use shared PageHeader and CopilotButton patterns"
+  ],
+  "createdAt": "2026-02-18T21:35:54.104Z",
+  "updatedAt": "2026-02-18T21:35:54.104Z",
+  "status": "draft"
+}

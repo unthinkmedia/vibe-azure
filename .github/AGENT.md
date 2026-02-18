@@ -39,14 +39,25 @@ This workspace includes agent skills under `.github/skills/`. **Always check if 
 **How it works in the prototyping workflow:**
 1. When a designer describes what they want to build, **immediately call the `design_intent` MCP tool** with prefill parameters extracted from their prompt — map their description to `prefillVision`, `prefillProblem`, `prefillSuccessCriteria`, `prefillConstraints`, and a kebab-case `experimentId`
 2. The Intent form opens pre-populated with the AI's best guesses for all fields
-3. The designer reviews, edits the form, and clicks **"Make This"** to confirm (or "Save Draft" to save without building yet)
+3. The designer reviews, edits the form, and clicks **"Save"** to confirm (or "Save Draft" to save without building yet)
 4. After the tool returns, **read the finalized `intent.json`** from `coherence-preview/src/experiments/<experimentId>/intent.json`
 5. Use the full intent document (vision, problem, success criteria, non-goals, constraints) as **primary context** for all build decisions
 6. The intent is viewable anytime via the **Intent** button in the preview app header bar (next to Share)
 
-**Key principle:** The intent form is the designer's chance to review and refine the AI's interpretation of their request before building begins. The AI always makes a best guess from the prompt — the designer confirms or adjusts, then clicks "Make This" to kick off the build with full context.
+**Key principle:** The intent form is the designer's chance to review and refine the AI's interpretation of their request before building begins. The AI always makes a best guess from the prompt — the designer confirms or adjusts, then clicks "Save" to kick off the build with full context.
 
 ## Guidance
+
+### Experiment Workflow — Mandatory Intent Phase
+
+When asked to build, create, prototype, or mock an Azure portal page:
+
+1. **ALWAYS route through the experiment-orchestrator skill**
+2. **ALWAYS check the filesystem** for `coherence-preview/src/experiments/<id>/intent.json` before writing any code
+3. **If no intent.json exists**, run the design-intent skill first — never skip to building
+4. **Never create .ts/.tsx experiment files** until intent.json is confirmed on disk
+
+### General
 
 1. **UI questions → use coherence-ui skill.** If someone asks how to build a page, use a component, style with tokens, or follow accessibility rules, load the coherence-ui skill and consult its references rather than relying on general knowledge.
 2. **Component API → fetch the manifest.** Never guess attributes, slots, events, or CSS properties. The skill provides the manifest URL.

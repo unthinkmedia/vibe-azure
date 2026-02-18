@@ -1,0 +1,26 @@
+{
+  "experimentId": "api-health-dashboard",
+  "title": "API Health Dashboard",
+  "vision": "A real-time Azure API Health Dashboard that provides a comprehensive view of API endpoint health across multiple services. Features four main sections: (1) A status grid showing each API endpoint as a card with current status (healthy/degraded/down), P95 response time, and 7-day uptime percentage; (2) A latency distribution chart plotting P50/P95/P99 response times over the past 24 hours with toggleable per-endpoint breakdown; (3) A failure log table showing the last 20 failed requests with timestamp, endpoint, HTTP status code, error message, and correlation ID; (4) A dependency map panel visualizing upstream/downstream service dependencies as a simple node graph with health indicators on each edge.",
+  "problem": "Platform engineers and SREs lack a single-pane-of-glass view into API endpoint health, latency trends, failure patterns, and service dependency status — forcing them to jump between multiple monitoring tools to diagnose issues.",
+  "successCriteria": [
+    "Status grid with per-endpoint cards showing healthy/degraded/down, P95 response time, and 7-day uptime percentage",
+    "Latency distribution SVG chart with P50/P95/P99 lines over 24 hours and toggleable per-endpoint breakdown",
+    "Failure log table with 20 rows: timestamp, endpoint, HTTP status, error message, correlation ID",
+    "Dependency map panel with node graph showing upstream/downstream service connections and health indicators on edges"
+  ],
+  "nonGoals": [
+    "Real-time WebSocket or polling integration",
+    "Configurable alerting or notification rules",
+    "Historical data beyond 7 days"
+  ],
+  "constraints": [
+    "Single page with collapsible sidebar navigation",
+    "Mock data only — no live API calls",
+    "Coherence Design System components throughout",
+    "Resource page layout with CuiAppFrame, header, side nav"
+  ],
+  "createdAt": "2026-02-18T22:18:15.233Z",
+  "updatedAt": "2026-02-18T22:18:18.650Z",
+  "status": "active"
+}

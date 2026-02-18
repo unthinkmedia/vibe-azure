@@ -39,9 +39,9 @@ coherence-preview/
 
 ### 0. Create Design Intent (MANDATORY — DO NOT SKIP)
 
-Call the `design_intent` MCP tool to open the Intent App UI. The user fills in their vision, problem, success criteria, and constraints, then clicks **"Make This"**. This creates `intent.json` inside the experiment folder.
+Call the `design_intent` MCP tool to open the Intent App UI. The user fills in their vision, problem, success criteria, and constraints, then clicks **"Save"**. This creates `intent.json` inside the experiment folder.
 
-**If intent.json does not exist after this step: STOP.** Do not create any other experiment files. Tell the user to open the Intent MCP UI via the `design_intent` tool.
+**After calling the tool, wait for the user to confirm they have clicked "Save".** Then read `coherence-preview/src/experiments/<experimentId>/intent.json` to verify it exists. **If intent.json does not exist: STOP.** Do not create any other experiment files. Re-call the `design_intent` tool so the user can complete the form.
 
 Once the intent is saved, tell the user: _"Your design intent is saved. You can view and edit it anytime using the Intent button in the preview header bar, or by calling the `design_intent` tool to open the full Intent MCP App."_
 

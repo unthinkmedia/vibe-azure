@@ -1,0 +1,25 @@
+{
+  "experimentId": "deployment-risk-scorecard",
+  "title": "Deployment Risk Scorecard",
+  "vision": "An Azure portal page that helps platform engineers assess the blast radius and risk level of pending infrastructure deployments before they hit production. Features a risk summary strip (4 cards: Pending Deployments, High-Risk Changes, Resources Affected, Estimated Cost Delta), a sortable deployments queue table (name, source, target env, resources created/modified/deleted, risk score 0-100 with color, submitted by), an SVG blast radius dependency graph with risk-colored nodes, a risk breakdown panel with categorized factors (Public Endpoint Exposure, Missing Encryption, Oversized SKUs, No Availability Zone, Missing Tags, Destructive Deletes), a before/after diff preview for resource config changes, and a production warning message bar.",
+  "problem": "Platform engineers deploying infrastructure changes have no consolidated view of deployment risk, blast radius, or cost impact. They can't easily see which pending deployments are high-risk, what resources are affected, or whether destructive changes are lurking in a deployment — leading to production incidents from unreviewed changes.",
+  "successCriteria": [
+    "Risk summary strip with 4 metric cards (Pending Deployments, High-Risk Changes, Resources Affected, Estimated Cost Delta)",
+    "Deployments queue table with 6+ mock rows, sortable by risk score, columns for name/source/target/resources triple/risk score/submitted by",
+    "SVG blast radius dependency graph for selected deployment with risk-colored nodes (green/amber/red)",
+    "Risk breakdown panel with severity badges for 6 categories: Public Endpoint Exposure, Missing Encryption, Oversized SKUs, No Availability Zone, Missing Tags, Destructive Deletes",
+    "Before/after diff preview section for resource config property changes",
+    "Production warning message bar when deployment targets prod without approval gate",
+    "Copilot suggestions: Which deployment has the most destructive changes?, Are any new public endpoints being created?, Compare this deployment to last week's rollout"
+  ],
+  "nonGoals": [],
+  "constraints": [
+    "Single page prototype",
+    "Mock data only — at least 6 deployment rows with plausible ARM template names, resource groups, and risk scores",
+    "Use Coherence components throughout",
+    "SVG dependency graph for blast radius visualization"
+  ],
+  "createdAt": "2026-02-18T22:56:01.827Z",
+  "updatedAt": "2026-02-18T22:57:29.421Z",
+  "status": "draft"
+}

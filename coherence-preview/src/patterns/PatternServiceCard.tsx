@@ -24,9 +24,20 @@ export const serviceCardStyles = `
   .service-card {
     --card-padding: 0;
     --card-content-gap: 0;
+    display: block;
+    height: 100%;
+  }
+  .service-card::part(card-base) {
+    height: 100%;
+  }
+  .service-card::part(card-content) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
   .service-card .service-card-body {
     padding: 16px 16px 12px;
+    flex: 1;
   }
   .service-card .service-card-header {
     display: flex;

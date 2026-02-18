@@ -55,19 +55,65 @@ export function createServer(): McpServer {
     {
       title: "Design Intent",
       description:
-        "Open the Design Intent app to capture What, Why, Success Criteria, and Non-Goals before prototyping. Inspired by the Specflow methodology — optional but recommended as a first step.",
+        "Open the Design Intent app to capture What, Why, Success Criteria, and Non-Goals before prototyping. " +
+        "TRIGGER THIS TOOL when the user says anything about starting, creating, or beginning a new experiment " +
+        "(e.g. \"let's start a new experiment\", \"new experiment\", \"I want to prototype\", \"let's build something new\", " +
+        "\"begin a new prototype\", \"start fresh\"). " +
+        "Also trigger when the azure-portal-prototyper skill is about to scaffold a new experiment — " +
+        "offer the user the chance to set a design intent first. " +
+        "Inspired by the Specflow methodology — optional but recommended as a first step.",
       inputSchema: {
         experimentId: z
           .string()
           .optional()
           .describe("Optional experiment folder name to view/edit a specific intent"),
+        prefillTitle: z
+          .string()
+          .optional()
+          .describe("Pre-fill the title field when the user has already described what they want to build"),
+        prefillVision: z
+          .string()
+          .optional()
+          .describe("Pre-fill the vision field extracted from what the user has already said about the experiment"),
+        prefillProblem: z
+          .string()
+          .optional()
+          .describe("Pre-fill the problem statement extracted from the user's description"),
+        prefillSuccessCriteria: z
+          .array(z.string())
+          .optional()
+          .describe("Pre-fill success criteria extracted from the user's description"),
+        prefillNonGoals: z
+          .array(z.string())
+          .optional()
+          .describe("Pre-fill non-goals extracted from the user's description"),
+        prefillConstraints: z
+          .array(z.string())
+          .optional()
+          .describe("Pre-fill constraints extracted from the user's description"),
       },
       _meta: {
         ui: { resourceUri: intentAppUri },
       },
     },
-    async ({ experimentId }) => {
+    async ({ experimentId, prefillTitle, prefillVision, prefillProblem, prefillSuccessCriteria, prefillNonGoals, prefillConstraints }) => {
       const experiments = await listExperimentFolders();
+
+      // Build prefill object if any prefill params were provided
+      const hasPrefill = prefillTitle || prefillVision || prefillProblem ||
+        (prefillSuccessCriteria && prefillSuccessCriteria.length > 0) ||
+        (prefillNonGoals && prefillNonGoals.length > 0) ||
+        (prefillConstraints && prefillConstraints.length > 0);
+      const prefill = hasPrefill ? {
+        experimentId: experimentId ?? "",
+        title: prefillTitle ?? "",
+        vision: prefillVision ?? "",
+        problem: prefillProblem ?? "",
+        successCriteria: prefillSuccessCriteria ?? [],
+        nonGoals: prefillNonGoals ?? [],
+        constraints: prefillConstraints ?? [],
+      } : null;
+
       if (experimentId) {
         const intent = await getIntent(experimentId);
         if (!intent) {
@@ -75,7 +121,7 @@ export function createServer(): McpServer {
             content: [
               { type: "text", text: `Intent for experiment "${experimentId}" not found.` },
             ],
-            structuredContent: { intents: [], experiments },
+            structuredContent: { intents: [], experiments, ...(prefill ? { prefill } : {}) },
           };
         }
         return {
@@ -97,7 +143,7 @@ export function createServer(): McpServer {
       }
       return {
         content: [{ type: "text", text }],
-        structuredContent: { intents, experiments },
+        structuredContent: { intents, experiments, ...(prefill ? { prefill } : {}) },
       };
     }
   );

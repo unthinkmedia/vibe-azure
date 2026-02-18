@@ -9,6 +9,7 @@ Generate complete Azure portal page prototypes using Coherence UI components (`@
 
 ## Workflow
 
+0. **Offer Design Intent capture** — Before building, ask the user if they'd like to set a design intent for this experiment. If they agree (or if they explicitly asked to start a new experiment), call the `design_intent` MCP tool to open the interactive intent form. This captures What, Why, Success Criteria, and Non-Goals upfront. If the user declines, proceed to step 1.
 1. **Identify page type** from the table below. If the user describes an **end-to-end flow** spanning multiple pages (e.g., "browse → create → overview"), use the **Multi-Page Flow** scaffold to keep everything in a single experiment folder.
 2. **Check shared patterns first** — before writing any UI, list `coherence-preview/src/patterns/` and read the Composition Patterns table in the coherence-ui SKILL.md. **Always reuse shared pattern components instead of hand-rolling equivalent UI.** Key patterns that must NEVER be reimplemented from scratch:
    - **`PageHeader`** — title row with icon, favorite, more actions, and Copilot suggestions. Import: `import PageHeader from '../../patterns/PageHeader'`

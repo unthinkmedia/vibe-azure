@@ -23,9 +23,20 @@ interface DesignIntent {
   status: "draft" | "active" | "completed" | "abandoned";
 }
 
+interface PrefillData {
+  experimentId?: string;
+  title?: string;
+  vision?: string;
+  problem?: string;
+  successCriteria?: string[];
+  nonGoals?: string[];
+  constraints?: string[];
+}
+
 interface IntentListData {
   intents: DesignIntent[];
   experiments: string[];
+  prefill?: PrefillData;
 }
 
 // ── State ──
@@ -70,6 +81,11 @@ app.ontoolresult = (result) => {
   if (data.intents) allIntents = data.intents;
   if (data.experiments) allExperiments = data.experiments;
   renderList();
+
+  // If prefill data was provided, auto-open the form with those values
+  if (data.prefill) {
+    showFormWithPrefill(data.prefill);
+  }
 };
 
 // Theme support
@@ -260,6 +276,61 @@ function showForm(intent: DesignIntent | null): void {
     (intent?.nonGoals ?? []).join("\n");
   (formEl.querySelector("#f-constraints") as HTMLTextAreaElement).value =
     (intent?.constraints ?? []).join("\n");
+
+  formSection.style.display = "block";
+  listSection.style.display = "none";
+}
+
+/** Open the form pre-populated with data extracted from the conversation */
+function showFormWithPrefill(prefill: PrefillData): void {
+  editingExperimentId = null;
+  formTitle.textContent = "New Design Intent";
+
+  const experimentSelect = formEl.querySelector("#f-experiment") as HTMLSelectElement;
+  const experimentInput = formEl.querySelector("#f-experiment-new") as HTMLInputElement;
+
+  // Populate experiment dropdown
+  const takenExperiments = new Set(allIntents.map((i) => i.experimentId));
+  const availableExperiments = allExperiments.filter(
+    (e) => !takenExperiments.has(e)
+  );
+
+  experimentSelect.innerHTML =
+    '<option value="">— Select existing experiment —</option>' +
+    availableExperiments
+      .map((e) => `<option value="${esc(e)}">${esc(e)}</option>`)
+      .join("");
+
+  experimentSelect.disabled = false;
+  experimentInput.disabled = false;
+
+  // If the prefill has an experimentId, check if it matches an existing folder
+  if (prefill.experimentId) {
+    if (availableExperiments.includes(prefill.experimentId)) {
+      experimentSelect.value = prefill.experimentId;
+      experimentInput.value = "";
+    } else {
+      experimentSelect.value = "";
+      experimentInput.value = prefill.experimentId;
+    }
+  } else {
+    experimentSelect.value = "";
+    experimentInput.value = "";
+  }
+
+  // Fill form fields with prefill data
+  (formEl.querySelector("#f-title") as HTMLInputElement).value =
+    prefill.title ?? "";
+  (formEl.querySelector("#f-vision") as HTMLTextAreaElement).value =
+    prefill.vision ?? "";
+  (formEl.querySelector("#f-problem") as HTMLTextAreaElement).value =
+    prefill.problem ?? "";
+  (formEl.querySelector("#f-criteria") as HTMLTextAreaElement).value =
+    (prefill.successCriteria ?? []).join("\n");
+  (formEl.querySelector("#f-nongoals") as HTMLTextAreaElement).value =
+    (prefill.nonGoals ?? []).join("\n");
+  (formEl.querySelector("#f-constraints") as HTMLTextAreaElement).value =
+    (prefill.constraints ?? []).join("\n");
 
   formSection.style.display = "block";
   listSection.style.display = "none";

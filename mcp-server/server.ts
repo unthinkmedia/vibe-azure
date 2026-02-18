@@ -267,8 +267,8 @@ export function createServer(): McpServer {
 
   server.tool(
     "get_scaffold",
-    "Get the complete starter scaffold for an Azure portal page type. Returns all files (index.tsx, data.ts, styles.ts, Navigation.tsx, PageContent.tsx) ready to customize. Types: azure-resource-page, azure-list-page, azure-create-flow, azure-overview-page.",
-    { type: z.string().describe("Scaffold type: azure-resource-page, azure-list-page, azure-create-flow, azure-overview-page") },
+    "Get the complete starter scaffold for an Azure portal page type or flow. Returns all files (index.tsx, data.ts, styles.ts, etc.) ready to customize. Page scaffolds: azure-resource-page, azure-list-page, azure-overview-page, azure-marketplace-browse. Flow scaffolds: azure-create-flow, azure-multi-page-flow.",
+    { type: z.string().describe("Scaffold or flow type: azure-resource-page, azure-list-page, azure-overview-page, azure-marketplace-browse, azure-create-flow, azure-multi-page-flow") },
     async ({ type }) => {
       const scaffold = await getScaffold(type);
       if (!scaffold) {

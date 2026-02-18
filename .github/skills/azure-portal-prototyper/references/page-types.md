@@ -1,6 +1,6 @@
-# Page Types — Detailed Anatomy
+# Page Types & Flows — Detailed Anatomy
 
-Detailed customization guidance for each Azure portal page scaffold.
+Detailed customization guidance for each Azure portal page scaffold and flow.
 
 ## Resource Page (`azure-resource-page.tsx`)
 

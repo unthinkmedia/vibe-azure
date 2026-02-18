@@ -233,12 +233,21 @@ Complete starter files for common Azure portal page types. Copy a scaffold to `c
 
 | Scaffold | Description | Asset |
 |----------|-------------|-------|
-| Resource Page | Standard resource blade with header, side nav, breadcrumb, toolbar, content area | [assets/scaffolds/azure-resource-page.tsx](assets/scaffolds/azure-resource-page.tsx) |
-| List Page | Two-column list + detail layout (APIs, Subscriptions, etc.) | [assets/scaffolds/azure-list-page.tsx](assets/scaffolds/azure-list-page.tsx) |
-| Create Flow | Multi-step wizard with tabbed form and action bar | [assets/scaffolds/azure-create-flow.tsx](assets/scaffolds/azure-create-flow.tsx) |
-| Overview Page | Essentials panel + card grid sections | [assets/scaffolds/azure-overview-page.tsx](assets/scaffolds/azure-overview-page.tsx) |
+| Resource Page | Standard resource blade with header, side nav, breadcrumb, toolbar, content area | [assets/scaffolds/azure-resource-page/](assets/scaffolds/azure-resource-page/) |
+| List Page | Two-column list + detail layout (APIs, Subscriptions, etc.) | [assets/scaffolds/azure-list-page/](assets/scaffolds/azure-list-page/) |
+| Overview Page | Essentials panel + card grid sections | [assets/scaffolds/azure-overview-page/](assets/scaffolds/azure-overview-page/) |
+| Marketplace Browse | Categories sidebar with service + marketplace grid | [assets/scaffolds/azure-marketplace-browse/](assets/scaffolds/azure-marketplace-browse/) |
 
-**Usage:** Copy the scaffold file, rename it, fill in the TODO sections, and register it as an experiment in the preview app.
+## Flow Scaffolds
+
+Multi-step or multi-page flow templates. These involve navigation between steps or pages.
+
+| Flow | Description | Asset |
+|------|-------------|-------|
+| Create Flow | Multi-step wizard with tabbed form and action bar | [assets/flows/azure-create-flow/](assets/flows/azure-create-flow/) |
+| Multi-Page Flow | End-to-end flow with multiple pages (Browse → Create → Detail) | [assets/flows/azure-multi-page-flow/](assets/flows/azure-multi-page-flow/) |
+
+**Usage:** Copy the scaffold or flow folder, rename it, fill in the TODO sections, and register it as an experiment in the preview app.
 
 ## UX Guides
 

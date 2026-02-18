@@ -14,7 +14,7 @@ Generate complete Azure portal page prototypes using Coherence UI components (`@
    - **`PageHeader`** — title row with icon, favorite, more actions, and Copilot suggestions. Import: `import PageHeader from '../../patterns/PageHeader'`
    - **`CopilotSuggestions`** — dismissible pill-shaped suggestion bar with CuiTag, CuiIcon name="copilot", overflow indicator, and dismiss button. **Never hand-roll custom pill buttons.** Import: `import CopilotSuggestions from '../../patterns/CopilotSuggestions'` (or just pass `copilotSuggestions` prop to `PageHeader`)
    - **`CopilotButton`** — header Copilot button. Import: `import CopilotButton from '../copilot-button'`
-3. **Copy the matching scaffold folder** from `assets/scaffolds/<scaffold-name>/` into `coherence-preview/src/experiments/<experiment-id>/` — each scaffold is a multi-file folder (see File Structure below)
+3. **Copy the matching scaffold or flow folder** from `assets/scaffolds/<scaffold-name>/` (pages) or `assets/flows/<flow-name>/` (flows) into `coherence-preview/src/experiments/<experiment-id>/` — each is a multi-file folder (see File Structure below)
 4. **Customize each file** — fill in TODOs with real resource names, nav items, toolbar actions, mock data, and page content
 5. **Use the coherence-ui skill** to look up component APIs (fetch the manifest) and design guidance (read reference files)
 6. **Use the azure-mock-data skill** (if installed) to generate realistic fake data for tables, cards, and lists
@@ -88,13 +88,23 @@ coherence-preview/src/experiments/<experiment-id>/
 
 ## Page Types
 
+Single-page scaffolds for individual Azure portal pages.
+
 | Page Type | Description | Scaffold Folder | When to Use |
 |-----------|-------------|-----------------|-------------|
 | **Resource Page** | Standard resource blade with overview content | `assets/scaffolds/azure-resource-page/` | Default for any Azure resource (App Service, VM, Storage, etc.) |
 | **List Page** | Two-column list + detail layout | `assets/scaffolds/azure-list-page/` | APIs, Subscriptions, Products, Endpoints — anything with a selectable list |
-| **Create Flow** | Multi-step wizard with tabbed form | `assets/scaffolds/azure-create-flow/` | "Create a resource", "Add a service", any multi-step creation |
 | **Overview Page** | Essentials panel + card grid | `assets/scaffolds/azure-overview-page/` | Resource overview/dashboard with key metrics and properties |
-| **Multi-Page Flow** | End-to-end flow with multiple pages (Browse → Create → Detail) | `assets/scaffolds/azure-multi-page-flow/` | Testing user journeys that span multiple pages within a single experiment |
+| **Marketplace Browse** | Categories sidebar with two-column service + marketplace grid | `assets/scaffolds/azure-marketplace-browse/` | "Create a resource" landing page, service catalog, marketplace browsing |
+
+## Flow Types
+
+Multi-step or multi-page flows involving navigation between steps or pages.
+
+| Flow Type | Description | Flow Folder | When to Use |
+|-----------|-------------|-------------|-------------|
+| **Create Flow** | Multi-step wizard with tabbed form | `assets/flows/azure-create-flow/` | "Create a resource", "Add a service", any multi-step creation |
+| **Multi-Page Flow** | End-to-end flow with multiple pages (Browse → Create → Detail) | `assets/flows/azure-multi-page-flow/` | Testing user journeys that span multiple pages within a single experiment |
 
 ### Choosing Single-Page vs Multi-Page
 

@@ -79,26 +79,33 @@ export function listUxGuides(): string[] {
 const SCAFFOLD_TYPES = [
   "azure-resource-page",
   "azure-list-page",
-  "azure-create-flow",
   "azure-overview-page",
+  "azure-marketplace-browse",
+] as const;
+
+const FLOW_TYPES = [
+  "azure-create-flow",
+  "azure-multi-page-flow",
 ] as const;
 
 export type ScaffoldType = (typeof SCAFFOLD_TYPES)[number];
+export type FlowType = (typeof FLOW_TYPES)[number];
 
 export function listScaffoldTypes(): string[] {
-  return [...SCAFFOLD_TYPES];
+  return [...SCAFFOLD_TYPES, ...FLOW_TYPES];
 }
 
 export async function getScaffold(
   scaffoldType: string
 ): Promise<Record<string, string> | null> {
-  if (!SCAFFOLD_TYPES.includes(scaffoldType as ScaffoldType)) return null;
-  const dir = path.join(
-    COHERENCE_UI_DIR,
-    "assets",
-    "scaffolds",
-    scaffoldType
-  );
+  let dir: string;
+  if (SCAFFOLD_TYPES.includes(scaffoldType as ScaffoldType)) {
+    dir = path.join(COHERENCE_UI_DIR, "assets", "scaffolds", scaffoldType);
+  } else if (FLOW_TYPES.includes(scaffoldType as FlowType)) {
+    dir = path.join(COHERENCE_UI_DIR, "assets", "flows", scaffoldType);
+  } else {
+    return null;
+  }
 
   try {
     const files = await fs.readdir(dir);

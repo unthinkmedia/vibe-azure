@@ -221,6 +221,12 @@ const scaffolds: Entry[] = [
     description: 'End-to-end flow with Browse → Create → Detail pages in a single experiment using sub-routes',
     component: lazy(() => import('./patterns/ScaffoldMultiPageFlow')),
   },
+  {
+    id: 'scaffold-marketplace-browse',
+    title: 'Marketplace Browse',
+    description: 'Categories sidebar with two-column service + marketplace product grid (matches "Create a resource" landing page)',
+    component: lazy(() => import('./patterns/ScaffoldMarketplaceBrowse')),
+  },
 ];
 
 // All entries combined for lookup

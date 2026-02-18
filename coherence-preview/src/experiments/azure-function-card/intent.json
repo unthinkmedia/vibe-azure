@@ -1,0 +1,18 @@
+{
+  "experimentId": "azure-function-card",
+  "title": "Azure Functions Overview Page Exploration",
+  "vision": "A modern Azure Functions overview page that surfaces function health, invocation trends, and recent failures at a glance — replacing the current flat list with a dashboard-style layout.",
+  "problem": "Developers managing 20+ functions struggle to identify which ones need attention. The current list view requires clicking into each function individually.",
+  "successCriteria": [
+    "Shows aggregated health status per function app · Displays invocation sparklines for the last 24h · Highlights functions with error rate > 5% · Supports filtering by runtime and status"
+  ],
+  "nonGoals": [
+    "Real-time log streaming · Deployment management · Code editing"
+  ],
+  "constraints": [
+    "Must use Coherence components · Desktop viewport only · No backend API calls"
+  ],
+  "createdAt": "2026-02-18T18:18:36.505Z",
+  "updatedAt": "2026-02-18T18:18:36.505Z",
+  "status": "draft"
+}

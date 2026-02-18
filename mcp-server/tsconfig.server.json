@@ -14,5 +14,5 @@
     "sourceMap": true
   },
   "include": ["main.ts", "server.ts", "src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "src/token-browser.ts"]
+  "exclude": ["node_modules", "dist", "src/token-browser.ts", "src/intent-app.ts"]
 }

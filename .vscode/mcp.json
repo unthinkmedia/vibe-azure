@@ -9,6 +9,17 @@
 			"env": {
 				"PATH": "/Users/alexbritez/.nvm/versions/node/v22.18.0/bin:/usr/local/bin:/usr/bin:/bin"
 			}
+		},
+		"coherence-prototyper": {
+			"type": "stdio",
+			"command": "/Users/alexbritez/.nvm/versions/node/v22.18.0/bin/npx",
+			"args": [
+				"tsx",
+				"${workspaceFolder}/mcp-server/main.ts"
+			],
+			"env": {
+				"PATH": "/Users/alexbritez/.nvm/versions/node/v22.18.0/bin:/usr/local/bin:/usr/bin:/bin"
+			}
 		}
 	}
 }

@@ -15,6 +15,9 @@ dist/
 # Playwright
 .playwright-mcp/
 
+# Design intent working files
+.specflow/
+
 # Browser profiles (scraper artifacts)
 .browser-profile/
 

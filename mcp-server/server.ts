@@ -1,9 +1,9 @@
 /**
  * Coherence Prototyper MCP Server
  *
- * Provides tools for Azure portal prototyping with Coherence UI.
- * Complements the VS Code skills — same knowledge, accessible via MCP
- * from Claude Desktop, Claude.ai, or any MCP-compatible host.
+ * MCP Apps only — interactive UIs that render inline in Claude Desktop/Claude.ai.
+ * All reference tools (components, tokens, scaffolds, guides, etc.) are handled
+ * by VS Code skills which are always prioritized.
  */
 
 import {
@@ -17,85 +17,24 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import {
-  lookupComponent,
-  listComponents,
-  searchComponents,
-  type ComponentAPI,
-} from "./src/manifest-cache.js";
-import {
   searchTokens,
   getTokensByCategory,
   getTokenCategories,
   getAllTokens,
 } from "./src/theme-cache.js";
 import {
-  getComponentGuidance,
-  listComponentGuidanceFiles,
-  getUxGuide,
-  listUxGuides,
-  getScaffold,
-  listScaffoldTypes,
-  getAzureIconsReference,
-  getPageTypesReference,
-  getMockDataReference,
-  listMockDataReferences,
-  getTemplateReference,
-  listTemplates,
-  getTaskFlowReference,
-  listTaskFlows,
-  getPatternReference,
-  listPatterns,
-} from "./src/content.js";
+  createIntent,
+  getIntent,
+  listIntents,
+  listExperimentFolders,
+  updateIntent,
+  deleteIntent,
+  formatIntent,
+  formatIntentSummary,
+  type CreateIntentInput,
+} from "./src/intent-store.js";
 
 const DIST_DIR = path.join(import.meta.dirname, "dist");
-
-function formatComponentAPI(c: ComponentAPI): string {
-  let out = `# ${c.tagName} (${c.className})\n\n`;
-  if (c.description) out += `${c.description}\n\n`;
-  if (c.superclass) out += `**Extends:** ${c.superclass}\n\n`;
-
-  if (c.attributes.length > 0) {
-    out += `## Attributes\n\n| Name | Type | Default | Description |\n|------|------|---------|-------------|\n`;
-    for (const a of c.attributes) {
-      out += `| \`${a.name}\` | \`${a.type?.text ?? "string"}\` | ${a.default ?? "—"} | ${a.description ?? ""} |\n`;
-    }
-    out += "\n";
-  }
-
-  if (c.events.length > 0) {
-    out += `## Events\n\n| Name | Type | Description |\n|------|------|-------------|\n`;
-    for (const e of c.events) {
-      out += `| \`${e.name}\` | \`${e.type?.text ?? ""}\` | ${e.description ?? ""} |\n`;
-    }
-    out += "\n";
-  }
-
-  if (c.slots.length > 0) {
-    out += `## Slots\n\n| Name | Description |\n|------|-------------|\n`;
-    for (const s of c.slots) {
-      out += `| \`${s.name || "(default)"}\` | ${s.description ?? ""} |\n`;
-    }
-    out += "\n";
-  }
-
-  if (c.cssProperties.length > 0) {
-    out += `## CSS Custom Properties\n\n| Name | Default | Description |\n|------|---------|-------------|\n`;
-    for (const p of c.cssProperties) {
-      out += `| \`${p.name}\` | ${p.default ?? "—"} | ${p.description ?? ""} |\n`;
-    }
-    out += "\n";
-  }
-
-  if (c.cssParts.length > 0) {
-    out += `## CSS Parts\n\n| Name | Description |\n|------|-------------|\n`;
-    for (const p of c.cssParts) {
-      out += `| \`${p.name}\` | ${p.description ?? ""} |\n`;
-    }
-    out += "\n";
-  }
-
-  return out;
-}
 
 export function createServer(): McpServer {
   const server = new McpServer({
@@ -104,376 +43,212 @@ export function createServer(): McpServer {
   });
 
   // ════════════════════════════════════════════════════════
-  // Tool 1: lookup_component — Fetch component API from manifest
+  // MCP App: Design Intent — interactive intent capture UI
   // ════════════════════════════════════════════════════════
 
-  server.tool(
-    "lookup_component",
-    "Look up a Coherence UI component's API (attributes, events, slots, CSS properties) from the live manifest. Use the tag name (e.g. 'button', 'cui-button') or class name (e.g. 'CuiButton').",
-    { name: z.string().describe("Component name: tag (button, cui-button), class (CuiButton), or slug (data-grid)") },
-    async ({ name }) => {
-      const component = await lookupComponent(name);
-      if (!component) {
-        const all = await listComponents();
-        const suggestions = all
-          .filter((c) => c.tagName.includes(name.toLowerCase()) || c.className.toLowerCase().includes(name.toLowerCase()))
-          .slice(0, 5)
-          .map((c) => c.tagName);
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Component "${name}" not found.${suggestions.length > 0 ? ` Did you mean: ${suggestions.join(", ")}?` : ""}\n\nUse list_components to see all available components.`,
-            },
-          ],
-        };
-      }
-      return {
-        content: [{ type: "text", text: formatComponentAPI(component) }],
-      };
-    }
-  );
+  const intentAppUri = "ui://coherence-prototyper/intent-app.html";
 
-  // ════════════════════════════════════════════════════════
-  // Tool 2: search_components — Search components by keyword
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "search_components",
-    "Search Coherence UI components by keyword across names, descriptions, and attribute names. Returns matching component APIs.",
-    { query: z.string().describe("Search query (e.g. 'table', 'appearance', 'menu')") },
-    async ({ query }) => {
-      const results = await searchComponents(query);
-      if (results.length === 0) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `No components matched "${query}". Try broader terms or use list_components.`,
-            },
-          ],
-        };
-      }
-      let text = `# Search Results: "${query}" (${results.length} matches)\n\n`;
-      for (const c of results.slice(0, 10)) {
-        text += `## ${c.tagName} (${c.className})\n${c.description}\n- ${c.attributes.length} attributes, ${c.events.length} events, ${c.slots.length} slots\n\n`;
-      }
-      if (results.length > 10) {
-        text += `…and ${results.length - 10} more. Narrow your query for details.\n`;
-      }
-      return { content: [{ type: "text", text }] };
-    }
-  );
-
-  // ════════════════════════════════════════════════════════
-  // Tool 3: list_components — List all available components
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "list_components",
-    "List all Coherence UI components with their tag names and descriptions.",
-    {},
-    async () => {
-      const components = await listComponents();
-      let text = `# Coherence UI Components (${components.length})\n\n| Tag | Class | Description |\n|-----|-------|-------------|\n`;
-      for (const c of components) {
-        text += `| \`${c.tagName}\` | ${c.className} | ${c.description.slice(0, 80)}${c.description.length > 80 ? "…" : ""} |\n`;
-      }
-      return { content: [{ type: "text", text }] };
-    }
-  );
-
-  // ════════════════════════════════════════════════════════
-  // Tool 4: get_component_guidance — Design docs for a component
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "get_component_guidance",
-    "Get design guidance for a Coherence UI component: when to use, dos/don'ts, accessibility, anatomy, and code examples. Available for 66 components.",
-    { component: z.string().describe("Component name (e.g. 'button', 'data-grid', 'dialog')") },
-    async ({ component }) => {
-      const guidance = await getComponentGuidance(component);
-      if (!guidance) {
-        const available = await listComponentGuidanceFiles();
-        return {
-          content: [
-            {
-              type: "text",
-              text: `No design guidance found for "${component}". Available: ${available.join(", ")}`,
-            },
-          ],
-        };
-      }
-      return { content: [{ type: "text", text: guidance }] };
-    }
-  );
-
-  // ════════════════════════════════════════════════════════
-  // Tool 5: get_design_tokens — Search/filter design tokens
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "get_design_tokens",
-    "Search or filter Coherence design tokens (CSS custom properties) from the theme. Filter by category or search by name/value. Categories: color-palette, foreground, background, brand, status, stroke, typography, spacing, border, shadow, animation, focus, component-button, component-form, and more.",
+  // Model-facing tool: opens the Intent App UI
+  registerAppTool(
+    server,
+    "design_intent",
     {
-      query: z.string().optional().describe("Search query to filter tokens by name or value"),
-      category: z.string().optional().describe("Filter by category: color-palette, foreground, background, brand, status, stroke, typography, spacing, border, shadow, animation, focus"),
+      title: "Design Intent",
+      description:
+        "Open the Design Intent app to capture What, Why, Success Criteria, and Non-Goals before prototyping. Inspired by the Specflow methodology — optional but recommended as a first step.",
+      inputSchema: {
+        experimentId: z
+          .string()
+          .optional()
+          .describe("Optional experiment folder name to view/edit a specific intent"),
+      },
+      _meta: {
+        ui: { resourceUri: intentAppUri },
+      },
     },
-    async ({ query, category }) => {
-      if (!query && !category) {
-        const categories = await getTokenCategories();
-        let text = `# Design Token Categories\n\n| Category | Count |\n|----------|-------|\n`;
-        for (const c of categories) {
-          text += `| ${c.category} | ${c.count} |\n`;
-        }
-        text += `\nUse \`category\` to filter or \`query\` to search.`;
-        return { content: [{ type: "text", text }] };
-      }
-
-      let tokens: Awaited<ReturnType<typeof searchTokens>>;
-      if (category) {
-        tokens = await getTokensByCategory(category);
-      } else if (query) {
-        tokens = await searchTokens(query);
-      } else {
-        tokens = [];
-      }
-
-      if (tokens.length === 0) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `No tokens found for ${category ? `category "${category}"` : `query "${query}"`}.`,
-            },
-          ],
-        };
-      }
-
-      let text = `# Design Tokens${category ? ` — ${category}` : ""}${query ? ` — "${query}"` : ""} (${tokens.length})\n\n| Token | Value | Category |\n|-------|-------|----------|\n`;
-      for (const t of tokens.slice(0, 100)) {
-        text += `| \`${t.name}\` | \`${t.value}\` | ${t.category} |\n`;
-      }
-      if (tokens.length > 100) {
-        text += `\n…and ${tokens.length - 100} more. Narrow your search.\n`;
-      }
-      return { content: [{ type: "text", text }] };
-    }
-  );
-
-  // ════════════════════════════════════════════════════════
-  // Tool 6: get_scaffold — Get starter files for a page type
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "get_scaffold",
-    "Get the complete starter scaffold for an Azure portal page type or flow. Returns all files (index.tsx, data.ts, styles.ts, etc.) ready to customize. Page scaffolds: azure-resource-page, azure-list-page, azure-overview-page, azure-marketplace-browse. Flow scaffolds: azure-create-flow, azure-multi-page-flow.",
-    { type: z.string().describe("Scaffold or flow type: azure-resource-page, azure-list-page, azure-overview-page, azure-marketplace-browse, azure-create-flow, azure-multi-page-flow") },
-    async ({ type }) => {
-      const scaffold = await getScaffold(type);
-      if (!scaffold) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Unknown scaffold type "${type}". Available: ${listScaffoldTypes().join(", ")}`,
-            },
-          ],
-        };
-      }
-
-      let text = `# Scaffold: ${type}\n\nFiles to copy to \`coherence-preview/src/experiments/<experiment-id>/\`:\n\n`;
-      for (const [filename, content] of Object.entries(scaffold)) {
-        text += `## ${filename}\n\n\`\`\`tsx\n${content}\n\`\`\`\n\n`;
-      }
-      return { content: [{ type: "text", text }] };
-    }
-  );
-
-  // ════════════════════════════════════════════════════════
-  // Tool 7: get_ux_guide — Cross-cutting UX guidance
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "get_ux_guide",
-    "Get Coherence UX design guidance. Guides: accessibility, ai-basics, ai-entry-points, data-visualization, illustration, writing-ui.",
-    { guide: z.string().describe("Guide name: accessibility, ai-basics, ai-entry-points, data-visualization, illustration, writing-ui") },
-    async ({ guide }) => {
-      const content = await getUxGuide(guide);
-      if (!content) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Guide "${guide}" not found. Available: ${listUxGuides().join(", ")}`,
-            },
-          ],
-        };
-      }
-      return { content: [{ type: "text", text: content }] };
-    }
-  );
-
-  // ════════════════════════════════════════════════════════
-  // Tool 8: lookup_azure_icon — Search Azure/Fluent icons
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "lookup_azure_icon",
-    "Search the Azure portal icon reference (Fluent 2 via Iconify). Returns icon names and URLs for navigation, resources, and content areas.",
-    { query: z.string().optional().describe("Optional search term to filter icons") },
-    async ({ query }) => {
-      const ref = await getAzureIconsReference();
-      if (!ref) {
-        return {
-          content: [
-            { type: "text", text: "Azure icons reference not available." },
-          ],
-        };
-      }
-      if (query) {
-        const lines = ref.split("\n");
-        const matches = lines.filter((l) =>
-          l.toLowerCase().includes(query.toLowerCase())
-        );
-        if (matches.length === 0) {
+    async ({ experimentId }) => {
+      const experiments = await listExperimentFolders();
+      if (experimentId) {
+        const intent = await getIntent(experimentId);
+        if (!intent) {
           return {
             content: [
-              {
-                type: "text",
-                text: `No icons matched "${query}". Showing full reference:\n\n${ref}`,
-              },
+              { type: "text", text: `Intent for experiment "${experimentId}" not found.` },
             ],
+            structuredContent: { intents: [], experiments },
           };
         }
         return {
           content: [
-            {
-              type: "text",
-              text: `# Azure Icons matching "${query}"\n\n${matches.join("\n")}`,
-            },
+            { type: "text", text: formatIntent(intent) },
           ],
+          structuredContent: { intents: [intent], experiments },
         };
       }
-      return { content: [{ type: "text", text: ref }] };
+      const intents = await listIntents();
+      let text: string;
+      if (intents.length === 0) {
+        text = "No design intents yet. Use the form to create your first one.";
+      } else {
+        text = `# Design Intents (${intents.length})\n\n| Experiment | Title | Status | Updated |\n|------------|-------|--------|--------|\n`;
+        for (const i of intents) {
+          text += formatIntentSummary(i) + "\n";
+        }
+      }
+      return {
+        content: [{ type: "text", text }],
+        structuredContent: { intents, experiments },
+      };
     }
   );
 
-  // ════════════════════════════════════════════════════════
-  // Tool 9: get_page_type_guidance — Page type anatomy + rules
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "get_page_type_guidance",
-    "Get detailed anatomy, customization guidance, and rules for Azure portal page types (resource page, list page, create flow, overview page).",
-    {},
+  // App-only tool: list intents (called by the UI)
+  registerAppTool(
+    server,
+    "intent_list_data",
+    {
+      description: "List all design intents and available experiment folders",
+      inputSchema: {},
+      _meta: {
+        ui: {
+          resourceUri: intentAppUri,
+          visibility: ["app"],
+        },
+      },
+    },
     async () => {
-      const ref = await getPageTypesReference();
+      const intents = await listIntents();
+      const experiments = await listExperimentFolders();
+      return {
+        content: [
+          { type: "text", text: `${intents.length} intents, ${experiments.length} experiments` },
+        ],
+        structuredContent: { intents, experiments },
+      };
+    }
+  );
+
+  // App-only tool: save (create or update) an intent
+  registerAppTool(
+    server,
+    "intent_save_data",
+    {
+      description: "Create or update a design intent. experimentId is the experiment folder name and serves as the key.",
+      inputSchema: {
+        experimentId: z.string().describe("Experiment folder name (required — serves as the intent key)"),
+        title: z.string().optional(),
+        vision: z.string().optional(),
+        problem: z.string().optional(),
+        successCriteria: z.array(z.string()).optional(),
+        nonGoals: z.array(z.string()).optional(),
+        constraints: z.array(z.string()).optional(),
+        status: z
+          .enum(["draft", "active", "completed", "abandoned"])
+          .optional(),
+      },
+      _meta: {
+        ui: {
+          resourceUri: intentAppUri,
+          visibility: ["app"],
+        },
+      },
+    },
+    async (args) => {
+      let intent;
+      const existing = await getIntent(args.experimentId);
+      if (existing) {
+        intent = await updateIntent(args.experimentId, args);
+        if (!intent) {
+          return {
+            isError: true,
+            content: [
+              { type: "text", text: `Failed to update intent for "${args.experimentId}".` },
+            ],
+          };
+        }
+      } else {
+        if (!args.title || !args.vision) {
+          return {
+            isError: true,
+            content: [
+              {
+                type: "text",
+                text: "Title, vision, and experimentId are required to create an intent.",
+              },
+            ],
+          };
+        }
+        intent = await createIntent(args as CreateIntentInput);
+      }
+      return {
+        content: [
+          { type: "text", text: formatIntent(intent) },
+        ],
+        structuredContent: { intent },
+      };
+    }
+  );
+
+  // App-only tool: delete an intent
+  registerAppTool(
+    server,
+    "intent_delete_data",
+    {
+      description: "Delete a design intent (removes intent.json from the experiment folder)",
+      inputSchema: {
+        experimentId: z.string().describe("Experiment folder name whose intent to delete"),
+      },
+      _meta: {
+        ui: {
+          resourceUri: intentAppUri,
+          visibility: ["app"],
+        },
+      },
+    },
+    async ({ experimentId }) => {
+      const success = await deleteIntent(experimentId);
       return {
         content: [
           {
             type: "text",
-            text: ref ?? "Page types reference not available.",
+            text: success
+              ? `Intent for "${experimentId}" deleted.`
+              : `No intent found for "${experimentId}".`,
           },
         ],
       };
     }
   );
 
-  // ════════════════════════════════════════════════════════
-  // Tool 10: get_composition_pattern — Reusable multi-component patterns
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "get_composition_pattern",
-    "Get a reusable composition pattern for Azure portal UIs. Patterns: azure-portal-header, azure-resource-page-shell, resource-page-toolbar, side-nav-with-iconify.",
-    { pattern: z.string().describe("Pattern name: azure-portal-header, azure-resource-page-shell, resource-page-toolbar, side-nav-with-iconify") },
-    async ({ pattern }) => {
-      const content = await getPatternReference(pattern);
-      if (!content) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Pattern "${pattern}" not found. Available: ${listPatterns().join(", ")}`,
-            },
-          ],
-        };
+  // Resource: Intent App HTML
+  registerAppResource(
+    server,
+    "Design Intent",
+    intentAppUri,
+    {
+      description:
+        "Interactive design intent capture form — define What, Why, Success Criteria, and Non-Goals before prototyping",
+    },
+    async () => {
+      let html: string;
+      try {
+        html = await fs.readFile(
+          path.join(DIST_DIR, "intent-app.html"),
+          "utf-8"
+        );
+      } catch {
+        html =
+          "<html><body><p>Intent app not built. Run <code>npm run build</code> in mcp-server/.</p></body></html>";
       }
-      return { content: [{ type: "text", text: content }] };
-    }
-  );
-
-  // ════════════════════════════════════════════════════════
-  // Tool 11: get_template — Page layout template guidance
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "get_template",
-    "Get Coherence page template guidance (layout patterns). Templates: dashboard, form, settings.",
-    { template: z.string().describe("Template name: dashboard, form, settings") },
-    async ({ template }) => {
-      const content = await getTemplateReference(template);
-      if (!content) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Template "${template}" not found. Available: ${listTemplates().join(", ")}`,
-            },
-          ],
-        };
-      }
-      return { content: [{ type: "text", text: content }] };
-    }
-  );
-
-  // ════════════════════════════════════════════════════════
-  // Tool 12: get_task_flow — Multi-step interaction patterns
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "get_task_flow",
-    "Get task flow guidance for multi-step interactions. Flows: bulk-edit, create-an-item, edit-an-item, favorites, inline-edit, save-presets.",
-    { flow: z.string().describe("Task flow name: bulk-edit, create-an-item, edit-an-item, favorites, inline-edit, save-presets") },
-    async ({ flow }) => {
-      const content = await getTaskFlowReference(flow);
-      if (!content) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Task flow "${flow}" not found. Available: ${listTaskFlows().join(", ")}`,
-            },
-          ],
-        };
-      }
-      return { content: [{ type: "text", text: content }] };
-    }
-  );
-
-  // ════════════════════════════════════════════════════════
-  // Tool 13: get_mock_data_patterns — Mock data generation help
-  // ════════════════════════════════════════════════════════
-
-  server.tool(
-    "get_mock_data_patterns",
-    "Get reference data patterns for generating realistic Azure mock data. References: resource-types, sample-data, status-patterns.",
-    { reference: z.string().describe("Reference: resource-types, sample-data, status-patterns") },
-    async ({ reference }) => {
-      const content = await getMockDataReference(reference);
-      if (!content) {
-        const available = await listMockDataReferences();
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Reference "${reference}" not found. Available: ${available.join(", ")}`,
-            },
-          ],
-        };
-      }
-      return { content: [{ type: "text", text: content }] };
+      return {
+        contents: [
+          {
+            uri: intentAppUri,
+            mimeType: RESOURCE_MIME_TYPE,
+            text: html,
+          },
+        ],
+      };
     }
   );
 

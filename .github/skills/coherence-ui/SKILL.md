@@ -209,6 +209,7 @@ Reusable multi-component patterns extracted from real Azure portal prototypes. R
 |---------|-------------|-----------|
 | Azure Portal Header | Header with search, Copilot button, avatar popover | [references/patterns/azure-portal-header.md](references/patterns/azure-portal-header.md) |
 | Azure Resource Page Shell | Full page scaffold: app frame + header + side nav + breadcrumb + title + toolbar | [references/patterns/azure-resource-page-shell.md](references/patterns/azure-resource-page-shell.md) |
+| Info Message Bar (Blue) | Blue info banner with token overrides for `cui-message-bar intent="info"` | [references/patterns/info-message-bar.md](references/patterns/info-message-bar.md) |
 | Side Nav with Iconify Icons | Side navigation using Iconify SVG URLs with regular/filled pairs | [references/patterns/side-nav-with-iconify.md](references/patterns/side-nav-with-iconify.md) |
 | Resource Page Toolbar | Horizontal action bar with buttons, dividers, and dropdown menus | [references/patterns/resource-page-toolbar.md](references/patterns/resource-page-toolbar.md) |
 
@@ -239,6 +240,17 @@ Cross-cutting design guidance. Read when the topic is relevant.
 | Data Visualization | [references/guides/data-visualization.md](references/guides/data-visualization.md) |
 | Illustration | [references/guides/illustration.md](references/guides/illustration.md) |
 | Writing for UI | [references/guides/writing-ui.md](references/guides/writing-ui.md) |
+
+## Styling Standards & Verification
+
+Codified spacing, typography, color, border, shadow, state, layout, and accessibility rules extracted from the Coherence component library, manifest API, theme CSS, and all established patterns. **Read before building custom UI** and use the **ui-verification** skill to check compliance after.
+
+| Resource | Reference |
+|----------|-----------|
+| Styling Standards Registry | [references/styling-standards.md](references/styling-standards.md) |
+| UI Verification Skill (checklist) | `../../ui-verification/SKILL.md` |
+
+The verification skill cross-references three sources: the standards registry, the live API manifest, and the theme CSS. When it encounters a styling decision with no established standard, it asks the user whether to save it as a new rule.
 
 ## Common Patterns
 

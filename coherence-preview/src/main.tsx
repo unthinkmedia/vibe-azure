@@ -15,6 +15,13 @@ type Entry = {
 // ─── Experiments (with dates, newest first) ───
 const experiments: Entry[] = [
   {
+    id: 'monitor-overview',
+    title: 'Monitor | Overview',
+    description: 'Azure Monitor service overview with full-width blade header, collapsible sidebar, and service card grid (Service Blade layout)',
+    component: lazy(() => import('./experiments/monitor-overview')),
+    date: '2026-02-17',
+  },
+  {
     id: 'readiness-card-variants',
     title: 'Readiness Card Variants',
     description: '4 design explorations of the AI Readiness Score card with prominent, color-coded data values',
@@ -132,6 +139,12 @@ const patterns: Entry[] = [
     description: 'SVG ring gauge with color-coded arc, centered score, category breakdown, and status badge',
     component: lazy(() => import('./patterns/PatternDonutGauge')),
   },
+  {
+    id: 'pattern-service-card',
+    title: 'Service Card',
+    description: 'Outline card with icon, title, description, and bordered action footer (View / More)',
+    component: lazy(() => import('./patterns/PatternServiceCard')),
+  },
 ];
 
 // ─── Page Scaffolds ───
@@ -159,6 +172,12 @@ const scaffolds: Entry[] = [
     title: 'Overview Page',
     description: 'Resource overview with essentials panel and card sections',
     component: lazy(() => import('./patterns/ScaffoldOverviewPage')),
+  },
+  {
+    id: 'scaffold-service-blade',
+    title: 'Service Blade',
+    description: 'Alternate layout with full-width title bar above a collapsible service sidebar + content area (matches Monitor, Defender, etc.)',
+    component: lazy(() => import('./patterns/ScaffoldServiceBlade')),
   },
 ];
 

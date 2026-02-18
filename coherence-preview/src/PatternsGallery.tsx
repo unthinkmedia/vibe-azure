@@ -45,6 +45,12 @@ export default function PatternsGallery() {
           description: 'SVG ring gauge with color-coded arc, centered score, category breakdown, and status badge.',
           tags: ['CuiCard', 'CuiBadge', 'SVG', 'Gauge'],
         },
+        {
+          id: 'pattern-service-card',
+          title: 'Service Card',
+          description: 'Outline card with icon, title, description, and bordered action footer (View / More).',
+          tags: ['CuiCard', 'CuiButton', 'CuiIcon', 'ServiceCard'],
+        },
       ],
     },
     {
@@ -74,6 +80,12 @@ export default function PatternsGallery() {
           title: 'Overview Page',
           description: 'Resource overview with essentials panel (key-value grid) and card sections.',
           tags: ['Essentials', 'Cards', 'Dashboard'],
+        },
+        {
+          id: 'scaffold-service-blade',
+          title: 'Service Blade',
+          description: 'Alternate layout with full-width title bar above a collapsible service sidebar + content. Matches Monitor, Defender, etc.',
+          tags: ['Service', 'Blade', 'Sidebar', 'Monitor'],
         },
       ],
     },

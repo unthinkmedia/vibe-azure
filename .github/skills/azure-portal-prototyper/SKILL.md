@@ -15,6 +15,7 @@ Generate complete Azure portal page prototypes using Coherence UI components (`@
 4. **Use the coherence-ui skill** to look up component APIs (fetch the manifest) and design guidance (read reference files)
 5. **Use the azure-mock-data skill** (if installed) to generate realistic fake data for tables, cards, and lists
 6. **Register the experiment** in `coherence-preview/src/main.tsx` so it appears in the experiment picker (see coherence-live-preview skill)
+7. **Run UI verification** — use the **ui-verification** skill to check all custom styling against the codified standards in `references/standards/styling-standards.md`. Fix any ❌ violations. For any ⚠️ (no standard exists), ask the user if it should be saved as a new standard.
 
 ## File Structure
 

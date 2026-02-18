@@ -12,8 +12,20 @@ This workspace includes agent skills under `.github/skills/`. **Always check if 
 - Design guidance, dos/don'ts, accessibility rules, and code examples for 66 components
 - Page templates (dashboard, form, settings) and task flow patterns (bulk edit, inline edit, favorites)
 - UX guides for accessibility, AI patterns, data visualization, and writing for UI
+- **Composition patterns** — reusable multi-component recipes and token overrides extracted from real prototypes
 
 **How to use it:** Read `.github/skills/coherence-ui/SKILL.md` first. It will direct you to fetch the manifest, theme CSS, or specific reference files as needed. Never guess at component APIs — the manifest is the source of truth.
+
+## pattern-creator
+
+**Trigger:** "save this as a pattern", "create a pattern", "add a composition pattern", "document this pattern", or when a reusable component recipe, workaround, or token override is discovered during prototyping.
+
+**What it provides:**
+- Step-by-step workflow for creating new composition patterns
+- Template for pattern file structure
+- Checklist ensuring all registration points are updated (pattern file, SKILL.md index, memory note)
+
+**How to use it:** Read `.github/skills/pattern-creator/SKILL.md` and follow all four steps. Skipping the registration step means the pattern is invisible to future sessions.
 
 ## Guidance
 

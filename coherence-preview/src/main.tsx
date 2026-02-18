@@ -134,6 +134,12 @@ const patterns: Entry[] = [
     component: lazy(() => import('./patterns/PatternResourceShell')),
   },
   {
+    id: 'pattern-copilot-suggestions',
+    title: 'Copilot Suggestions',
+    description: 'Pill-shaped prompt suggestions with Copilot icon and +N overflow indicator',
+    component: lazy(() => import('./patterns/PatternCopilotSuggestions')),
+  },
+  {
     id: 'pattern-donut-gauge',
     title: 'Donut Gauge Readiness Card',
     description: 'SVG ring gauge with color-coded arc, centered score, category breakdown, and status badge',

@@ -21,10 +21,17 @@ import {
   CuiSearchBox,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../copilot-button';
+import CopilotSuggestions from '../../patterns/CopilotSuggestions';
 import Navigation from './Navigation';
 import PageContent from './PageContent';
 import { serviceName, pageTitle } from './data';
 import { styles } from './styles';
+
+const monitorSuggestions = [
+  'Summarize these Monitor services in a table',
+  'Run an anomaly investigation into my resource',
+  'Catch me up on my alerts',
+];
 
 export default function MonitorOverview() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -100,13 +107,7 @@ export default function MonitorOverview() {
             <CuiButton appearance="subtle" iconOnly size="small" aria-label="More actions">
               <CuiIcon name="more-horizontal" />
             </CuiButton>
-            <CopilotButton />
-            {/* Copilot suggestion pills */}
-            <div className="monitor-copilot-row">
-              <button className="monitor-copilot-pill">Summarize these Monitor services in a table</button>
-              <button className="monitor-copilot-pill">Run an anomaly investigation into my resource</button>
-              <button className="monitor-copilot-pill">Catch me up on my alerts</button>
-            </div>
+            <CopilotSuggestions suggestions={monitorSuggestions} />
           </div>
 
           {/* Subtitle */}

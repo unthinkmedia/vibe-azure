@@ -11,6 +11,8 @@
  *   This blade:  AppFrame navigation slot is unused. Inside slot="main",
  *                a full-width title bar spans the top, with a custom flex
  *                layout below it — collapsible sidebar (left) + content (right).
+ *                The info banner and tabs live inside the content area (to the
+ *                right of the sidebar), not full-width above the body.
  *
  * This matches the real Azure portal pattern where the page title
  * ("Monitor | Overview") always spans full width above the service sidebar,
@@ -36,6 +38,7 @@ import {
 } from '@charm-ux/cui/react';
 import { ServiceCard } from './PatternServiceCard';
 import CopilotButton from '../experiments/copilot-button';
+import CopilotSuggestions from './CopilotSuggestions';
 
 /* ─── Service nav items (customize per service) ─── */
 const navSections = [
@@ -71,6 +74,7 @@ const navSections = [
 export default function ScaffoldServiceBlade() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selected, setSelected] = useState('Overview');
+  const [bannerVisible, setBannerVisible] = useState(true);
 
   /* ─── Customize these ─── */
   const serviceName = 'Monitor';
@@ -82,19 +86,20 @@ export default function ScaffoldServiceBlade() {
       min-width: 320px;
       padding: 0;
       background: var(--neutral-background-1);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
-    /* ─── Full-width title bar (above the sidebar + content row) ─── */
+    /* ─── Full-width blade header area ─── */
     .blade-breadcrumb {
       padding: 4px 16px 0;
-      font-size: var(--font-size-base-200);
-      color: var(--neutral-foreground-3);
     }
     .blade-title-bar {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 4px 16px 8px;
+      gap: 10px;
+      padding: 4px 16px 2px;
     }
     .blade-title {
       margin: 0;
@@ -102,77 +107,15 @@ export default function ScaffoldServiceBlade() {
       font-weight: var(--font-weight-regular);
       color: var(--neutral-foreground-1);
     }
+    .blade-title-bold {
+      font-weight: var(--font-weight-semibold);
+    }
     .blade-subtitle {
       font-size: var(--font-size-base-100);
       color: var(--neutral-foreground-3);
-      margin: 0 0 0 16px;
-      padding-bottom: 4px;
+      margin: 0;
+      padding: 0 16px 4px;
     }
-
-    /* Copilot suggestion pills row */
-    .blade-copilot-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0 16px 8px;
-      flex-wrap: wrap;
-    }
-    .blade-copilot-pill {
-      font-size: var(--font-size-base-200);
-      border-radius: 16px;
-      padding: 4px 12px;
-      border: 1px solid var(--neutral-stroke-2);
-      background: var(--neutral-background-1);
-      color: var(--neutral-foreground-1);
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .blade-copilot-pill:hover {
-      background: var(--neutral-background-3);
-    }
-
-    /* ─── Body: sidebar + content side by side ─── */
-    .blade-body {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-      border-top: 1px solid var(--neutral-stroke-2);
-    }
-
-    /* Collapsible service sidebar */
-    .blade-sidebar {
-      width: 220px;
-      min-width: 220px;
-      border-right: 1px solid var(--neutral-stroke-2);
-      background: var(--neutral-background-1);
-      overflow-y: auto;
-      transition: width 0.2s, min-width 0.2s;
-    }
-    .blade-sidebar.collapsed {
-      width: 0;
-      min-width: 0;
-      overflow: hidden;
-      border-right: none;
-    }
-    .blade-sidebar-toggle {
-      position: absolute;
-      left: 0;
-      top: 0;
-      z-index: 1;
-    }
-
-    /* Content area */
-    .blade-content {
-      flex: 1;
-      overflow-y: auto;
-      background: var(--neutral-background-2);
-      position: relative;
-    }
-    .blade-content-inner {
-      padding: 24px 32px;
-    }
-
-
 
     /* Info message bar — blue Azure style for intent="info" */
     cui-message-bar[intent='info'] {
@@ -181,34 +124,12 @@ export default function ScaffoldServiceBlade() {
       --message-bar-border: 1px solid var(--brand-stroke1);
     }
 
-    /* Card grid for overview content */
-    .blade-card-section {
-      margin-bottom: 24px;
-    }
-    .blade-card-section h2 {
-      font-size: var(--font-size-base-400);
-      font-weight: var(--font-weight-semibold);
-      color: var(--neutral-foreground-1);
-      margin: 0 0 4px;
-    }
-    .blade-card-section p {
-      font-size: var(--font-size-base-200);
-      color: var(--neutral-foreground-3);
-      margin: 0 0 12px;
-    }
-    .blade-card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 12px;
-    }
-
-
     /* Tabs */
     .blade-tabs {
       display: flex;
       gap: 0;
+      padding: 0;
       border-bottom: 1px solid var(--neutral-stroke-2);
-      padding: 0 16px;
     }
     .blade-tab {
       padding: 8px 16px;
@@ -219,11 +140,78 @@ export default function ScaffoldServiceBlade() {
       background: none;
       border-bottom: 2px solid transparent;
       cursor: pointer;
+      font-family: inherit;
     }
     .blade-tab.active {
       color: var(--brand-foreground-link);
       border-bottom-color: var(--brand-foreground-link);
       font-weight: var(--font-weight-semibold);
+    }
+
+    /* ─── Body: sidebar + content ─── */
+    .blade-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Collapsible sidebar */
+    .blade-sidebar {
+      width: 220px;
+      min-width: 220px;
+      border-right: 1px solid var(--neutral-stroke-2);
+      background: var(--neutral-background-1);
+      overflow-y: auto;
+      transition: width 0.2s ease, min-width 0.2s ease;
+    }
+    .blade-sidebar.collapsed {
+      width: 0;
+      min-width: 0;
+      overflow: hidden;
+      border-right: none;
+    }
+
+    /* Sidebar toggle */
+    .blade-sidebar-toggle {
+      position: absolute;
+      top: 8px;
+      z-index: 1;
+    }
+
+    /* Content area */
+    .blade-content {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--neutral-background-1);
+      position: relative;
+    }
+    .blade-content-inner {
+      padding: 24px 24px;
+    }
+
+    /* Card grid for overview content */
+    .blade-card-section {
+      margin-bottom: 28px;
+    }
+    .blade-card-section h2 {
+      font-size: 18px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--neutral-foreground-1);
+      margin: 0 0 4px;
+    }
+    .blade-card-section p {
+      font-size: var(--font-size-base-200);
+      color: var(--neutral-foreground-3);
+      margin: 0 0 14px;
+    }
+    .blade-card-section p a {
+      color: var(--brand-foreground-link);
+      text-decoration: none;
+    }
+    .blade-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
     }
   `;
 
@@ -274,9 +262,9 @@ export default function ScaffoldServiceBlade() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── No navigation slot used — sidebar lives in main ─── */}
+        {/* ─── No navigation slot — sidebar is inside main ─── */}
 
-        {/* ─── Main: Full blade layout ─── */}
+        {/* ─── Main ─── */}
         <div slot="main" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           {/* Breadcrumb — full width */}
           <div className="blade-breadcrumb">
@@ -292,38 +280,27 @@ export default function ScaffoldServiceBlade() {
               style={{ fontSize: '24px' }}
             />
             <h1 className="blade-title">
-              <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{serviceName}</span> | {pageTitle}
+              <span className="blade-title-bold">{serviceName}</span> | {pageTitle}
             </h1>
             <CuiButton appearance="subtle" iconOnly size="small" aria-label="More actions">
               <CuiIcon name="more-horizontal" />
             </CuiButton>
-            {/* Copilot avatar */}
             <CopilotButton />
+            {/* Copilot suggestion pills */}
+            <CopilotSuggestions
+              suggestions={[
+                'Summarize these Monitor services in a table',
+                'Run an anomaly investigation into my resource',
+                'Catch me up on my alerts',
+              ]}
+            />
           </div>
 
-          {/* Copilot suggestion pills */}
-          <div className="blade-copilot-row">
-            <button className="blade-copilot-pill">Summarize these Monitor services in a table</button>
-            <button className="blade-copilot-pill">Run an anomaly investigation into my resource</button>
-            <button className="blade-copilot-pill">Catch me up on my alerts</button>
-          </div>
+          {/* Subtitle */}
+          <p className="blade-subtitle">Microsoft</p>
 
-          {/* Info banner */}
-          <CuiMessageBar intent="info" shape="square" dismissible open>
-            <CuiIcon slot="icon" name="info-filled" label="info" />
-            The Log Analytics agents, used by VM Insights, won't be supported as of August 31, 2024.
-            Plan to migrate to VM Insights on Azure Monitor agent prior to this date.
-            <CuiButton slot="action" appearance="link" href="#">→</CuiButton>
-          </CuiMessageBar>
-
-          {/* Tabs (Overview / Tutorials) */}
-          <div className="blade-tabs">
-            <button className="blade-tab active">Overview</button>
-            <button className="blade-tab">Tutorials</button>
-          </div>
-
-          {/* ─── Blade body: sidebar + content ─── */}
-          <div className="blade-body" style={{ flex: 1 }}>
+          {/* ─── Body: sidebar + content ─── */}
+          <div className="blade-body">
             {/* Collapsible service sidebar */}
             <div className={`blade-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
               <CuiSideNav size="small">
@@ -352,37 +329,49 @@ export default function ScaffoldServiceBlade() {
 
             {/* Content area */}
             <div className="blade-content">
-              {/* Sidebar toggle (visible when collapsed) */}
-              {!sidebarOpen && (
-                <CuiButton
-                  appearance="subtle"
-                  size="small"
-                  iconOnly
-                  aria-label="Expand sidebar"
-                  style={{ position: 'absolute', left: 4, top: 8, zIndex: 1 }}
-                  onClick={() => setSidebarOpen(true)}
-                >
-                  <CuiIcon url="https://api.iconify.design/fluent:chevron-right-24-regular.svg" />
-                </CuiButton>
-              )}
-              {sidebarOpen && (
-                <CuiButton
-                  appearance="subtle"
-                  size="small"
-                  iconOnly
-                  aria-label="Collapse sidebar"
-                  style={{ position: 'absolute', left: 4, top: 8, zIndex: 1 }}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <CuiIcon url="https://api.iconify.design/fluent:chevron-left-24-regular.svg" />
-                </CuiButton>
-              )}
+              {/* Sidebar toggle */}
+              <CuiButton
+                appearance="subtle"
+                size="small"
+                iconOnly
+                aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+                className="blade-sidebar-toggle"
+                style={{ left: 4 }}
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+              >
+                <CuiIcon
+                  url={sidebarOpen
+                    ? 'https://api.iconify.design/fluent:chevron-left-24-regular.svg'
+                    : 'https://api.iconify.design/fluent:chevron-right-24-regular.svg'
+                  }
+                />
+              </CuiButton>
 
-              <div className="blade-content-inner" style={{ paddingLeft: sidebarOpen ? 32 : 40 }}>
+              <div style={{ paddingLeft: 32 }}>
+                {/* Info banner — inside content area */}
+                <CuiMessageBar
+                  intent="info"
+                  shape="square"
+                  dismissible
+                  open={bannerVisible}
+                  onMessageBarHide={() => setBannerVisible(false)}
+                >
+                  <CuiIcon slot="icon" name="info-filled" label="info" />
+                  The Log Analytics agents, used by VM Insights, won't be supported as of August 31, 2024.
+                  Plan to migrate to VM Insights on Azure Monitor agent prior to this date.
+                  <CuiButton slot="action" appearance="link" href="#">→</CuiButton>
+                </CuiMessageBar>
+
+                {/* Tabs — inside content area */}
+                <div className="blade-tabs">
+                  <button className="blade-tab active">Overview</button>
+                  <button className="blade-tab">Tutorials</button>
+                </div>
+
                 {/* ─── Insights section ─── */}
                 <div className="blade-card-section">
                   <h2>Insights</h2>
-                  <p>Use curated monitoring views for specific Azure resources. <a href="#" style={{ color: 'var(--brand-foreground-link)' }}>View all insights</a></p>
+                  <p>Use curated monitoring views for specific Azure resources. <a href="#">View all insights</a></p>
                   <div className="blade-card-grid">
                     {[
                       { title: 'Application Insights', description: "Monitor your app's availability, performance, errors, and usage.", icon: 'app-generic' },
@@ -398,7 +387,7 @@ export default function ScaffoldServiceBlade() {
                 {/* ─── Detection section ─── */}
                 <div className="blade-card-section">
                   <h2>Detection, triage, and diagnosis</h2>
-                  <p>Visualize, analyze, and respond to monitoring data and events. <a href="#" style={{ color: 'var(--brand-foreground-link)' }}>Learn more about monitoring ↗</a></p>
+                  <p>Visualize, analyze, and respond to monitoring data and events. <a href="#">Learn more about monitoring ↗</a></p>
                   <div className="blade-card-grid">
                     {[
                       { title: 'Metrics', description: 'Create charts to monitor and investigate the usage and performance of your Azure resources.', icon: 'data-trending' },

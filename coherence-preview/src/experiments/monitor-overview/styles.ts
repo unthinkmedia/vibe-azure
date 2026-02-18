@@ -35,28 +35,7 @@ export const styles = `
     padding: 0 16px 4px;
   }
 
-  /* Copilot suggestion pills */
-  .monitor-copilot-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 16px 8px;
-    flex-wrap: wrap;
-  }
-  .monitor-copilot-pill {
-    font-size: var(--font-size-base-200);
-    border-radius: 16px;
-    padding: 5px 14px;
-    border: 1px solid var(--neutral-stroke-2);
-    background: var(--neutral-background-1);
-    color: var(--neutral-foreground-1);
-    cursor: pointer;
-    white-space: nowrap;
-    font-family: inherit;
-  }
-  .monitor-copilot-pill:hover {
-    background: var(--neutral-background-3);
-  }
+
 
 
 

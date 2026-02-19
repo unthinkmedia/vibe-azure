@@ -22,6 +22,7 @@ import {
 } from '@charm-ux/cui/react';
 import CopilotButton from '../copilot-button';
 import PageHeader from '../../patterns/PageHeader';
+import AzurePortalNav from '../../patterns/PatternAzurePortalNav';
 import Navigation from './Navigation';
 import PageContent from './PageContent';
 import { serviceName, pageTitle } from './data';
@@ -84,7 +85,8 @@ export default function MonitorOverview() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── No navigation slot — sidebar is inside main ─── */}
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         {/* ─── Main ─── */}
         <div slot="main" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>

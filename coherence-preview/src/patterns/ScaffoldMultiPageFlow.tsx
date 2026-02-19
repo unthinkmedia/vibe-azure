@@ -16,7 +16,6 @@ import {
   CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
   CuiInput,
@@ -28,7 +27,9 @@ import {
   CuiToolbar,
 } from '@charm-ux/cui/react';
 import { useState } from 'react';
+import { azureIcon } from './azure-icons';
 import PageHeader from './PageHeader';
+import AzurePortalNav from './PatternAzurePortalNav';
 
 // ── Inline data for scaffold preview ──
 const experimentId = 'scaffold-multi-page-flow';
@@ -53,13 +54,7 @@ function ScaffoldBrowse({ onNavigate }: { onNavigate: (page: string) => void }) 
         </CuiPopOver>
       </CuiHeader>
 
-      <CuiDrawer slot="navigation" id="navigation-drawer" inline position="start" breakpoint="686px" open>
-        <CuiSideNav size="small">
-          <CuiNavItem label="Home" href="#">
-            <CuiIcon slot="icon" url="https://api.iconify.design/fluent:home-24-regular.svg" />
-          </CuiNavItem>
-        </CuiSideNav>
-      </CuiDrawer>
+      <AzurePortalNav />
 
       <div slot="main">
         <div style={{ padding: '8px 24px 0' }}>
@@ -119,13 +114,7 @@ function ScaffoldCreate({ onNavigate }: { onNavigate: (page: string) => void }) 
         </CuiPopOver>
       </CuiHeader>
 
-      <CuiDrawer slot="navigation" id="navigation-drawer" inline position="start" breakpoint="686px" open>
-        <CuiSideNav size="small">
-          <CuiNavItem label="Home" href="#">
-            <CuiIcon slot="icon" url="https://api.iconify.design/fluent:home-24-regular.svg" />
-          </CuiNavItem>
-        </CuiSideNav>
-      </CuiDrawer>
+      <AzurePortalNav />
 
       <div slot="main" style={{ position: 'relative' }}>
         <div style={{ padding: '8px 32px 0' }}>
@@ -183,18 +172,27 @@ function ScaffoldDetail({ onNavigate }: { onNavigate: (page: string) => void }) 
         </CuiPopOver>
       </CuiHeader>
 
-      <CuiDrawer slot="navigation" id="navigation-drawer" inline position="start" breakpoint="686px" open>
-        <CuiSideNav size="small">
-          <CuiNavItem label="Overview" href="#" selected>
-            <CuiIcon slot="icon" url="https://api.iconify.design/fluent:home-24-regular.svg" selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg" />
-          </CuiNavItem>
-          <CuiNavItem label="Activity log" href="#">
-            <CuiIcon slot="icon" url="https://api.iconify.design/fluent:document-24-regular.svg" />
-          </CuiNavItem>
-        </CuiSideNav>
-      </CuiDrawer>
+      <AzurePortalNav />
 
-      <div slot="main">
+      <div slot="main" style={{ display: 'flex', height: '100%' }}>
+        {/* Section Navigation */}
+        <nav style={{
+          width: 220, minWidth: 220,
+          borderRight: '1px solid var(--neutral-stroke2)',
+          background: 'var(--neutral-background1)',
+          overflowY: 'auto',
+        }}>
+          <CuiSideNav size="small">
+            <CuiNavItem label="Overview" href="#" selected>
+              <CuiIcon slot="icon" name="navigation" />
+            </CuiNavItem>
+            <CuiNavItem label="Activity log" href="#">
+              <CuiIcon slot="icon" url={azureIcon('activity-log')} />
+            </CuiNavItem>
+          </CuiSideNav>
+        </nav>
+
+        <div style={{ flex: 1, overflowY: 'auto' }}>
         <div style={{ padding: '8px 32px 0' }}>
           <CuiBreadcrumb label="Navigation" size="small">
             <CuiBreadcrumbItem>Home</CuiBreadcrumbItem>
@@ -232,6 +230,7 @@ function ScaffoldDetail({ onNavigate }: { onNavigate: (page: string) => void }) 
           <CuiButton appearance="outline" style={{ marginTop: 16 }} onClick={() => onNavigate('browse')}>
             ← Back to list
           </CuiButton>
+        </div>
         </div>
       </div>
     </CuiAppFrame>

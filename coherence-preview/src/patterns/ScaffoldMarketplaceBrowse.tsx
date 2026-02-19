@@ -31,7 +31,9 @@ import {
   CuiSearchBox,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../experiments/copilot-button';
+import { azureIcon } from './azure-icons';
 import PageHeader from './PageHeader';
+import AzurePortalNav from './PatternAzurePortalNav';
 
 // ─── Types ───
 
@@ -89,29 +91,29 @@ const categories: CategoryItem[] = [
 ];
 
 const popularServices: ServiceItem[] = [
-  { name: 'Function App', icon: 'https://api.iconify.design/fluent:flash-24-regular.svg' },
-  { name: 'Web App', icon: 'https://api.iconify.design/fluent:globe-24-regular.svg' },
-  { name: 'Virtual network', icon: 'https://api.iconify.design/fluent:connector-24-regular.svg' },
-  { name: 'Key Vault', icon: 'https://api.iconify.design/fluent:key-24-regular.svg' },
-  { name: 'Virtual machine', icon: 'https://api.iconify.design/fluent:desktop-24-regular.svg' },
-  { name: 'Storage account', icon: 'https://api.iconify.design/fluent:storage-24-regular.svg' },
-  { name: 'Data Factory', icon: 'https://api.iconify.design/fluent:database-plug-connected-24-regular.svg' },
-  { name: 'Logic App', icon: 'https://api.iconify.design/fluent:puzzle-piece-24-regular.svg' },
-  { name: 'Azure Databricks', icon: 'https://api.iconify.design/fluent:data-trending-24-regular.svg' },
-  { name: 'App Service Plan', icon: 'https://api.iconify.design/fluent:app-generic-24-regular.svg' },
+  { name: 'Function App', icon: azureIcon('function-app')! },
+  { name: 'Web App', icon: azureIcon('web-app')! },
+  { name: 'Virtual network', icon: azureIcon('virtual-network')! },
+  { name: 'Key Vault', icon: azureIcon('key-vault')! },
+  { name: 'Virtual machine', icon: azureIcon('virtual-machine')! },
+  { name: 'Storage account', icon: azureIcon('storage-account')! },
+  { name: 'Data Factory', icon: azureIcon('data-factory')! },
+  { name: 'Logic App', icon: azureIcon('logic-app')! },
+  { name: 'Azure Databricks', icon: azureIcon('databricks')! },
+  { name: 'App Service Plan', icon: azureIcon('app-service-plan')! },
 ];
 
 const marketplaceProducts: MarketplaceItem[] = [
-  { name: 'Windows Server 2025 Datacenter: Azure Edition', icon: 'https://api.iconify.design/fluent:window-24-regular.svg' },
-  { name: 'Windows 11 Enterprise, version 25H2', icon: 'https://api.iconify.design/fluent:window-24-regular.svg' },
-  { name: 'Ubuntu Pro 24.04 LTS', icon: 'https://api.iconify.design/fluent:server-24-regular.svg' },
-  { name: 'Free SQL Server License: SQL Server 2022 Developer on Windows Server 2022', icon: 'https://api.iconify.design/fluent:database-24-regular.svg' },
-  { name: 'Red Hat Enterprise Linux10 (latest minor version)', icon: 'https://api.iconify.design/fluent:server-24-regular.svg' },
-  { name: 'Debian 13 "Trixie"', icon: 'https://api.iconify.design/fluent:server-24-regular.svg' },
-  { name: 'Visual Studio 2022 Pro on Windows 10 Enterprise (x64) + Microsoft 365 Apps', icon: 'https://api.iconify.design/fluent:code-24-regular.svg' },
-  { name: 'AlmaLinux OS 9', icon: 'https://api.iconify.design/fluent:server-24-regular.svg' },
-  { name: 'SharePoint Server Subscription Edition Trial', icon: 'https://api.iconify.design/fluent:share-24-regular.svg' },
-  { name: 'Oracle Linux 8.10 (LVM)', icon: 'https://api.iconify.design/fluent:server-24-regular.svg' },
+  { name: 'Windows Server 2025 Datacenter: Azure Edition', icon: azureIcon('virtual-machine')! },
+  { name: 'Windows 11 Enterprise, version 25H2', icon: azureIcon('virtual-machine')! },
+  { name: 'Ubuntu Pro 24.04 LTS', icon: azureIcon('virtual-machine')! },
+  { name: 'Free SQL Server License: SQL Server 2022 Developer on Windows Server 2022', icon: azureIcon('sql-server')! },
+  { name: 'Red Hat Enterprise Linux10 (latest minor version)', icon: azureIcon('virtual-machine')! },
+  { name: 'Debian 13 "Trixie"', icon: azureIcon('virtual-machine')! },
+  { name: 'Visual Studio 2022 Pro on Windows 10 Enterprise (x64) + Microsoft 365 Apps', icon: azureIcon('virtual-machine')! },
+  { name: 'AlmaLinux OS 9', icon: azureIcon('virtual-machine')! },
+  { name: 'SharePoint Server Subscription Edition Trial', icon: azureIcon('virtual-machine')! },
+  { name: 'Oracle Linux 8.10 (LVM)', icon: azureIcon('virtual-machine')! },
 ];
 
 // ─── Styles ───
@@ -371,7 +373,7 @@ export default function ScaffoldMarketplaceBrowse() {
           />
           <CopilotButton slot="search" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
+            <CuiIcon name="code-regular" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
             <CuiIcon name="alert" />
@@ -380,7 +382,7 @@ export default function ScaffoldMarketplaceBrowse() {
             <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
+            <CuiIcon name="info" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
@@ -401,6 +403,9 @@ export default function ScaffoldMarketplaceBrowse() {
             </div>
           </CuiPopOver>
         </CuiHeader>
+
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         {/* ─── Main ─── */}
         <div slot="main" className="mb-page">

@@ -1,5 +1,5 @@
 /**
- * Azure Service Icons — Official Azure Portal icon map.
+ * Azure Icons — Official Azure Portal icon map.
  *
  * Source: https://iconcloud.design/browse/Azure%20Icons
  * CDN:    https://github.com/maskati/azure-icons (extracted from Azure Portal)
@@ -8,17 +8,42 @@
  *   import { azureIcon } from '../patterns/azure-icons';
  *   <CuiIcon url={azureIcon('api-management')} />
  *
- * For UI navigation/action icons (home, settings, search, etc.) continue using
- * Fluent icons via `name` attribute or Iconify URLs — those are generic Fluent 2
- * metaphors, not Azure-branded service icons.
+ * Icon strategy (NO Iconify):
+ *   1. CuiIcon `name` prop for generic UI metaphors (settings, person, info, etc.)
+ *   2. Azure Icons via `url` prop for Azure service & blade-specific icons
+ *   3. NEVER use api.iconify.design URLs
  */
 
 const BASE = 'https://raw.githubusercontent.com/maskati/azure-icons/main/svg';
 
-/** Map of Azure service keys → official portal icon SVG URLs */
+/** Map of Azure icon keys → official portal icon SVG URLs */
 export const AZURE_ICONS: Record<string, string> = {
+  // ─── Navigation / Blade Icons ───
+  'overview':           `${BASE}/Microsoft_AAD_IAM/Overview.svg`,
+  'activity-log':       `${BASE}/Microsoft_Azure_ActivityLog/ActivityLogAsset.svg`,
+  'tags':               `${BASE}/HubsExtension/Tag.svg`,
+  'diagnostics':        `${BASE}/Microsoft_AAD_IAM/DiagnosticsHome.svg`,
+  'policy':             `${BASE}/Microsoft_Azure_Policy/PolicyHub.svg`,
+  'compliance':         `${BASE}/Microsoft_Azure_AppComplianceAutomation/AppComplianceAutomation.svg`,
+  'security':           `${BASE}/Microsoft_AAD_IAM/Security.svg`,
+  'identity':           `${BASE}/Microsoft_AAD_IAM/AzureActiveDirectory.svg`,
+  'resource-groups':    `${BASE}/HubsExtension/ResourceGroups.svg`,
+  'all-resources':      `${BASE}/HubsExtension/BrowseAllResources.svg`,
+  'deployments':        `${BASE}/HubsExtension/Deployments.svg`,
+  'audit-logs':         `${BASE}/Microsoft_AAD_IAM/AuditLogs.svg`,
+  'sign-in-logs':       `${BASE}/Microsoft_AAD_IAM/SignInLogs.svg`,
+  'user-management':    `${BASE}/Microsoft_AAD_IAM/UserManagement.svg`,
+  'groups':             `${BASE}/Microsoft_AAD_IAM/GroupsManagement.svg`,
+  'roles':              `${BASE}/Microsoft_AAD_IAM/AllRolesBlade.svg`,
+  'lockbox':            `${BASE}/Microsoft_Azure_Lockbox/AzureLockbox.svg`,
+  'properties':         `${BASE}/Microsoft_AAD_IAM/TenantProperties.svg`,
+  'portal-settings':    `${BASE}/Microsoft_AAD_IAM/Settings.svg`,
+  'cost-alerts':        `${BASE}/Microsoft_Azure_CostManagement/CostAlerts.svg`,
+  'security-alerts':    `${BASE}/Microsoft_Azure_Security/SecurityAlerts.svg`,
+  'workbooks':          `${BASE}/AppInsightsExtension/Workbooks.svg`,
+
   // ─── App Services ───
-  'function-app':       `${BASE}/WebsitesExtension/Website.svg`,
+  'function-app':       'https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-icons/Function-Apps.svg',
   'web-app':            `${BASE}/WebsitesExtension/Webapp.svg`,
   'app-service':        `${BASE}/WebsitesExtension/Website.svg`,
   'app-service-plan':   `${BASE}/WebsitesExtension/WebHostingPlan.svg`,
@@ -89,10 +114,16 @@ export const AZURE_ICONS: Record<string, string> = {
   'cognitive-services': `${BASE}/Microsoft_Azure_ProjectOxford/CognitiveServices.svg`,
   'bot-service':        `${BASE}/Microsoft_Azure_BotService/BotService.svg`,
 
+  // ─── Advisor & Security ───
+  'advisor':            `${BASE}/Microsoft_Azure_Expert/Advisor.svg`,
+  'defender':           `${BASE}/Microsoft_Azure_Security/SecurityCenter.svg`,
+  'cost-management':    `${BASE}/Microsoft_Azure_CostManagement/CostManagement.svg`,
+
   // ─── Portal & Management ───
   'resource-group':     `${BASE}/HubsExtension/ResourceGroups.svg`,
   'subscription':       `${BASE}/Microsoft_Azure_Billing/Subscription.svg`,
-  'dashboard':          `${BASE}/HubsExtension/Dashboards.svg`,
+  'dashboard':          `${BASE}/Microsoft_Azure_PortalDashboard/Dashboards.svg`,
+  'home':               'https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-cds/general-17-Home.svg',
   'automation':         `${BASE}/Microsoft_Azure_Automation/Account.svg`,
   'batch':              `${BASE}/Microsoft_Azure_Batch/BatchAccount.svg`,
   'grafana':            `${BASE}/Microsoft_Azure_Dashboard/AzureDashboardGrafanaResource.svg`,
@@ -103,9 +134,9 @@ export const AZURE_ICONS: Record<string, string> = {
 };
 
 /**
- * Look up the official Azure service icon URL by key.
+ * Look up the official Azure icon URL by key.
  * Returns `undefined` when there is no mapping — caller should fall back
- * to a Fluent icon via the `name` attribute or Iconify URL.
+ * to a Fluent icon via the CuiIcon `name` attribute.
  */
 export function azureIcon(key: string): string | undefined {
   return AZURE_ICONS[key];

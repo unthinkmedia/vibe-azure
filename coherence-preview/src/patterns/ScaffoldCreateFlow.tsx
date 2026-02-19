@@ -14,22 +14,21 @@ import {
   CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
   CuiInput,
-  CuiNavItem,
   CuiPersona,
   CuiPopOver,
   CuiSearchBox,
   CuiSelect,
-  CuiSideNav,
   CuiTab,
   CuiTabPanel,
   CuiTabs,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../experiments/copilot-button';
+import { azureIcon } from './azure-icons';
 import PageHeader from './PageHeader';
+import AzurePortalNav from './PatternAzurePortalNav';
 
 export default function AzureCreateFlow() {
   const [activeTab, setActiveTab] = useState('basics');
@@ -90,7 +89,7 @@ export default function AzureCreateFlow() {
           />
           <CopilotButton slot="search" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
+            <CuiIcon name="code-regular" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
             <CuiIcon name="alert" />
@@ -99,7 +98,7 @@ export default function AzureCreateFlow() {
             <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
+            <CuiIcon name="info" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
@@ -122,25 +121,8 @@ export default function AzureCreateFlow() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── Minimal Side Nav ─── */}
-        <CuiDrawer
-          slot="navigation"
-          id="navigation-drawer"
-          inline
-          position="start"
-          breakpoint="686px"
-          open
-        >
-          <CuiSideNav size="small">
-            <CuiNavItem label="Home" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:home-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg"
-              />
-            </CuiNavItem>
-          </CuiSideNav>
-        </CuiDrawer>
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         {/* ─── Main Content ─── */}
         <div slot="main">

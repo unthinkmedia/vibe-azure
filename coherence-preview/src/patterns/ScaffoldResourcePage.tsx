@@ -13,7 +13,6 @@ import {
   CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
   CuiNavHeading,
@@ -25,7 +24,9 @@ import {
   CuiToolbar,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../experiments/copilot-button';
+import { azureIcon } from './azure-icons';
 import PageHeader from './PageHeader';
+import AzurePortalNav from './PatternAzurePortalNav';
 
 export default function AzureResourcePage() {
   // TODO: Replace with your page title, resource name, resource type
@@ -39,6 +40,13 @@ export default function AzureResourcePage() {
       min-width: 320px;
       padding: 0;
       background: var(--neutral-background2);
+    }
+    .section-nav {
+      width: 220px;
+      min-width: 220px;
+      border-right: 1px solid var(--neutral-stroke2);
+      background: var(--neutral-background1);
+      overflow-y: auto;
     }
     /* Page header styles provided by shared PageHeader component */
   `;
@@ -58,7 +66,7 @@ export default function AzureResourcePage() {
           />
           <CopilotButton slot="search" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
+            <CuiIcon name="code-regular" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
             <CuiIcon name="alert" />
@@ -67,7 +75,7 @@ export default function AzureResourcePage() {
             <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
+            <CuiIcon name="info" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
@@ -90,75 +98,43 @@ export default function AzureResourcePage() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── Side Navigation ─── */}
-        {/* TODO: Customize nav items for your resource type */}
-        <CuiDrawer
-          slot="navigation"
-          id="navigation-drawer"
-          inline
-          position="start"
-          breakpoint="686px"
-          open
-        >
-          <CuiSideNav size="small">
-            <CuiNavItem label="Overview" href="#" selected>
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:home-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Activity log" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:document-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:document-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Access control (IAM)" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:person-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:person-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Tags" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:tag-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:tag-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Diagnose and solve problems" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:stethoscope-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:stethoscope-24-filled.svg"
-              />
-            </CuiNavItem>
-
-            {/* TODO: Add resource-specific nav sections */}
-            <CuiNavHeading>Settings</CuiNavHeading>
-            <CuiNavItem label="Configuration" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:settings-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:settings-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Properties" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:info-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:info-24-filled.svg"
-              />
-            </CuiNavItem>
-          </CuiSideNav>
-        </CuiDrawer>
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         {/* ─── Main Content ─── */}
-        <div slot="main">
-          {/* Breadcrumb */}
+        <div slot="main" style={{ display: 'flex', height: '100%' }}>
+          {/* ─── Section Navigation ─── */}
+          {/* TODO: Customize nav items for your resource type */}
+          <nav className="section-nav">
+            <CuiSideNav size="small">
+              <CuiNavItem label="Overview" href="#" selected>
+                <CuiIcon slot="icon" name="navigation" />
+              </CuiNavItem>
+              <CuiNavItem label="Activity log" href="#">
+                <CuiIcon slot="icon" url={azureIcon('activity-log')} />
+              </CuiNavItem>
+              <CuiNavItem label="Access control (IAM)" href="#">
+                <CuiIcon slot="icon" name="person" />
+              </CuiNavItem>
+              <CuiNavItem label="Tags" href="#">
+                <CuiIcon slot="icon" url={azureIcon('tags')} />
+              </CuiNavItem>
+              <CuiNavItem label="Diagnose and solve problems" href="#">
+                <CuiIcon slot="icon" url={azureIcon('diagnostics')} />
+              </CuiNavItem>
+              <CuiNavHeading>Settings</CuiNavHeading>
+              <CuiNavItem label="Configuration" href="#">
+                <CuiIcon slot="icon" name="settings" />
+              </CuiNavItem>
+              <CuiNavItem label="Properties" href="#">
+                <CuiIcon slot="icon" name="info" />
+              </CuiNavItem>
+            </CuiSideNav>
+          </nav>
+
+          {/* ─── Page Content ─── */}
+          <div style={{ flex: 1, overflowY: 'auto' }}>
+            {/* Breadcrumb */}
           <div style={{ padding: '8px 32px 0' }}>
             <CuiBreadcrumb label="Navigation" size="small">
               <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
@@ -168,7 +144,7 @@ export default function AzureResourcePage() {
 
           {/* Page title row */}
           <PageHeader
-            icon="https://api.iconify.design/fluent:app-generic-24-regular.svg"
+            icon={azureIcon('app-service')}
             title={`${resourceName} | ${pageTitle}`}
             subtitle={resourceType}
             showFavorite
@@ -194,12 +170,12 @@ export default function AzureResourcePage() {
 
           <CuiDivider style={{ margin: '0' }} />
 
-          {/* ─── Page Content ─── */}
-          {/* TODO: Replace with your page content (tabs, cards, tables, etc.) */}
-          <div style={{ padding: '24px 32px' }}>
-            <p style={{ color: 'var(--neutral-foreground2)' }}>
-              Page content goes here.
-            </p>
+            {/* TODO: Replace with your page content (tabs, cards, tables, etc.) */}
+            <div style={{ padding: '24px 32px' }}>
+              <p style={{ color: 'var(--neutral-foreground2)' }}>
+                Page content goes here.
+              </p>
+            </div>
           </div>
         </div>
       </CuiAppFrame>

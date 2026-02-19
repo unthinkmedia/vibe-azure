@@ -14,7 +14,6 @@ import {
   CuiButton,
   CuiCheckbox,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
   CuiNavHeading,
@@ -25,7 +24,9 @@ import {
   CuiSideNav,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../experiments/copilot-button';
+import { azureIcon } from './azure-icons';
 import PageHeader from './PageHeader';
+import AzurePortalNav from './PatternAzurePortalNav';
 
 export default function AzureListPage() {
   // TODO: Replace with your resource and page details
@@ -39,6 +40,13 @@ export default function AzureListPage() {
       min-width: 320px;
       padding: 0;
       background: var(--neutral-background2);
+    }
+    .section-nav {
+      width: 220px;
+      min-width: 220px;
+      border-right: 1px solid var(--neutral-stroke2);
+      background: var(--neutral-background1);
+      overflow-y: auto;
     }
 
     /* Two-column layout */
@@ -102,7 +110,7 @@ export default function AzureListPage() {
           />
           <CopilotButton slot="search" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
+            <CuiIcon name="code-regular" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
             <CuiIcon name="alert" />
@@ -111,7 +119,7 @@ export default function AzureListPage() {
             <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
+            <CuiIcon name="info" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
@@ -134,54 +142,34 @@ export default function AzureListPage() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── Side Navigation ─── */}
-        {/* TODO: Customize nav items */}
-        <CuiDrawer
-          slot="navigation"
-          id="navigation-drawer"
-          inline
-          position="start"
-          breakpoint="686px"
-          open
-        >
-          <CuiSideNav size="small">
-            <CuiNavItem label="Overview" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:home-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Activity log" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:document-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:document-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Access control (IAM)" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:person-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:person-24-filled.svg"
-              />
-            </CuiNavItem>
-
-            {/* TODO: Add resource-specific sections */}
-            <CuiNavHeading>Resources</CuiNavHeading>
-            <CuiNavItem label={pageTitle} href="#" selected>
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:list-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:list-24-filled.svg"
-              />
-            </CuiNavItem>
-          </CuiSideNav>
-        </CuiDrawer>
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         {/* ─── Main Content ─── */}
-        <div slot="main">
-          {/* Breadcrumb */}
+        <div slot="main" style={{ display: 'flex', height: '100%' }}>
+          {/* ─── Section Navigation ─── */}
+          {/* TODO: Customize nav items */}
+          <nav className="section-nav">
+            <CuiSideNav size="small">
+              <CuiNavItem label="Overview" href="#">
+                <CuiIcon slot="icon" name="navigation" />
+              </CuiNavItem>
+              <CuiNavItem label="Activity log" href="#">
+                <CuiIcon slot="icon" url={azureIcon('activity-log')} />
+              </CuiNavItem>
+              <CuiNavItem label="Access control (IAM)" href="#">
+                <CuiIcon slot="icon" name="person" />
+              </CuiNavItem>
+              <CuiNavHeading>Resources</CuiNavHeading>
+              <CuiNavItem label={pageTitle} href="#" selected>
+                <CuiIcon slot="icon" name="task-list" />
+              </CuiNavItem>
+            </CuiSideNav>
+          </nav>
+
+          {/* ─── Page Content ─── */}
+          <div style={{ flex: 1, overflowY: 'auto' }}>
+            {/* Breadcrumb */}
           <div style={{ padding: '8px 32px 0' }}>
             <CuiBreadcrumb label="Navigation" size="small">
               <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
@@ -243,6 +231,7 @@ export default function AzureListPage() {
                 Select an item from the list or add a new one.
               </p>
             </div>
+          </div>
           </div>
         </div>
       </CuiAppFrame>

@@ -27,7 +27,7 @@ import {
 } from '@charm-ux/cui/react';
 import CopilotButton from '../copilot-button';
 import PageHeader from '../../patterns/PageHeader';
-import Navigation from './Navigation';
+import AzurePortalNav from '../../patterns/PatternAzurePortalNav';
 import PageContent from './PageContent';
 import { resourceName, resourceType, copilotSuggestions } from './data';
 import { styles } from './styles';
@@ -80,8 +80,8 @@ export default function ContainerAppsOverview() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── Side Navigation ─── */}
-        <Navigation />
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         {/* ─── Main Content ─── */}
         <div slot="main">

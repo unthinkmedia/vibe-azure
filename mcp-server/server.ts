@@ -33,6 +33,7 @@ import {
   formatIntentSummary,
   type CreateIntentInput,
 } from "./src/intent-store.js";
+import { getAllIcons, searchIcons } from "./src/icon-data.js";
 
 const DIST_DIR = path.join(import.meta.dirname, "dist");
 
@@ -368,6 +369,133 @@ export function createServer(): McpServer {
         contents: [
           {
             uri: tokenBrowserUri,
+            mimeType: RESOURCE_MIME_TYPE,
+            text: html,
+          },
+        ],
+      };
+    }
+  );
+
+  // ════════════════════════════════════════════════════════
+  // MCP App: browse_icons — Visual icon browser
+  // ════════════════════════════════════════════════════════
+
+  const iconBrowserUri = "ui://coherence-prototyper/icon-browser.html";
+
+  registerAppTool(
+    server,
+    "browse_icons",
+    {
+      title: "Icon Browser",
+      description:
+        "Open an interactive visual browser for all Azure portal icons, Coherence/Fluent UI icons, and curated icon mappings. " +
+        "Shows icon images in a searchable grid. ALWAYS extract the icon keyword from the user's request and pass it as the `query` param " +
+        "(e.g. 'Help me find a Home icon' → query='Home'). The UI opens pre-filtered so the user can visually browse and click \"Use this icon\" " +
+        "to confirm their selection. After this tool returns, tell the user to browse and select their icon in the UI. " +
+        "Once the user confirms their selection, READ mcp-server/.icon-selection.json for the full icon details (name, source, url, usage snippet) " +
+        "and use that icon in subsequent code. If the file doesn't exist, the user hasn't selected yet — ask them to pick one.",
+      inputSchema: {
+        query: z
+          .string()
+          .optional()
+          .describe("Search query extracted from user's request — e.g. 'Home', 'storage', 'key vault'. ALWAYS extract this from the user's message."),
+        source: z
+          .enum(["curated", "cui-builtin", "azure-portal", "icon-collection"])
+          .optional()
+          .describe("Optional source filter: curated (friendly aliases), cui-builtin (Fluent UI), azure-portal (full inventory)"),
+        category: z
+          .string()
+          .optional()
+          .describe("Optional category to pre-filter, e.g. 'Networking', 'Compute', 'Security', 'Fluent UI — Simple'"),
+      },
+      _meta: {
+        ui: { resourceUri: iconBrowserUri },
+      },
+    },
+    async ({ query, source, category }) => {
+      const result = await searchIcons({ query, source, category, limit: 500 });
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Showing ${result.icons.length} of ${result.total} icons${query ? ` matching "${query}"` : ""}${source ? ` from ${source}` : ""}${category ? ` in "${category}"` : ""}. The Icon Browser is now open — the user can browse, search, and click "Use this icon" to select one. After they select, read mcp-server/.icon-selection.json for the chosen icon details.`,
+          },
+        ],
+        structuredContent: {
+          icons: result.icons,
+          total: result.total,
+          sources: result.sources,
+          categories: result.categories,
+          prefillQuery: query ?? null,
+          prefillSource: source ?? null,
+          prefillCategory: category ?? null,
+        },
+      };
+    }
+  );
+
+  // App-only tool: save icon selection (called by the UI when user clicks "Use this icon")
+  registerAppTool(
+    server,
+    "icon_select_data",
+    {
+      description: "Save the user's icon selection to .icon-selection.json",
+      inputSchema: {
+        id: z.string().describe("Icon id"),
+        name: z.string().describe("Icon display name"),
+        source: z.string().describe("Icon source: curated, cui-builtin, azure-portal, icon-collection"),
+        category: z.string().describe("Icon category"),
+        url: z.string().nullable().describe("SVG URL or null for cui-builtin icons"),
+        cuiName: z.string().optional().describe("CuiIcon name attribute for cui-builtin icons"),
+        usage: z.string().describe("Code snippet showing how to use this icon"),
+      },
+      _meta: {
+        ui: {
+          resourceUri: iconBrowserUri,
+          visibility: ["app"],
+        },
+      },
+    },
+    async (args) => {
+      const selection = {
+        ...args,
+        selectedAt: new Date().toISOString(),
+      };
+      const selectionPath = path.join(import.meta.dirname, ".icon-selection.json");
+      await fs.writeFile(selectionPath, JSON.stringify(selection, null, 2));
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Icon "${args.name}" selected. Usage: ${args.usage}`,
+          },
+        ],
+        structuredContent: { selection },
+      };
+    }
+  );
+
+  registerAppResource(
+    server,
+    "Icon Browser",
+    iconBrowserUri,
+    { description: "Interactive visual browser for Azure & Coherence icons" },
+    async () => {
+      let html: string;
+      try {
+        html = await fs.readFile(
+          path.join(DIST_DIR, "icon-browser.html"),
+          "utf-8"
+        );
+      } catch {
+        html =
+          "<html><body><p>Icon browser not built. Run <code>npm run build</code> in mcp-server/.</p></body></html>";
+      }
+      return {
+        contents: [
+          {
+            uri: iconBrowserUri,
             mimeType: RESOURCE_MIME_TYPE,
             text: html,
           },

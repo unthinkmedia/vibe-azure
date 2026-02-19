@@ -2,6 +2,7 @@
  * Pattern Demo: Page Header
  * Shows all PageHeader variants: resource page, browse/list, create flow, service blade.
  */
+import { azureIcon } from './azure-icons';
 import PageHeader from './PageHeader';
 
 export default function PatternPageHeader() {
@@ -16,7 +17,7 @@ export default function PatternPageHeader() {
         <h3>Resource Page</h3>
         <div style={{ border: '1px solid var(--neutral-stroke2)', borderRadius: 8, padding: '8px 0', marginBottom: 24 }}>
           <PageHeader
-            icon="https://api.iconify.design/fluent:plug-connected-24-regular.svg"
+            icon={azureIcon('api-management')}
             title="apim-contoso-prod | Overview"
             subtitle="API Management service"
             showFavorite
@@ -52,7 +53,7 @@ export default function PatternPageHeader() {
         <h3>Service Blade (mixed-weight title)</h3>
         <div style={{ border: '1px solid var(--neutral-stroke2)', borderRadius: 8, padding: '8px 0', marginBottom: 24 }}>
           <PageHeader
-            icon="https://api.iconify.design/fluent:pulse-24-regular.svg"
+            icon={azureIcon('monitor')}
             title={<><strong>Monitor</strong> | Overview</>}
             subtitle="Microsoft"
             titleWeight="regular"
@@ -67,7 +68,7 @@ export default function PatternPageHeader() {
         <h3>Minimal (no subtitle, no suggestions)</h3>
         <div style={{ border: '1px solid var(--neutral-stroke2)', borderRadius: 8, padding: '8px 0', marginBottom: 24 }}>
           <PageHeader
-            icon="https://api.iconify.design/fluent:app-generic-24-regular.svg"
+            icon={azureIcon('app-service')}
             title="myStorageAccount"
             showFavorite
             showMoreActions={false}

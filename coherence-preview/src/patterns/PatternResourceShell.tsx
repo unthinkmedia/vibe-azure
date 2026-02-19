@@ -10,7 +10,6 @@ import {
   CuiButton,
   CuiCard,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
   CuiMenu,
@@ -24,6 +23,8 @@ import {
   CuiToolbar,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../experiments/copilot-button';
+import { azureIcon } from './azure-icons';
+import AzurePortalNav from './PatternAzurePortalNav';
 
 export default function PatternResourceShell() {
   const styles = `
@@ -32,6 +33,13 @@ export default function PatternResourceShell() {
       min-width: 320px;
       padding: 0;
       background: var(--neutral-background2);
+    }
+    .section-nav {
+      width: 220px;
+      min-width: 220px;
+      border-right: 1px solid var(--neutral-stroke2);
+      background: var(--neutral-background1);
+      overflow-y: auto;
     }
     .page-header {
       display: flex;
@@ -90,7 +98,7 @@ export default function PatternResourceShell() {
           />
           <CopilotButton slot="search" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
+            <CuiIcon name="code-regular" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
             <CuiIcon name="alert" />
@@ -99,7 +107,7 @@ export default function PatternResourceShell() {
             <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
+            <CuiIcon name="info" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
@@ -122,64 +130,38 @@ export default function PatternResourceShell() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── Side Nav Pattern ─── */}
-        <CuiDrawer
-          slot="navigation"
-          id="navigation-drawer"
-          inline
-          position="start"
-          breakpoint="686px"
-          open
-        >
-          <CuiSideNav size="small">
-            <CuiNavItem label="Overview" href="#" selected>
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:home-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Activity log" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:document-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:document-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Access control (IAM)" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:person-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:person-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Tags" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:tag-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:tag-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavHeading>Settings</CuiNavHeading>
-            <CuiNavItem label="Configuration" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:settings-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:settings-24-filled.svg"
-              />
-            </CuiNavItem>
-            <CuiNavItem label="Properties" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:info-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:info-24-filled.svg"
-              />
-            </CuiNavItem>
-          </CuiSideNav>
-        </CuiDrawer>
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         {/* ─── Main Content ─── */}
-        <div slot="main">
+        <div slot="main" style={{ display: 'flex', height: '100%' }}>
+          {/* ─── Section Navigation ─── */}
+          <nav className="section-nav">
+            <CuiSideNav size="small">
+              <CuiNavItem label="Overview" href="#" selected>
+                <CuiIcon slot="icon" name="navigation" />
+              </CuiNavItem>
+              <CuiNavItem label="Activity log" href="#">
+                <CuiIcon slot="icon" url={azureIcon('activity-log')} />
+              </CuiNavItem>
+              <CuiNavItem label="Access control (IAM)" href="#">
+                <CuiIcon slot="icon" name="person" />
+              </CuiNavItem>
+              <CuiNavItem label="Tags" href="#">
+                <CuiIcon slot="icon" url={azureIcon('tags')} />
+              </CuiNavItem>
+              <CuiNavHeading>Settings</CuiNavHeading>
+              <CuiNavItem label="Configuration" href="#">
+                <CuiIcon slot="icon" name="settings" />
+              </CuiNavItem>
+              <CuiNavItem label="Properties" href="#">
+                <CuiIcon slot="icon" name="info" />
+              </CuiNavItem>
+            </CuiSideNav>
+          </nav>
+
+          {/* ─── Page Content ─── */}
+          <div style={{ flex: 1, overflowY: 'auto' }}>
           {/* Breadcrumb */}
           <div style={{ padding: '8px 32px 0' }}>
             <CuiBreadcrumb label="Navigation" size="small">
@@ -192,7 +174,7 @@ export default function PatternResourceShell() {
           {/* Title row */}
           <div className="page-header">
             <CuiIcon
-              url="https://api.iconify.design/fluent:app-generic-24-regular.svg"
+              url={azureIcon('app-service')}
               style={{ fontSize: '24px' }}
             />
             <h1 className="resource-title">app-contoso-prod | Overview</h1>
@@ -238,7 +220,7 @@ export default function PatternResourceShell() {
               <p>
                 This page demonstrates all 4 composition patterns working together:
                 <strong> Azure Portal Header</strong> (top bar),
-                <strong> Side Nav with Iconify Icons</strong> (left drawer),
+                <strong> Side Nav with Azure Icons</strong> (left drawer),
                 <strong> Resource Page Toolbar</strong> (action bar),
                 and the overall <strong>page shell</strong> (AppFrame + breadcrumb + title).
               </p>
@@ -253,7 +235,7 @@ export default function PatternResourceShell() {
               <CuiCard appearance="outline">
                 <div slot="heading">Pattern: Side Nav</div>
                 <p style={{ margin: 0, color: 'var(--neutral-foreground2)', fontSize: 13 }}>
-                  CuiDrawer + CuiSideNav with Iconify regular/filled icon pairs
+                  CuiDrawer + CuiSideNav with CuiIcon name + Azure Icons
                 </p>
               </CuiCard>
               <CuiCard appearance="outline">
@@ -269,6 +251,7 @@ export default function PatternResourceShell() {
                 </p>
               </CuiCard>
             </div>
+          </div>
           </div>
         </div>
       </CuiAppFrame>

@@ -1,0 +1,22 @@
+{
+  "experimentId": "network-security-dashboard",
+  "title": "Azure Network Security Dashboard",
+  "vision": "A comprehensive Azure Network Security Dashboard page that provides a real-time view of network threats, firewall events, and NSG compliance. Features a threat summary bar showing blocked attacks (last 24h), active DDoS mitigations, and open NSG rule violations. Includes a geographic attack map showing top source countries with threat counts, a filterable table of recent firewall events, and a side panel with NSG recommendations grouped by priority.",
+  "problem": "Network security teams lack a unified view of threats, firewall activity, and NSG compliance across their Azure infrastructure. They need to quickly assess the current threat landscape, investigate recent firewall events, and act on NSG recommendations — currently requiring navigation across multiple Azure portal blades.",
+  "successCriteria": [
+    "Threat summary bar with blocked attacks count, active DDoS mitigations, and open NSG rule violations",
+    "Geographic attack map showing top source countries with threat counts",
+    "Filterable table of recent firewall events with columns: timestamp, source IP, destination, action (allow/deny), rule name, severity badge",
+    "Side panel showing NSG recommendations grouped by priority (critical, high, medium)",
+    "Copilot suggestions: 'Which NSG rules are too permissive?' and 'Show me denied traffic from the last hour'"
+  ],
+  "nonGoals": [],
+  "constraints": [
+    "Single page layout with side panel",
+    "Mock data only",
+    "Coherence design system components"
+  ],
+  "createdAt": "2026-02-19T18:37:29.877Z",
+  "updatedAt": "2026-02-19T20:44:07.391Z",
+  "status": "draft"
+}

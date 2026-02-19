@@ -136,7 +136,7 @@ export function ServiceCard({
   ensureStyles();
 
   const resolvedIconUrl =
-    iconUrl ?? (icon ? `https://api.iconify.design/fluent:${icon}-24-regular.svg` : undefined);
+    iconUrl ?? (icon ? azureIcon(icon) : undefined);
 
   return (
     <CuiCard
@@ -162,7 +162,7 @@ export function ServiceCard({
         <CuiButton appearance="link" size="small" onClick={onView}>
           <CuiIcon
             slot="start"
-            url="https://api.iconify.design/fluent:eye-24-regular.svg"
+            name="eye"
             style={{ fontSize: 14 }}
           />
           View
@@ -185,22 +185,22 @@ const demoCards = [
   {
     title: 'Application Insights',
     description: "Monitor your app's availability, performance, errors, and usage.",
-    icon: 'app-generic',
+    icon: 'application-insights',
   },
   {
     title: 'Container Insights',
     description: 'Gain visibility into the performance and health of your controllers, nodes, and containers.',
-    icon: 'box',
+    icon: 'kubernetes',
   },
   {
     title: 'VM Insights',
     description: 'Monitor the health, performance, and dependencies of your VMs and VM scale sets.',
-    icon: 'desktop',
+    icon: 'virtual-machine',
   },
   {
     title: 'Network Insights',
     description: 'View the health and metrics for all deployed network resources.',
-    icon: 'globe',
+    icon: 'virtual-network',
   },
 ];
 

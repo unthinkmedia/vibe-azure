@@ -6,22 +6,20 @@ import {
   CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
   CuiInput,
-  CuiNavItem,
   CuiPersona,
   CuiPopOver,
   CuiSearchBox,
   CuiSelect,
-  CuiSideNav,
   CuiTab,
   CuiTabPanel,
   CuiTabs,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../../copilot-button';
 import PageHeader from '../../../patterns/PageHeader';
+import AzurePortalNav from '../../../patterns/PatternAzurePortalNav';
 import {
   resourceTypeLabel,
   tabLabels,
@@ -111,13 +109,8 @@ export default function CreatePage() {
           </CuiPopOver>
         </CuiHeader>
 
-        <CuiDrawer slot="navigation" id="navigation-drawer" inline position="start" breakpoint="686px" open>
-          <CuiSideNav size="small">
-            <CuiNavItem label="Home" href="#apim-flow">
-              <CuiIcon slot="icon" url="https://api.iconify.design/fluent:home-24-regular.svg" selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg" />
-            </CuiNavItem>
-          </CuiSideNav>
-        </CuiDrawer>
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         <div slot="main" style={{ position: 'relative' }}>
           <div style={{ padding: '8px 32px 0' }}>

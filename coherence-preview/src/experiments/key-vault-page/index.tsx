@@ -5,7 +5,6 @@ import {
   CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
   CuiPersona,
@@ -15,7 +14,7 @@ import {
 import CopilotButton from '../copilot-button';
 import { resourceName } from './data';
 import { styles } from './styles';
-import { Navigation } from './Navigation';
+import AzurePortalNav from '../../patterns/PatternAzurePortalNav';
 import { PageContent } from './PageContent';
 
 export default function KeyVaultPage() {
@@ -66,17 +65,8 @@ export default function KeyVaultPage() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── Side Navigation ─── */}
-        <CuiDrawer
-          slot="navigation"
-          id="navigation-drawer"
-          inline
-          position="start"
-          breakpoint="686px"
-          open
-        >
-          <Navigation />
-        </CuiDrawer>
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         {/* ─── Main Content ─── */}
         <div slot="main">

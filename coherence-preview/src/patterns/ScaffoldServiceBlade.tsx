@@ -38,35 +38,37 @@ import {
 } from '@charm-ux/cui/react';
 import { ServiceCard } from './PatternServiceCard';
 import CopilotButton from '../experiments/copilot-button';
-import PageHeader from './PageHeader';
+import CopilotSuggestions from './CopilotSuggestions';
+import { azureIcon } from './azure-icons';
+import AzurePortalNav from './PatternAzurePortalNav';
 
 /* ─── Service nav items (customize per service) ─── */
 const navSections = [
   {
     heading: null,
     items: [
-      { label: 'Overview', icon: 'home', selected: true },
-      { label: 'Activity log', icon: 'document' },
-      { label: 'Alerts', icon: 'alert' },
-      { label: 'Issues (preview)', icon: 'warning' },
-      { label: 'Metrics', icon: 'data-trending' },
-      { label: 'Logs', icon: 'notebook' },
-      { label: 'Change Analysis', icon: 'arrow-sync' },
-      { label: 'Service health', icon: 'heart-pulse' },
-      { label: 'Workbooks', icon: 'book-open' },
+      { label: 'Overview', name: 'navigation', selected: true },
+      { label: 'Activity log', azureIconKey: 'activity-log' },
+      { label: 'Alerts', name: 'alert' },
+      { label: 'Issues (preview)', name: 'warning' },
+      { label: 'Metrics', azureIconKey: 'monitor' },
+      { label: 'Logs', azureIconKey: 'audit-logs' },
+      { label: 'Change Analysis', name: 'arrow-sync' },
+      { label: 'Service health', azureIconKey: 'diagnostics' },
+      { label: 'Workbooks', azureIconKey: 'workbooks' },
     ],
   },
   {
     heading: 'Insights',
     items: [
-      { label: 'Insights', icon: 'lightbulb' },
+      { label: 'Insights', azureIconKey: 'application-insights' },
     ],
   },
   {
     heading: 'Settings',
     items: [
-      { label: 'Settings', icon: 'settings' },
-      { label: 'Support + Troubleshooting', icon: 'chat-help' },
+      { label: 'Settings', name: 'settings' },
+      { label: 'Support + Troubleshooting', name: 'chat' },
     ],
   },
 ];
@@ -85,7 +87,7 @@ export default function ScaffoldServiceBlade() {
     [slot='main'] {
       min-width: 320px;
       padding: 0;
-      background: var(--neutral-background1);
+      background: var(--neutral-background-1);
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -95,7 +97,27 @@ export default function ScaffoldServiceBlade() {
     .blade-breadcrumb {
       padding: 4px 16px 0;
     }
-    /* Title bar styles provided by shared PageHeader component */
+    .blade-title-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 16px 2px;
+    }
+    .blade-title {
+      margin: 0;
+      font-size: 20px;
+      font-weight: var(--font-weight-regular);
+      color: var(--neutral-foreground-1);
+    }
+    .blade-title-bold {
+      font-weight: var(--font-weight-semibold);
+    }
+    .blade-subtitle {
+      font-size: var(--font-size-base-100);
+      color: var(--neutral-foreground-3);
+      margin: 0;
+      padding: 0 16px 4px;
+    }
 
     /* Info message bar — blue Azure style for intent="info" */
     cui-message-bar[intent='info'] {
@@ -109,13 +131,13 @@ export default function ScaffoldServiceBlade() {
       display: flex;
       gap: 0;
       padding: 0;
-      border-bottom: 1px solid var(--neutral-stroke2);
+      border-bottom: 1px solid var(--neutral-stroke-2);
     }
     .blade-tab {
       padding: 8px 16px;
-      font-size: var(--font-size-base300);
+      font-size: var(--font-size-base-300);
       font-weight: var(--font-weight-regular);
-      color: var(--neutral-foreground2);
+      color: var(--neutral-foreground-2);
       border: none;
       background: none;
       border-bottom: 2px solid transparent;
@@ -125,7 +147,7 @@ export default function ScaffoldServiceBlade() {
     .blade-tab.active {
       color: var(--brand-foreground-link);
       border-bottom-color: var(--brand-foreground-link);
-      font-weight: var(--font-weight-semi-bold);
+      font-weight: var(--font-weight-semibold);
     }
 
     /* ─── Body: sidebar + content ─── */
@@ -139,8 +161,8 @@ export default function ScaffoldServiceBlade() {
     .blade-sidebar {
       width: 220px;
       min-width: 220px;
-      border-right: 1px solid var(--neutral-stroke2);
-      background: var(--neutral-background1);
+      border-right: 1px solid var(--neutral-stroke-2);
+      background: var(--neutral-background-1);
       overflow-y: auto;
       transition: width 0.2s ease, min-width 0.2s ease;
     }
@@ -162,7 +184,7 @@ export default function ScaffoldServiceBlade() {
     .blade-content {
       flex: 1;
       overflow-y: auto;
-      background: var(--neutral-background1);
+      background: var(--neutral-background-1);
       position: relative;
     }
     .blade-content-inner {
@@ -175,13 +197,13 @@ export default function ScaffoldServiceBlade() {
     }
     .blade-card-section h2 {
       font-size: 18px;
-      font-weight: var(--font-weight-semi-bold);
-      color: var(--neutral-foreground1);
+      font-weight: var(--font-weight-semibold);
+      color: var(--neutral-foreground-1);
       margin: 0 0 4px;
     }
     .blade-card-section p {
-      font-size: var(--font-size-base200);
-      color: var(--neutral-foreground3);
+      font-size: var(--font-size-base-200);
+      color: var(--neutral-foreground-3);
       margin: 0 0 14px;
     }
     .blade-card-section p a {
@@ -208,9 +230,9 @@ export default function ScaffoldServiceBlade() {
             hideLabel
             placeholder="Search resources, services, and docs (G+/)"
           />
-          <CopilotButton slot="search" />
+          <CopilotButton slot="overflow-actions" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
+            <CuiIcon name="code-regular" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
             <CuiIcon name="alert" />
@@ -219,7 +241,7 @@ export default function ScaffoldServiceBlade() {
             <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
+            <CuiIcon name="info" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
@@ -242,7 +264,10 @@ export default function ScaffoldServiceBlade() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── No navigation slot — sidebar is inside main ─── */}
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
+
+        {/* ─── No section navigation slot — sidebar is inside main ─── */}
 
         {/* ─── Main ─── */}
         <div slot="main" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -254,18 +279,30 @@ export default function ScaffoldServiceBlade() {
           </div>
 
           {/* Title bar — full width */}
-          <PageHeader
-            icon="https://api.iconify.design/fluent:pulse-24-regular.svg"
-            title={<><strong>{serviceName}</strong> | {pageTitle}</>}
-            subtitle="Microsoft"
-            titleWeight="regular"
-            copilotSuggestions={[
-              'Summarize these Monitor services in a table',
-              'Run an anomaly investigation into my resource',
-              'Catch me up on my alerts',
-            ]}
-            horizontalPadding="16px"
-          />
+          <div className="blade-title-bar">
+            <CuiIcon
+              url={azureIcon('monitor')}
+              style={{ fontSize: '24px' }}
+            />
+            <h1 className="blade-title">
+              <span className="blade-title-bold">{serviceName}</span> | {pageTitle}
+            </h1>
+            <CuiButton appearance="subtle" iconOnly size="small" aria-label="More actions">
+              <CuiIcon name="more-horizontal" />
+            </CuiButton>
+            <CopilotButton />
+            {/* Copilot suggestion pills */}
+            <CopilotSuggestions
+              suggestions={[
+                'Summarize these Monitor services in a table',
+                'Run an anomaly investigation into my resource',
+                'Catch me up on my alerts',
+              ]}
+            />
+          </div>
+
+          {/* Subtitle */}
+          <p className="blade-subtitle">Microsoft</p>
 
           {/* ─── Body: sidebar + content ─── */}
           <div className="blade-body">
@@ -283,11 +320,11 @@ export default function ScaffoldServiceBlade() {
                         selected={selected === item.label ? true : undefined}
                         onClick={() => setSelected(item.label)}
                       >
-                        <CuiIcon
-                          slot="icon"
-                          url={`https://api.iconify.design/fluent:${item.icon}-24-regular.svg`}
-                          selectedUrl={`https://api.iconify.design/fluent:${item.icon}-24-filled.svg`}
-                        />
+                        {item.name ? (
+                          <CuiIcon slot="icon" name={item.name} />
+                        ) : (
+                          <CuiIcon slot="icon" url={azureIcon(item.azureIconKey!)} />
+                        )}
                       </CuiNavItem>
                     ))}
                   </span>
@@ -308,24 +345,23 @@ export default function ScaffoldServiceBlade() {
                 onClick={() => setSidebarOpen(!sidebarOpen)}
               >
                 <CuiIcon
-                  url={sidebarOpen
-                    ? 'https://api.iconify.design/fluent:chevron-left-24-regular.svg'
-                    : 'https://api.iconify.design/fluent:chevron-right-24-regular.svg'
-                  }
+                  name={sidebarOpen ? 'chevron-left' : 'arrow-right'}
                 />
               </CuiButton>
 
               <div style={{ paddingLeft: 32 }}>
-                {/* Info banner — arrow variant (navigable, not dismissible) */}
+                {/* Info banner — inside content area */}
                 <CuiMessageBar
                   intent="info"
                   shape="square"
-                  open
+                  dismissible
+                  open={bannerVisible}
+                  onMessageBarHide={() => setBannerVisible(false)}
                 >
                   <CuiIcon slot="icon" name="info-filled" label="info" />
                   The Log Analytics agents, used by VM Insights, won't be supported as of August 31, 2024.
                   Plan to migrate to VM Insights on Azure Monitor agent prior to this date.
-                  <CuiButton slot="action" appearance="link" href="#" aria-label="Learn about migration">→</CuiButton>
+                  <CuiButton slot="action" appearance="link" href="#">→</CuiButton>
                 </CuiMessageBar>
 
                 {/* Tabs — inside content area */}

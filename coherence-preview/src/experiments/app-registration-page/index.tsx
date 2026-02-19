@@ -9,7 +9,7 @@ import {
   CuiPopOver,
   CuiSearchBox,
 } from '@charm-ux/cui/react';
-import Navigation from './Navigation';
+import AzurePortalNav from '../../patterns/PatternAzurePortalNav';
 import PageContent from './PageContent';
 import { headerTitle } from './data';
 import { styles } from './styles';
@@ -71,8 +71,8 @@ export default function AppRegistrationPage() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── Side Navigation ─── */}
-        <Navigation />
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         {/* ─── Main Content ─── */}
         <PageContent />

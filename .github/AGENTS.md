@@ -46,6 +46,18 @@ This workspace includes agent skills under `.github/skills/`. **Always check if 
 
 **Key principle:** The intent form is the designer's chance to review and refine the AI's interpretation of their request before building begins. The AI always makes a best guess from the prompt — the designer confirms or adjusts, then clicks "Save" to kick off the build with full context.
 
+## Icon Browser
+
+**Trigger:** Any request to find, search, browse, or pick an icon — e.g. "find me a home icon", "what icon should I use for storage?", "browse icons", "show me networking icons".
+
+**Rule:** **ALWAYS call the `browse_icons` MCP tool** instead of answering with a text-based icon list. Extract the keyword from the user's request and pass it as the `query` parameter (e.g. "find a home icon" → `query="Home"`). This opens the interactive Icon Browser where the user can visually browse, filter by source/category, and click "Use this icon" to confirm their selection. After the user selects, read `mcp-server/.icon-selection.json` for the chosen icon details.
+
+## Token Browser
+
+**Trigger:** Any request to find, search, browse, view, or look up design tokens — e.g. "show me the color tokens", "what spacing tokens are available?", "browse tokens", "find a background token", "show me brand colors", "what's the token for error red?".
+
+**Rule:** **ALWAYS call the `browse_design_tokens` MCP tool** instead of answering with a text-based token list or guessing token names. If the user's request implies a specific category, pass it as the `category` parameter (e.g. "show me brand colors" → `category="brand"`, "what spacing tokens exist?" → `category="spacing"`). Valid categories: `color-palette`, `foreground`, `background`, `brand`, `status`, `stroke`, `typography`, `spacing`, `border`, `shadow`, `animation`, `focus`. If no specific category is implied, omit the parameter to show all tokens. This opens the interactive Token Browser where the user can visually browse swatches/values, filter by category, and search by name. Never invent or guess token names — the Token Browser is the source of truth.
+
 ## Guidance
 
 ### Experiment Workflow — Mandatory Intent Phase

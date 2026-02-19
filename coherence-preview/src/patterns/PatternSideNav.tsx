@@ -1,6 +1,8 @@
 /**
- * Pattern Demo: Side Nav with Iconify Icons
- * Isolated preview of Azure-style side navigation with icon pairs.
+ * Pattern Demo: Side Nav with Azure Icons
+ * Isolated preview of Azure-style side navigation.
+ * Uses CuiIcon `name` for generic concepts, Azure Icons CDN for service/blade icons.
+ * NO Iconify URLs.
  */
 import {
   CuiDivider,
@@ -11,19 +13,26 @@ import {
   CuiSideNav,
 } from '@charm-ux/cui/react';
 import { useState } from 'react';
+import { azureIcon } from './azure-icons';
 
-const navItems = [
-  { label: 'Overview', icon: 'home', section: null },
-  { label: 'Activity log', icon: 'document', section: null },
-  { label: 'Access control (IAM)', icon: 'person', section: null },
-  { label: 'Tags', icon: 'tag', section: null },
-  { label: 'Diagnose and solve problems', icon: 'stethoscope', section: null },
-  { label: 'APIs', icon: 'plug-connected', section: 'APIs' },
-  { label: 'Products', icon: 'box', section: 'APIs' },
-  { label: 'Subscriptions', icon: 'key', section: 'APIs' },
-  { label: 'Configuration', icon: 'settings', section: 'Settings' },
-  { label: 'Properties', icon: 'info', section: 'Settings' },
-  { label: 'Networking', icon: 'globe', section: 'Settings' },
+/**
+ * Icon strategy for nav items:
+ *   - `name`: use CuiIcon registered name (generic UI metaphors)
+ *   - `azureIcon`: key into azure-icons.ts (Azure service/blade icons from iconcloud.design)
+ *   Only ONE should be set per item.
+ */
+const navItems: { label: string; name?: string; azureIcon?: string; section: string | null }[] = [
+  { label: 'Overview',                     name: 'navigation',   section: null },
+  { label: 'Activity log',                 azureIcon: 'activity-log', section: null },
+  { label: 'Access control (IAM)',         name: 'person',       section: null },
+  { label: 'Tags',                         azureIcon: 'tags',    section: null },
+  { label: 'Diagnose and solve problems',  azureIcon: 'diagnostics', section: null },
+  { label: 'APIs',                         azureIcon: 'api-management', section: 'APIs' },
+  { label: 'Products',                     azureIcon: 'api-center', section: 'APIs' },
+  { label: 'Subscriptions',               azureIcon: 'subscription', section: 'APIs' },
+  { label: 'Configuration',               name: 'settings',     section: 'Settings' },
+  { label: 'Properties',                  name: 'info',         section: 'Settings' },
+  { label: 'Networking',                   azureIcon: 'virtual-network', section: 'Settings' },
 ];
 
 export default function PatternSideNav() {
@@ -58,33 +67,36 @@ export default function PatternSideNav() {
                       setSelected(item.label);
                     }}
                   >
-                    <CuiIcon
-                      slot="icon"
-                      url={`https://api.iconify.design/fluent:${item.icon}-24-regular.svg`}
-                      selectedUrl={`https://api.iconify.design/fluent:${item.icon}-24-filled.svg`}
-                    />
+                    {item.name ? (
+                      <CuiIcon slot="icon" name={item.name} />
+                    ) : (
+                      <CuiIcon
+                        slot="icon"
+                        url={azureIcon(item.azureIcon!)}
+                      />
+                    )}
                   </CuiNavItem>
                 </span>
               );
             })}
             <CuiDivider />
             <CuiNavItem label="Developer portal" href="#">
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:globe-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:globe-24-filled.svg"
-              />
+              <CuiIcon slot="icon" name="open" />
             </CuiNavItem>
           </CuiSideNav>
         </CuiDrawer>
 
         <div style={{ flex: 1, padding: 32, color: 'var(--neutral-foreground2)' }}>
-          <h2 style={{ marginTop: 0 }}>Side Nav with Iconify Icons Pattern</h2>
+          <h2 style={{ marginTop: 0 }}>Side Nav with Azure Icons Pattern</h2>
           <p>
             Selected: <strong style={{ color: 'var(--neutral-foreground1)' }}>{selected}</strong>
           </p>
           <p>Components: <code>CuiDrawer</code>, <code>CuiSideNav</code>, <code>CuiNavItem</code>, <code>CuiNavHeading</code>, <code>CuiIcon</code></p>
-          <h3>Icon URL Pattern</h3>
+          <h3>Icon Strategy (NO Iconify)</h3>
+          <ol style={{ lineHeight: 1.8 }}>
+            <li><strong>CuiIcon <code>name</code></strong> — generic UI concepts (settings, person, info, etc.)</li>
+            <li><strong>Azure Icons CDN</strong> — Azure service & blade icons from <code>azure-icons.ts</code></li>
+          </ol>
           <pre style={{
             background: 'var(--neutral-background3)',
             padding: 12,
@@ -92,12 +104,16 @@ export default function PatternSideNav() {
             fontSize: 13,
             overflow: 'auto',
           }}>
-{`Regular:  https://api.iconify.design/fluent:{name}-24-regular.svg
-Filled:   https://api.iconify.design/fluent:{name}-24-filled.svg`}
+{`// Generic concept (registered Fluent icon)
+<CuiIcon slot="icon" name="settings" />
+
+// Azure service/blade icon (from iconcloud.design)
+import { azureIcon } from './azure-icons';
+<CuiIcon slot="icon" url={azureIcon('api-management')} />`}
           </pre>
           <h3>Key Features</h3>
           <ul style={{ lineHeight: 1.8 }}>
-            <li>Regular/filled icon pairs toggle on selection via <code>url</code> / <code>selectedUrl</code></li>
+            <li>No external Iconify dependency — icons load from CDN or are bundled</li>
             <li><code>CuiNavHeading</code> creates labeled section groups</li>
             <li><code>CuiDivider</code> separates major sections</li>
             <li><code>inline</code> + <code>breakpoint</code> collapses to hamburger on small screens</li>

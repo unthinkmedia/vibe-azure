@@ -7,19 +7,16 @@ import {
   CuiButton,
   CuiCard,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
-  CuiNavHeading,
-  CuiNavItem,
   CuiPersona,
   CuiPopOver,
   CuiSearchBox,
-  CuiSideNav,
   CuiToolbar,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../../copilot-button';
 import PageHeader from '../../../patterns/PageHeader';
+import AzurePortalNav from '../../../patterns/PatternAzurePortalNav';
 import {
   resourceName,
   overviewTitle,
@@ -27,7 +24,6 @@ import {
   serviceEssentials,
   apis,
   apiSubscriptions,
-  overviewNavSections,
 } from '../data';
 import { styles } from '../styles';
 
@@ -74,21 +70,8 @@ export default function OverviewPage() {
           </CuiPopOver>
         </CuiHeader>
 
-        <CuiDrawer slot="navigation" id="navigation-drawer" inline position="start" breakpoint="686px" open>
-          <CuiSideNav size="small">
-            {overviewNavSections.map((section, si) => (
-              <div key={si}>
-                {section.dividerBefore && <CuiDivider />}
-                {section.heading && <CuiNavHeading>{section.heading}</CuiNavHeading>}
-                {section.items.map((item) => (
-                  <CuiNavItem key={item.label} label={item.label} href="#" selected={item.selected || undefined}>
-                    <CuiIcon slot="icon" url={item.icon} selectedUrl={item.iconFilled} />
-                  </CuiNavItem>
-                ))}
-              </div>
-            ))}
-          </CuiSideNav>
-        </CuiDrawer>
+        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalNav />
 
         <div slot="main">
           <div style={{ padding: '8px 32px 0' }}>

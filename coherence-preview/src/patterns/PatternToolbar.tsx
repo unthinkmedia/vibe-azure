@@ -39,7 +39,7 @@ export default function PatternToolbar() {
           <CuiButton appearance="subtle" size="small">
             <CuiIcon
               slot="start"
-              url="https://api.iconify.design/fluent:column-edit-24-regular.svg"
+              name="edit"
               label="Edit columns"
             />
             Edit columns

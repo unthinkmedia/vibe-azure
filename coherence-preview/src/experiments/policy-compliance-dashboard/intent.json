@@ -1,0 +1,28 @@
+{
+  "experimentId": "policy-compliance-dashboard",
+  "title": "Azure Policy Compliance Dashboard",
+  "vision": "A comprehensive Azure Policy compliance dashboard showing an overall compliance score (donut gauge or percentage), non-compliant resources grouped by policy initiative with expandable sections, and a remediation tasks list with status, affected resources, and action buttons. Follows standard Azure portal dashboard layout with Coherence components.",
+  "problem": "Azure administrators lack a single-pane-of-glass view to understand their overall policy compliance posture, identify which initiatives have the most non-compliant resources, and track remediation progress — forcing them to navigate multiple blades.",
+  "successCriteria": [
+    "Overall compliance score displayed as a donut gauge with percentage",
+    "Non-compliant resources grouped by policy initiative with counts and severity",
+    "Expandable initiative sections showing individual non-compliant resources",
+    "Remediation tasks list with status badges, affected resource counts, and action buttons",
+    "Summary cards for total policies, compliant vs non-compliant counts, and pending remediations",
+    "Filtering and sorting capabilities on the resource and task lists"
+  ],
+  "nonGoals": [
+    "Policy authoring or editing",
+    "Real-time data from Azure Resource Graph",
+    "Role-based access control"
+  ],
+  "constraints": [
+    "Single page dashboard layout",
+    "Mock data only — no live Azure connections",
+    "Use Coherence design system components (cui-*)",
+    "Use shared patterns (PageHeader, DonutGauge) from patterns directory"
+  ],
+  "createdAt": "2026-02-18T23:20:42.797Z",
+  "updatedAt": "2026-02-18T23:20:42.797Z",
+  "status": "draft"
+}

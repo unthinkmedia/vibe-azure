@@ -21,6 +21,9 @@ dist/
 # Browser profiles (scraper artifacts)
 .browser-profile/
 
+# Icon SVG cache
+.icon-cache/
+
 # Nested git repos
 charm-pilot/
 

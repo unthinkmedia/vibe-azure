@@ -1,3 +1,11 @@
+/**
+ * Azure Policy Compliance Dashboard
+ *
+ * Overall compliance score donut gauge, non-compliant resources grouped by
+ * policy initiative with expandable detail tables, and a filterable
+ * remediation tasks list with status badges and action buttons.
+ */
+import { useState } from 'react';
 import {
   CuiAppFrame,
   CuiAvatar,
@@ -12,12 +20,22 @@ import {
   CuiSearchBox,
 } from '@charm-ux/cui/react';
 import CopilotButton from '../copilot-button';
+import PageHeader from '../../patterns/PageHeader';
 import AzurePortalNav from '../../patterns/PatternAzurePortalNav';
+import Navigation from './Navigation';
 import PageContent from './PageContent';
-import { resourceName, pageTitle, resourceType } from './data';
+import { serviceName, pageTitle } from './data';
 import { styles } from './styles';
 
-export default function AiHubPage() {
+const copilotSuggestions = [
+  'Which initiatives have the most critical violations?',
+  'Summarize my remediation progress this week',
+  'Show me resources failing PCI DSS policies',
+];
+
+export default function PolicyComplianceDashboard() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   return (
     <>
       <CuiAppFrame skipToMainText="Skip to main content">
@@ -68,35 +86,55 @@ export default function AiHubPage() {
         {/* ─── Global Navigation (hamburger menu) ─── */}
         <AzurePortalNav />
 
-        {/* ─── Main Content ─── */}
-        <div slot="main">
-          <div style={{ padding: '8px 32px 0' }}>
+        {/* ─── Main ─── */}
+        <div slot="main" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {/* Breadcrumb */}
+          <div className="pcd-breadcrumb">
             <CuiBreadcrumb label="Navigation" size="small">
               <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
-              <CuiBreadcrumbItem href="#">App Services</CuiBreadcrumbItem>
-              <CuiBreadcrumbItem href="#">{resourceName}</CuiBreadcrumbItem>
-              <CuiBreadcrumbItem active current="page">{pageTitle}</CuiBreadcrumbItem>
+              <CuiBreadcrumbItem href="#">Policy</CuiBreadcrumbItem>
             </CuiBreadcrumb>
           </div>
 
-          <div className="aihub-page-header">
-            <CuiIcon
-              url="https://api.iconify.design/fluent:brain-circuit-24-regular.svg"
-              style={{ fontSize: '24px' }}
-            />
-            <h1 className="aihub-resource-title">
-              {resourceName} | {pageTitle}
-            </h1>
-            <CuiButton appearance="subtle" iconOnly size="small">
-              <CuiIcon name="star" />
-            </CuiButton>
-            <CuiButton appearance="subtle" iconOnly size="small">
-              <CuiIcon name="more-horizontal" />
-            </CuiButton>
-          </div>
-          <p className="aihub-resource-subtitle">{resourceType}</p>
+          {/* Title */}
+          <PageHeader
+            icon="https://api.iconify.design/fluent:shield-checkmark-24-regular.svg"
+            title={<><strong>{serviceName}</strong> | {pageTitle}</>}
+            subtitle="Contoso Engineering (3 subscriptions)"
+            copilotSuggestions={copilotSuggestions}
+            titleWeight="regular"
+            horizontalPadding="16px"
+          />
 
-          <PageContent />
+          {/* Body: sidebar + content */}
+          <div className="pcd-body">
+            <div className={`pcd-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
+              <Navigation />
+            </div>
+
+            <div className="pcd-content">
+              <CuiButton
+                appearance="subtle"
+                size="small"
+                iconOnly
+                aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+                className="pcd-sidebar-toggle"
+                style={{ left: 4 }}
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+              >
+                <CuiIcon
+                  url={sidebarOpen
+                    ? 'https://api.iconify.design/fluent:chevron-left-24-regular.svg'
+                    : 'https://api.iconify.design/fluent:chevron-right-24-regular.svg'
+                  }
+                />
+              </CuiButton>
+
+              <div style={{ paddingLeft: 32 }}>
+                <PageContent />
+              </div>
+            </div>
+          </div>
         </div>
       </CuiAppFrame>
       <style>{styles}</style>

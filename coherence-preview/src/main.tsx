@@ -33,6 +33,20 @@ function parseHash(hash: string, entries: Entry[]): { entryId: string | null; su
 // ─── Experiments (with dates, newest first) ───
 const experiments: Entry[] = [
   {
+    id: 'network-security-dashboard',
+    title: 'Azure Network Security Dashboard',
+    description: 'Threat summary bar, geographic attack map, filterable firewall events table, and NSG recommendations side panel with Copilot suggestions',
+    component: lazy(() => import('./experiments/network-security-dashboard')),
+    date: '2026-02-19',
+  },
+  {
+    id: 'policy-compliance-dashboard',
+    title: 'Azure Policy Compliance Dashboard',
+    description: 'Overall compliance score donut gauge, non-compliant resources grouped by policy initiative with expandable details, and filterable remediation tasks list with status badges and actions',
+    component: lazy(() => import('./experiments/policy-compliance-dashboard')),
+    date: '2026-02-18',
+  },
+  {
     id: 'deployment-risk-scorecard',
     title: 'Deployment Risk Scorecard',
     description: 'Assess blast radius and risk level of pending infrastructure deployments with risk summary, deployments queue, dependency graph, risk breakdown, and config diff preview',
@@ -221,6 +235,12 @@ const patterns: Entry[] = [
     title: 'Side Nav with Iconify',
     description: 'Side navigation with regular/filled Iconify icon pairs and section headings',
     component: lazy(() => import('./patterns/PatternSideNav')),
+  },
+  {
+    id: 'pattern-azure-portal-nav',
+    title: 'Azure Portal Global Nav',
+    description: 'Portal-wide hamburger menu with Create a resource, Home, Dashboard, All services, and Favorites',
+    component: lazy(() => import('./patterns/PatternAzurePortalNav')),
   },
   {
     id: 'pattern-toolbar',

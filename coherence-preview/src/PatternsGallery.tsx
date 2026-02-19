@@ -34,6 +34,12 @@ export default function PatternsGallery() {
           tags: ['CuiDrawer', 'CuiSideNav', 'CuiNavItem', 'CuiIcon'],
         },
         {
+          id: 'pattern-azure-portal-nav',
+          title: 'Azure Portal Global Nav',
+          description: 'Portal-wide hamburger menu with Create a resource, Home, Dashboard, All services, and Favorites.',
+          tags: ['CuiDrawer', 'CuiSideNav', 'CuiNavItem', 'Global Nav'],
+        },
+        {
           id: 'pattern-toolbar',
           title: 'Resource Page Toolbar',
           description: 'Horizontal action bar with subtle buttons, vertical dividers, and dropdown menus.',

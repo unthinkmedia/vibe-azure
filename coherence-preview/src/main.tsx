@@ -299,6 +299,12 @@ const patterns: Entry[] = [
     description: 'Outline card with icon, title, description, and bordered action footer (View / More)',
     component: lazy(() => import('./patterns/PatternServiceCard')),
   },
+  {
+    id: 'pattern-filter-panel',
+    title: 'Filter Panel',
+    description: 'Functional filter bar with search, filter pills with multi-select dropdowns, dismissible tags, and filtered data table',
+    component: lazy(() => import('./patterns/PatternFilterPanel')),
+  },
 ];
 
 // ─── Page Scaffolds ───
@@ -497,7 +503,7 @@ function App() {
           </a>
           <span style={{ color: 'var(--neutral-foreground3)', fontSize: 14 }}>|</span>
           <span style={{ fontSize: 14, fontWeight: 600 }}>{activeEntry.title}</span>
-          <IntentButton experimentId={activeEntry.id} />
+          {experiments.some(e => e.id === activeEntry.id) && <IntentButton experimentId={activeEntry.id} />}
           <ShareButton experimentId={activeEntry.id} experimentTitle={activeEntry.title} />
         </div>
         <Suspense fallback={<div style={{ padding: 32 }}>Loading…</div>}>

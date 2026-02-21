@@ -159,21 +159,29 @@ export default function ScaffoldServiceBlade() {
       border-right: none;
     }
 
-    /* Sidebar toggle */
-    .blade-sidebar-toggle {
-      position: absolute;
-      top: 8px;
-      z-index: 1;
+    /* Toggle strip — thin column between sidebar and content */
+    .blade-toggle-strip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 28px;
+      min-width: 28px;
+      padding-top: 8px;
+      background: var(--neutral-background-1);
+      border-right: 1px solid var(--neutral-stroke-2);
     }
 
     /* Content area */
     .blade-content {
       flex: 1;
-      overflow-y: auto;
+      overflow: hidden;
       background: var(--neutral-background-1);
-      position: relative;
+      display: flex;
+      flex-direction: row;
     }
     .blade-content-inner {
+      flex: 1;
+      overflow-y: auto;
       padding: 24px 24px;
     }
 
@@ -308,22 +316,20 @@ export default function ScaffoldServiceBlade() {
 
             {/* Content area */}
             <div className="blade-content">
-              {/* Sidebar toggle */}
-              <CuiButton
-                appearance="subtle"
-                size="small"
-                iconOnly
-                aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-                className="blade-sidebar-toggle"
-                style={{ left: 4 }}
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-              >
-                <CuiIcon
-                  name={sidebarOpen ? 'chevron-left' : 'arrow-right'}
-                />
-              </CuiButton>
+              {/* Sidebar toggle strip */}
+              <div className="blade-toggle-strip">
+                <CuiButton
+                  appearance="subtle"
+                  size="small"
+                  iconOnly
+                  aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                >
+                  <CuiIcon name={sidebarOpen ? 'chevron-left' : 'arrow-right'} />
+                </CuiButton>
+              </div>
 
-              <div style={{ paddingLeft: 32 }}>
+              <div className="blade-content-inner">
                 {/* Info banner — inside content area */}
                 <CuiMessageBar
                   intent="info"

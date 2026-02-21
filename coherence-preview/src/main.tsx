@@ -304,40 +304,16 @@ const patterns: Entry[] = [
 // ─── Page Scaffolds ───
 const scaffolds: Entry[] = [
   {
-    id: 'scaffold-resource-page',
-    title: 'Resource Page',
-    description: 'Standard Azure resource blade with header, side nav, toolbar, and content area',
-    component: lazy(() => import('./patterns/ScaffoldResourcePage')),
-  },
-  {
-    id: 'scaffold-list-page',
-    title: 'List Page',
-    description: 'Two-column layout with scrollable list panel and detail area',
-    component: lazy(() => import('./patterns/ScaffoldListPage')),
-  },
-  {
     id: 'scaffold-create-flow',
     title: 'Create Flow',
     description: 'Multi-step creation wizard with tabbed form and action bar',
     component: lazy(() => import('./patterns/ScaffoldCreateFlow')),
   },
   {
-    id: 'scaffold-overview-page',
-    title: 'Overview Page',
-    description: 'Resource overview with essentials panel and card sections',
-    component: lazy(() => import('./patterns/ScaffoldOverviewPage')),
-  },
-  {
     id: 'scaffold-service-blade',
     title: 'Service Blade',
     description: 'Alternate layout with full-width title bar above a collapsible service sidebar + content area (matches Monitor, Defender, etc.)',
     component: lazy(() => import('./patterns/ScaffoldServiceBlade')),
-  },
-  {
-    id: 'scaffold-multi-page-flow',
-    title: 'Multi-Page Flow',
-    description: 'End-to-end flow with Browse → Create → Detail pages in a single experiment using sub-routes',
-    component: lazy(() => import('./patterns/ScaffoldMultiPageFlow')),
   },
   {
     id: 'scaffold-marketplace-browse',
@@ -356,6 +332,12 @@ const scaffolds: Entry[] = [
     title: 'Browse Page',
     description: 'Full-width resource browse page with toolbar, filter pills, and data table with checkboxes (matches Subscriptions, All Resources, etc.)',
     component: lazy(() => import('./patterns/ScaffoldBrowsePage')),
+  },
+  {
+    id: 'scaffold-browse-blade',
+    title: 'Browse Blade',
+    description: 'Browse page with collapsible side panel — toolbar, filter pills, and checkbox data table beside a toggleable service sidebar (matches Cost Management, Defender sub-pages, etc.)',
+    component: lazy(() => import('./patterns/ScaffoldBrowseBlade')),
   },
 ];
 

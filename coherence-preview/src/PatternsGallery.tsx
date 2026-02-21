@@ -1,27 +1,8 @@
-/**
- * Patterns & Scaffolds Gallery
- *
- * Central catalog of all Azure portal composition patterns and page scaffolds.
- * Each card links to a live preview via hash navigation.
- */
-
-export default function PatternsGallery()         {
-          id: 'scaffold-list-page',
-          title: 'List Page',
-          description: 'Two-column layout with scrollable list panel and detail area. For APIs, subscriptions, etc.',
-          tags: ['List-Detail', 'Two Column', 'Master-Detail'],
-        },
         {
           id: 'scaffold-create-flow',
           title: 'Create Flow',
           description: 'Multi-step creation wizard with tabbed form (Basics, Networking, Tags, Review) and action bar.',
           tags: ['Wizard', 'Form', 'Tabs', 'Create'],
-        },
-        {
-          id: 'scaffold-overview-page',
-          title: 'Overview Page',
-          description: 'Resource overview with essentials panel (key-value grid) and card sections.',
-          tags: ['Essentials', 'Cards', 'Dashboard'],
         },
         {
           id: 'scaffold-service-blade',

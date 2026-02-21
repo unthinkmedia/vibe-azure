@@ -31,6 +31,12 @@ export interface DesignIntent {
   successCriteria: string[];
   nonGoals: string[];
   constraints: string[];
+  /** Optional Figma file URL — used as design starting point */
+  figmaUrl?: string;
+  /** "import" = pixel-perfect reproduction; "reference" = analyze & improve */
+  figmaMode?: "import" | "reference";
+  /** Detailed design spec extracted from Figma (layout, components, spacing, colors, typography) */
+  figmaContext?: string;
   /** ISO date string */
   createdAt: string;
   /** ISO date string */
@@ -43,7 +49,7 @@ export type CreateIntentInput = Pick<
   "experimentId" | "vision"
 > &
   Partial<
-    Pick<DesignIntent, "title" | "problem" | "successCriteria" | "nonGoals" | "constraints">
+    Pick<DesignIntent, "title" | "problem" | "successCriteria" | "nonGoals" | "constraints" | "figmaUrl" | "figmaMode" | "figmaContext">
   >;
 
 export type UpdateIntentInput = Partial<
@@ -95,6 +101,9 @@ export async function createIntent(
     successCriteria: input.successCriteria ?? [],
     nonGoals: input.nonGoals ?? [],
     constraints: input.constraints ?? [],
+    ...(input.figmaUrl ? { figmaUrl: input.figmaUrl } : {}),
+    ...(input.figmaMode ? { figmaMode: input.figmaMode } : {}),
+    ...(input.figmaContext ? { figmaContext: input.figmaContext } : {}),
     createdAt: now,
     updatedAt: now,
     status: "draft",
@@ -189,6 +198,21 @@ export function formatIntent(intent: DesignIntent): string {
     md += `## Constraints\n`;
     for (const con of intent.constraints) md += `- ${con}\n`;
     md += "\n";
+  }
+
+  if (intent.figmaUrl) {
+    const modeLabel = intent.figmaMode === "reference" ? "Figma Reference" : "Figma Import";
+    md += `## ${modeLabel}\n${intent.figmaUrl}\n`;
+    if (intent.figmaMode === "reference") {
+      md += `**Mode:** Reference — analyze this design and build something better\n`;
+    } else {
+      md += `**Mode:** Import — reproduce this design pixel-perfect\n`;
+    }
+    md += `\n`;
+  }
+
+  if (intent.figmaContext) {
+    md += `## Figma Design Spec\n${intent.figmaContext}\n\n`;
   }
 
   return md;

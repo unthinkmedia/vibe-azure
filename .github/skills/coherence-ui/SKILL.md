@@ -210,6 +210,7 @@ Reusable multi-component patterns extracted from real Azure portal prototypes. R
 | Azure Portal Header | Header with search, Copilot button, avatar popover | [references/patterns/azure-portal-header.md](references/patterns/azure-portal-header.md) |
 | Azure Resource Page Shell | Full page scaffold: app frame + header + side nav + breadcrumb + title + toolbar | [references/patterns/azure-resource-page-shell.md](references/patterns/azure-resource-page-shell.md) |
 | Info Message Bar (Blue) | Blue info banner with token overrides for `cui-message-bar intent="info"` | [references/patterns/info-message-bar.md](references/patterns/info-message-bar.md) |
+| Pipeline Health Metric Card | Compact KPI card with semantic status accent icon and metric value | [references/patterns/pipeline-health-metric-card.md](references/patterns/pipeline-health-metric-card.md) |
 | Side Nav with Iconify Icons | Side navigation using Iconify SVG URLs with regular/filled pairs | [references/patterns/side-nav-with-iconify.md](references/patterns/side-nav-with-iconify.md) |
 | Resource Page Toolbar | Horizontal action bar with buttons, dividers, and dropdown menus | [references/patterns/resource-page-toolbar.md](references/patterns/resource-page-toolbar.md) |
 

@@ -33,6 +33,27 @@ function parseHash(hash: string, entries: Entry[]): { entryId: string | null; su
 // ─── Experiments (with dates, newest first) ───
 const experiments: Entry[] = [
   {
+    id: 'resource-group-overview',
+    title: 'Azure Resource Group Overview',
+    description: 'Resource group overview with resource count summary cards, cost breakdown donut chart, recent activity log, and tag compliance checker',
+    component: lazy(() => import('./experiments/resource-group-overview')),
+    date: '2026-02-20',
+  },
+  {
+    id: 'functions-create-hosting-plan',
+    title: 'Azure Functions - Create Function App: Hosting Plan Selection',
+    description: 'Hosting plan comparison table with expandable feature rows showing educational explanations for each plan capability',
+    component: lazy(() => import('./experiments/functions-create-hosting-plan')),
+    date: '2026-02-20',
+  },
+  {
+    id: 'azure-devops-pipeline-dashboard',
+    title: 'Azure DevOps Pipeline Dashboard',
+    description: 'Pipeline health summary with success-rate donut, recent runs timeline, slowest stage analytics, agent pool utilization, and failing pipeline alerts',
+    component: lazy(() => import('./experiments/azure-devops-pipeline-dashboard')),
+    date: '2026-02-19',
+  },
+  {
     id: 'network-security-dashboard',
     title: 'Azure Network Security Dashboard',
     description: 'Threat summary bar, geographic attack map, filterable firewall events table, and NSG recommendations side panel with Copilot suggestions',
@@ -265,6 +286,12 @@ const patterns: Entry[] = [
     title: 'Donut Gauge Readiness Card',
     description: 'SVG ring gauge with color-coded arc, centered score, category breakdown, and status badge',
     component: lazy(() => import('./patterns/PatternDonutGauge')),
+  },
+  {
+    id: 'pattern-health-metric-card',
+    title: 'Pipeline Health Metric Card',
+    description: 'Compact KPI card with semantic status accent icon, large value, and contextual subtext',
+    component: lazy(() => import('./patterns/PatternHealthMetricCard')),
   },
   {
     id: 'pattern-service-card',

@@ -27,6 +27,58 @@ Extract the experiment ID from the user's request:
 - If the user describes a new page to build, derive an ID from the description (e.g., "Azure Key Vault overview" → `key-vault-overview`)
 - If ambiguous, ask the user: _"Which experiment? [list recent experiments from main.tsx]"_
 
+### Detect Figma URL
+
+If the user's message contains a Figma URL (matching `figma.com/design/` or `figma.com/file/`):
+
+**Step A: Determine the Figma Mode from the user's prompt.**
+
+The mode controls the ENTIRE downstream pipeline — get it right.
+
+| Mode | Signal words in prompt | What it means |
+|------|----------------------|---------------|
+| **import** | "build this", "reproduce", "import", "recreate", "make this", "implement this design", or just a Figma link with no qualifying language | Pixel-perfect reproduction using Coherence components |
+| **reference** | "take a look", "help me design better", "improve", "what's wrong", "redesign", "do something better", "use as inspiration", "as a starting point to improve", "analyze" | Analyze the Figma, identify issues, and build a better solution |
+
+**If ambiguous** (e.g. "use this Figma for my experiment"), default to **import** — that's the most common intent. The user can change the mode in the Intent App form.
+
+**Step B: Extract a detailed design spec from Figma** before entering the INTENT phase:
+
+1. Call `mcp_figma_get_design_context` with the Figma URL to extract the exact layout structure, component hierarchy, spacing values, colors, and typography
+2. Call `mcp_figma_get_screenshot` with the Figma URL to capture a pixel-level visual reference
+3. Optionally call `mcp_figma_get_metadata` for file-level overview and node names
+
+**Step C: Build a comprehensive design spec** (not a loose summary — an actionable spec) covering:
+   - Exact page layout (grid columns, sidebar widths, content area structure)
+   - Every UI component and its placement — **identify the likely Coherence `cui-*` component** for each element (e.g. "left sidebar → CuiDrawer + CuiSideNav", "data table → CuiDataGrid", "tab bar → CuiTabs")
+   - Spacing between elements (margins, padding, gaps — with pixel values when available)
+   - Colors observed (backgrounds, text, borders, status indicators, accents) — **note the closest Coherence design token** when obvious
+   - Typography (headings, body, labels — sizes, weights)
+   - Interaction patterns (tabs, toggles, filters, dropdowns, etc.)
+   - Data shown (table columns, metric names, chart types)
+
+**In reference mode, ALSO add:**
+   - **UX issues** observed (poor information hierarchy, crowded layouts, inconsistent spacing, missing affordances, accessibility concerns, unclear CTAs, etc.)
+   - **Improvement opportunities** — what would make this better using Coherence best practices
+   - **Anti-patterns** — things the Figma does that violate Coherence guidelines or Azure portal conventions
+
+**Step D: Derive prefill values based on the mode:**
+
+For **import** mode:
+   - `prefillVision` — describe the page as seen in Figma, mentioning which Coherence components will be used to recreate it
+   - `prefillSuccessCriteria` — one criterion per major UI section visible in the design
+   - `prefillConstraints` — include "Pixel-perfect recreation of Figma design using Coherence components and design tokens" as the first constraint
+
+For **reference** mode:
+   - `prefillVision` — describe the IMPROVED version of the page, noting what will be different/better
+   - `prefillProblem` — describe the UX issues identified in the Figma design
+   - `prefillSuccessCriteria` — criteria that measure improvement over the reference (e.g. "Clearer information hierarchy than reference", "Better use of whitespace")
+   - `prefillConstraints` — include "Use Figma design as reference only — build an improved solution using Coherence best practices" as the first constraint
+
+**Step E: Pass both the URL, mode, and detailed spec** to the INTENT phase via `prefillFigmaUrl`, `prefillFigmaMode`, and `prefillFigmaContext` on the `design_intent` tool call.
+
+The intent form opens pre-populated. The user reviews, tweaks if needed, and confirms.
+
 ## Step 2: Detect Current Phase
 
 ⚠️ **CRITICAL: You MUST actually check the filesystem using tools (list_dir, read_file) — do NOT skip this step or assume a phase. A "build me a page" request from the user does NOT mean you're in the BUILD phase — it almost always starts at INTENT.**
@@ -99,11 +151,14 @@ Invoke the **experiment-verify** skill. This will:
 2. Run static analysis against standards, manifest, and theme CSS
 3. Run visual verification via Playwright
 4. Fix any violations found
-5. Report results
+5. Grade all intent success criteria (0-5) with actionable feedback
+6. Report results
 
 **After completion:** Tell the user:
 
 > _"✅ Verification complete. Say **'deploy it'** to publish, or make changes and say **'verify again'**."_
+>
+> _"The verification report now includes a Success Criteria Effectiveness Scorecard with per-criterion grades, trend deltas vs the previous run, and machine-readable JSON snapshots for tracking improvement over time."_
 
 ### Phase: DEPLOY
 
@@ -167,6 +222,8 @@ Track each experiment independently by ID. If the user switches topics, re-run S
 | User says | Dispatches to |
 |-----------|---------------|
 | "Build me an Azure X page" | Phase detection → likely INTENT |
+| "Build using this Figma URL" | Figma extraction → INTENT (import mode — pixel-perfect) |
+| "Take a look at this Figma and improve it" | Figma extraction → INTENT (reference mode — analyze & improve) |
 | "Create an intent for X" | INTENT (design-intent skill) |
 | "Build it" / "Implement it" | BUILD (azure-portal-builder skill) |
 | "Verify it" / "Check the UI" | VERIFY (experiment-verify skill) |

@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibeazure.local/schemas/success-criteria-scorecard.schema.json",
+  "title": "Success Criteria Effectiveness Scorecard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "experimentId",
+    "intentUpdatedAt",
+    "verifiedAt",
+    "overallScore",
+    "effectivenessPercent",
+    "band",
+    "criteria",
+    "summary"
+  ],
+  "properties": {
+    "experimentId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "intentUpdatedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Timestamp from intent.json.updatedAt when available"
+    },
+    "verifiedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "overallScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "effectivenessPercent": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "band": {
+      "type": "string",
+      "enum": [
+        "ready-to-share",
+        "strong-needs-minor-refinement",
+        "functional-important-gaps",
+        "significant-rework-needed"
+      ]
+    },
+    "criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "criterion",
+          "score",
+          "evidence",
+          "gap",
+          "actionableFeedback"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "criterion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gap": {
+            "type": "string",
+            "minLength": 1
+          },
+          "actionableFeedback": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "totalCriteria",
+        "fullyMet",
+        "mostlyMet",
+        "partiallyMet",
+        "mostlyMissing",
+        "notImplemented",
+        "notVerifiable"
+      ],
+      "properties": {
+        "totalCriteria": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fullyMet": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mostlyMet": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "partiallyMet": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mostlyMissing": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "notImplemented": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "notVerifiable": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

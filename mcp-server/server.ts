@@ -34,6 +34,12 @@ import {
   type CreateIntentInput,
 } from "./src/intent-store.js";
 import { getAllIcons, searchIcons } from "./src/icon-data.js";
+import {
+  getVerificationReport,
+  listVerificationExperiments,
+  type VerificationSnapshot,
+  type VerificationCriterion,
+} from "./src/verification-scorecard-store.js";
 
 const DIST_DIR = path.join(import.meta.dirname, "dist");
 
@@ -96,19 +102,32 @@ export function createServer(): McpServer {
           .array(z.string())
           .optional()
           .describe("Pre-fill constraints extracted from the user's description"),
+        prefillFigmaUrl: z
+          .string()
+          .optional()
+          .describe("Figma file URL to use as design starting point."),
+        prefillFigmaMode: z
+          .enum(["import", "reference"])
+          .optional()
+          .describe("'import' = reproduce the Figma pixel-perfect using Coherence. 'reference' = analyze the Figma design and build something better."),
+        prefillFigmaContext: z
+          .string()
+          .optional()
+          .describe("Detailed design spec extracted from the Figma file (exact layout, components, spacing, colors, typography, data content). This is the pixel-perfect blueprint the builder will follow."),
       },
       _meta: {
         ui: { resourceUri: intentAppUri },
       },
     },
-    async ({ experimentId, prefillTitle, prefillVision, prefillProblem, prefillSuccessCriteria, prefillNonGoals, prefillConstraints }) => {
+    async ({ experimentId, prefillTitle, prefillVision, prefillProblem, prefillSuccessCriteria, prefillNonGoals, prefillConstraints, prefillFigmaUrl, prefillFigmaMode, prefillFigmaContext }) => {
       const experiments = await listExperimentFolders();
 
       // Build prefill object if any prefill params were provided
       const hasPrefill = prefillTitle || prefillVision || prefillProblem ||
         (prefillSuccessCriteria && prefillSuccessCriteria.length > 0) ||
         (prefillNonGoals && prefillNonGoals.length > 0) ||
-        (prefillConstraints && prefillConstraints.length > 0);
+        (prefillConstraints && prefillConstraints.length > 0) ||
+        prefillFigmaUrl || prefillFigmaContext;
       const prefill = hasPrefill ? {
         experimentId: experimentId ?? "",
         title: prefillTitle ?? "",
@@ -117,6 +136,9 @@ export function createServer(): McpServer {
         successCriteria: prefillSuccessCriteria ?? [],
         nonGoals: prefillNonGoals ?? [],
         constraints: prefillConstraints ?? [],
+        figmaUrl: prefillFigmaUrl ?? "",
+        figmaMode: prefillFigmaMode ?? "",
+        figmaContext: prefillFigmaContext ?? "",
       } : null;
 
       if (experimentId) {
@@ -194,6 +216,9 @@ export function createServer(): McpServer {
         successCriteria: z.array(z.string()).optional(),
         nonGoals: z.array(z.string()).optional(),
         constraints: z.array(z.string()).optional(),
+        figmaUrl: z.string().optional().describe("Figma file URL used as design reference"),
+        figmaMode: z.enum(["import", "reference"]).optional().describe("'import' = pixel-perfect reproduction; 'reference' = analyze & improve"),
+        figmaContext: z.string().optional().describe("Extracted Figma design context"),
         status: z
           .enum(["draft", "active", "completed", "abandoned"])
           .optional(),
@@ -296,6 +321,193 @@ export function createServer(): McpServer {
         contents: [
           {
             uri: intentAppUri,
+            mimeType: RESOURCE_MIME_TYPE,
+            text: html,
+          },
+        ],
+      };
+    }
+  );
+
+  // ════════════════════════════════════════════════════════
+  // MCP App: browse_verification_reports — Validation scorecard UI
+  // ════════════════════════════════════════════════════════
+
+  const verificationReportUri = "ui://coherence-prototyper/verification-report.html";
+
+  function computeVerificationDelta(
+    latest: VerificationSnapshot | null,
+    history: VerificationSnapshot[]
+  ) {
+    if (!latest || history.length < 2) {
+      return {
+        hasPrevious: false,
+        overallDeltaPercent: 0,
+        improved: [] as Array<{ id: string; delta: number }>,
+        regressed: [] as Array<{ id: string; delta: number }>,
+        unchanged: 0,
+        newCriteria: [] as string[],
+        removedCriteria: [] as string[],
+      };
+    }
+
+    const previous = history[history.length - 2];
+    const previousById = new Map<string, VerificationCriterion>(
+      previous.criteria.map((item) => [item.id, item])
+    );
+    const latestById = new Map<string, VerificationCriterion>(
+      latest.criteria.map((item) => [item.id, item])
+    );
+
+    const improved: Array<{ id: string; delta: number }> = [];
+    const regressed: Array<{ id: string; delta: number }> = [];
+    let unchanged = 0;
+
+    for (const item of latest.criteria) {
+      const prev = previousById.get(item.id);
+      if (!prev) continue;
+      const delta = item.score - prev.score;
+      if (delta > 0) improved.push({ id: item.id, delta });
+      else if (delta < 0) regressed.push({ id: item.id, delta });
+      else unchanged += 1;
+    }
+
+    const newCriteria = latest.criteria
+      .filter((item) => !previousById.has(item.id))
+      .map((item) => item.id);
+
+    const removedCriteria = previous.criteria
+      .filter((item) => !latestById.has(item.id))
+      .map((item) => item.id);
+
+    return {
+      hasPrevious: true,
+      overallDeltaPercent:
+        latest.effectivenessPercent - previous.effectivenessPercent,
+      improved,
+      regressed,
+      unchanged,
+      newCriteria,
+      removedCriteria,
+    };
+  }
+
+  registerAppTool(
+    server,
+    "browse_verification_reports",
+    {
+      title: "Verification Report Browser",
+      description:
+        "Open a formatted MCP App UI for success-criteria verification reports, including per-criterion scores, evidence, actionable feedback, and trend deltas across runs.",
+      inputSchema: {
+        experimentId: z
+          .string()
+          .optional()
+          .describe("Optional experiment id to open directly"),
+      },
+      _meta: {
+        ui: { resourceUri: verificationReportUri },
+      },
+    },
+    async ({ experimentId }) => {
+      const reports = await listVerificationExperiments();
+      const selectedExperimentId =
+        experimentId ?? reports[0]?.experimentId ?? null;
+
+      const report = selectedExperimentId
+        ? await getVerificationReport(selectedExperimentId)
+        : { latest: null, history: [] };
+
+      const delta = computeVerificationDelta(report.latest, report.history);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: selectedExperimentId
+              ? `Opened verification report UI for "${selectedExperimentId}".`
+              : "Opened verification report UI. No reports found yet.",
+          },
+        ],
+        structuredContent: {
+          reports,
+          selectedExperimentId,
+          latest: report.latest,
+          history: report.history,
+          delta,
+        },
+      };
+    }
+  );
+
+  registerAppTool(
+    server,
+    "verification_report_get_data",
+    {
+      description: "Load verification scorecard data for the MCP App UI",
+      inputSchema: {
+        experimentId: z
+          .string()
+          .optional()
+          .describe("Optional experiment id to load"),
+      },
+      _meta: {
+        ui: {
+          resourceUri: verificationReportUri,
+          visibility: ["app"],
+        },
+      },
+    },
+    async ({ experimentId }) => {
+      const reports = await listVerificationExperiments();
+      const selectedExperimentId =
+        experimentId ?? reports[0]?.experimentId ?? null;
+
+      const report = selectedExperimentId
+        ? await getVerificationReport(selectedExperimentId)
+        : { latest: null, history: [] };
+      const delta = computeVerificationDelta(report.latest, report.history);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: selectedExperimentId
+              ? `Loaded verification data for "${selectedExperimentId}".`
+              : "No verification reports found yet.",
+          },
+        ],
+        structuredContent: {
+          reports,
+          selectedExperimentId,
+          latest: report.latest,
+          history: report.history,
+          delta,
+        },
+      };
+    }
+  );
+
+  registerAppResource(
+    server,
+    "Verification Report Browser",
+    verificationReportUri,
+    { description: "Interactive success-criteria verification report viewer" },
+    async () => {
+      let html: string;
+      try {
+        html = await fs.readFile(
+          path.join(DIST_DIR, "verification-report.html"),
+          "utf-8"
+        );
+      } catch {
+        html =
+          "<html><body><p>Verification report app not built. Run <code>npm run build</code> in mcp-server/.</p></body></html>";
+      }
+      return {
+        contents: [
+          {
+            uri: verificationReportUri,
             mimeType: RESOURCE_MIME_TYPE,
             text: html,
           },

@@ -8,7 +8,12 @@ import {
 } from '@charm-ux/cui/react';
 import { navSections } from './data';
 
-export default function Navigation() {
+interface NavigationProps {
+  activePage: string;
+  onNavigate: (id: string) => void;
+}
+
+export default function Navigation({ activePage, onNavigate }: NavigationProps) {
   return (
     <CuiDrawer
       slot="navigation"
@@ -24,10 +29,11 @@ export default function Navigation() {
             {section.heading && <CuiNavHeading>{section.heading}</CuiNavHeading>}
             {section.items.map((item) => (
               <CuiNavItem
-                key={item.label}
+                key={item.id}
                 label={item.label}
-                href="#"
-                selected={item.selected || undefined}
+                href="javascript:;"
+                selected={activePage === item.id || undefined}
+                onClick={() => onNavigate(item.id)}
               >
                 <CuiIcon
                   slot="icon"

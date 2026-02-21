@@ -1,0 +1,75 @@
+{
+  "experimentId": "functions-create-hosting-plan",
+  "verifiedAt": "2026-02-20T15:50:00.000Z",
+  "overallScore": 35,
+  "maxScore": 35,
+  "effectiveness": 100,
+  "criteria": [
+    {
+      "id": 1,
+      "criterion": "Comparison table faithfully reproduces the Figma layout with 5 plan columns and 7 feature rows",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "Screenshot and accessibility tree confirm 5 plan columns (Flex consumption, Consumption, Container Apps environment, Functions Premium, App Service) and 7 feature rows (Serverless, Dedicated compute, Virtual networking, Prevent cold starts, Max scale out, Max function execution time, Azure OpenAI integration). Layout matches Figma reference.",
+      "feedback": null
+    },
+    {
+      "id": 2,
+      "criterion": "Each plan column has a radio button for selection with Flex consumption selected by default",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "Accessibility tree shows CuiRadioGroup with CuiRadio in each column header. Default state is 'flex-consumption' with blue border highlight. Clicking any column selects that plan.",
+      "feedback": null
+    },
+    {
+      "id": 3,
+      "criterion": "Feature rows are expandable/collapsible — showing summary value by default and a 2-3 sentence explanation on click",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "Clicked 'Serverless' button — row expanded showing 2-3 sentence explanation per plan. aria-expanded attribute toggles correctly. Keyboard accessible (Enter/Space). All 7 rows support expand/collapse with educational per-plan explanations.",
+      "feedback": null
+    },
+    {
+      "id": 4,
+      "criterion": "Expand/collapse uses a chevron icon indicator with smooth animation",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "CuiIcon name='chevron-right' with CSS transition: transform 0.2s ease. Rotates 90deg when expanded via .fchp-expanded class.",
+      "feedback": null
+    },
+    {
+      "id": 5,
+      "criterion": "Footer bar with Select button is docked to the bottom of the page",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "Screenshot shows 'Select' primary button at bottom. CSS uses flex column layout with flex-shrink: 0 on footer bar, border-top separator, and neutral-background1.",
+      "feedback": null
+    },
+    {
+      "id": 6,
+      "criterion": "Plan descriptions and feature values match the Figma design exactly",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "All 5 plan names and descriptions match Figma. Feature values verified: Serverless (✓,✓,✓,-,-), Dedicated compute (-,-,✓,✓,✓), Virtual networking (✓,-,✓,✓,✓), Prevent cold starts (Optional,-,Optional,Included,Included), Max scale out (1000,200,300,100,40-60), Max function execution time (Unlimited,10 minutes,Unlimited,Unlimited,Unlimited), Azure OpenAI (✓,-,-,-,-).",
+      "feedback": null
+    },
+    {
+      "id": 7,
+      "criterion": "Uses Coherence design tokens for all colors, typography, spacing, and borders",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "After audit fix: all font sizes use --font-size-base* tokens, checkmark uses --success-foreground1, borders use --neutral-stroke2, backgrounds use --neutral-background*, foregrounds use --neutral-foreground*. No hardcoded values remain.",
+      "feedback": "4 violations found and fixed during custom code audit: success token name (hyphen), plan-name specificity, label overflow, explanation font size."
+    }
+  ],
+  "violations": {
+    "found": 4,
+    "fixed": 4,
+    "details": [
+      "Token --success-foreground-1 → --success-foreground1 (resolved to black instead of green)",
+      ".fchp-plan-name specificity lost to .fchp-table th → fixed with .fchp-table .fchp-plan-name",
+      "white-space: nowrap on feature labels caused 'Max function execution time' overflow → removed",
+      "Explanation row font-size: base100 (10px) too small → changed to base200 (12px)"
+    ]
+  }
+}

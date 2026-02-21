@@ -83,10 +83,13 @@ Build me an Azure Resource Group overview page with a resource count summary, co
 ### Phase 2: Build (~2-3 minutes)
 > "Now the agent is generating the full prototype — React components using Microsoft's **Coherence design system** (the same component library used in the real Azure portal). It's creating mock data, wiring up interactions, and composing reusable patterns like the page header, side nav, and toolbar."
 
-### Phase 3: Preview (Instant)
+### Phase 3: Validate (~45 seconds)
+> "Now I run validation. The agent audits styling and accessibility, then reads the intent's success criteria and grades each one on effectiveness from 0 to 5. For every criterion, it gives concrete evidence and actionable next-step feedback so we know exactly what to improve."
+
+### Phase 4: Preview (Instant)
 > "And there it is — a fully interactive Azure portal page, built from a single prompt. It uses real Coherence components, design tokens for theming, and follows all Azure portal UX conventions. I can click through tabs, sort tables, and interact with every element."
 
-### Phase 4: Share (Optional, ~10 seconds)
+### Phase 5: Share (Optional, ~10 seconds)
 > "If I want to share this with my team for feedback, I hit **Share** — it triggers a GitHub Actions workflow that deploys this experiment to Azure Static Web Apps. Anyone with the link can see the prototype in their browser."
 
 ---
@@ -97,7 +100,7 @@ Build me an Azure Resource Group overview page with a resource count summary, co
 - **25+ experiments built so far** — from Cosmos DB to AKS to API Management, each generated from a single prompt
 - **Reusable patterns** — the system learns composition patterns (page headers, nav, donut gauges, service cards) and reuses them automatically
 - **Design intent as spec** — the intent.json acts as a lightweight design doc that drives all build decisions
-- **Full lifecycle** — intent → build → verify (accessibility + styling audit) → deploy to Azure Static Web Apps
+- **Full lifecycle** — intent → build → verify (styling + accessibility + success-criteria effectiveness scorecard) → deploy to Azure Static Web Apps
 - **MCP-powered** — uses Model Context Protocol for Coherence component discovery, icon browsing, and design token lookup
 
 ---

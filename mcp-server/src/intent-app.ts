@@ -7,6 +7,7 @@
  */
 
 import { App } from "@modelcontextprotocol/ext-apps";
+import "@vscode-elements/elements/dist/bundled.js";
 
 // ── Types ──
 
@@ -18,7 +19,9 @@ interface DesignIntent {
   successCriteria: string[];
   nonGoals: string[];
   constraints: string[];
-  createdAt: string;
+  figmaUrl?: string;
+  figmaMode?: "import" | "reference";
+  figmaContext?: string;
   updatedAt: string;
   status: "draft" | "active" | "completed" | "abandoned";
 }
@@ -31,6 +34,9 @@ interface PrefillData {
   successCriteria?: string[];
   nonGoals?: string[];
   constraints?: string[];
+  figmaUrl?: string;
+  figmaMode?: "import" | "reference";
+  figmaContext?: string;
 }
 
 interface IntentListData {
@@ -58,16 +64,11 @@ root.innerHTML = buildShell();
 const listEl = document.getElementById("intent-list")!;
 const formEl = document.getElementById("intent-form") as HTMLFormElement;
 const formTitle = document.getElementById("form-title")!;
-const newBtn = document.getElementById("new-btn")!;
-const cancelBtn = document.getElementById("cancel-btn")!;
 const formSection = document.getElementById("form-section")!;
 const listSection = document.getElementById("list-section")!;
 const countEl = document.getElementById("intent-count")!;
 
 // ── Event wiring ──
-
-newBtn.addEventListener("click", () => showForm(null));
-cancelBtn.addEventListener("click", () => hideForm());
 
 // Handle initial tool result (model calls design_intent)
 // The host may re-deliver this on scroll/resize — deduplicate to prevent scroll reset.
@@ -195,6 +196,14 @@ function renderList(): void {
       <span class="experiment-link">📁 ${esc(intent.experimentId)}</span>
       <p class="vision-text">${esc(intent.vision)}</p>
       ${
+        intent.figmaUrl
+          ? `<div class="figma-link-row">
+              <span class="figma-badge figma-badge-${intent.figmaMode || 'import'}">${intent.figmaMode === "reference" ? "🔍 Reference" : "🎨 Import"}</span>
+              <a href="${esc(intent.figmaUrl)}" target="_blank" rel="noopener" class="figma-url">${esc(intent.figmaUrl.length > 60 ? intent.figmaUrl.slice(0, 57) + "..." : intent.figmaUrl)}</a>
+            </div>`
+          : ""
+      }
+      ${
         intent.successCriteria.length > 0
           ? `<div class="criteria-section">
               <span class="section-label">Success Criteria</span>
@@ -205,8 +214,8 @@ function renderList(): void {
       <div class="card-footer">
         <span class="date">Updated ${intent.updatedAt.slice(0, 10)}</span>
         <div class="status-actions">
-          ${intent.status === "draft" ? `<button class="sm-btn activate-btn" data-id="${intent.experimentId}">Activate</button>` : ""}
-          ${intent.status === "active" ? `<button class="sm-btn complete-btn" data-id="${intent.experimentId}">Complete</button>` : ""}
+          ${intent.status === "draft" ? `<vscode-button class="activate-btn" data-id="${intent.experimentId}" appearance="secondary">Activate</vscode-button>` : ""}
+          ${intent.status === "active" ? `<vscode-button class="complete-btn" data-id="${intent.experimentId}" appearance="secondary">Complete</vscode-button>` : ""}
         </div>
       </div>
     </div>`
@@ -247,8 +256,8 @@ function showForm(intent: DesignIntent | null): void {
   editingExperimentId = intent?.experimentId ?? null;
   formTitle.textContent = intent ? "Edit Intent" : "New Design Intent";
 
-  const experimentSelect = formEl.querySelector("#f-experiment") as HTMLSelectElement;
-  const experimentInput = formEl.querySelector("#f-experiment-new") as HTMLInputElement;
+  const experimentSelect = formEl.querySelector("#f-experiment") as any;
+  const experimentInput = formEl.querySelector("#f-experiment-new") as any;
 
   // Populate experiment dropdown with folders that don't have intents yet (+ current if editing)
   const takenExperiments = new Set(allIntents.map((i) => i.experimentId));
@@ -257,11 +266,11 @@ function showForm(intent: DesignIntent | null): void {
   );
 
   experimentSelect.innerHTML =
-    '<option value="">— Select existing experiment —</option>' +
+    '<vscode-option value="">— Select existing experiment —</vscode-option>' +
     availableExperiments
       .map(
         (e) =>
-          `<option value="${esc(e)}"${e === editingExperimentId ? " selected" : ""}>${esc(e)}</option>`
+          `<vscode-option value="${esc(e)}"${e === editingExperimentId ? " selected" : ""}>${esc(e)}</vscode-option>`
       )
       .join("");
 
@@ -276,21 +285,28 @@ function showForm(intent: DesignIntent | null): void {
     experimentInput.value = "";
   }
 
-  (formEl.querySelector("#f-title") as HTMLInputElement).value =
+  (formEl.querySelector("#f-title") as any).value =
     intent?.title ?? "";
-  (formEl.querySelector("#f-vision") as HTMLTextAreaElement).value =
+  (formEl.querySelector("#f-vision") as any).value =
     intent?.vision ?? "";
-  (formEl.querySelector("#f-problem") as HTMLTextAreaElement).value =
+  (formEl.querySelector("#f-problem") as any).value =
     intent?.problem ?? "";
-  (formEl.querySelector("#f-criteria") as HTMLTextAreaElement).value =
+  (formEl.querySelector("#f-criteria") as any).value =
     (intent?.successCriteria ?? []).join("\n");
-  (formEl.querySelector("#f-nongoals") as HTMLTextAreaElement).value =
+  (formEl.querySelector("#f-nongoals") as any).value =
     (intent?.nonGoals ?? []).join("\n");
-  (formEl.querySelector("#f-constraints") as HTMLTextAreaElement).value =
+  (formEl.querySelector("#f-constraints") as any).value =
     (intent?.constraints ?? []).join("\n");
+  (formEl.querySelector("#f-figma-url") as any).value =
+    intent?.figmaUrl ?? "";
+  (formEl.querySelector("#f-figma-mode") as any).value =
+    intent?.figmaMode ?? "import";
+  (formEl.querySelector("#f-figma-context") as any).value =
+    intent?.figmaContext ?? "";
 
   formSection.style.display = "block";
   listSection.style.display = "none";
+  requestAnimationFrame(() => initAutoGrowTextareas());
 }
 
 /** Open the form pre-populated with data extracted from the conversation */
@@ -298,8 +314,8 @@ function showFormWithPrefill(prefill: PrefillData): void {
   editingExperimentId = null;
   formTitle.textContent = "New Design Intent";
 
-  const experimentSelect = formEl.querySelector("#f-experiment") as HTMLSelectElement;
-  const experimentInput = formEl.querySelector("#f-experiment-new") as HTMLInputElement;
+  const experimentSelect = formEl.querySelector("#f-experiment") as any;
+  const experimentInput = formEl.querySelector("#f-experiment-new") as any;
 
   // Populate experiment dropdown
   const takenExperiments = new Set(allIntents.map((i) => i.experimentId));
@@ -308,9 +324,9 @@ function showFormWithPrefill(prefill: PrefillData): void {
   );
 
   experimentSelect.innerHTML =
-    '<option value="">— Select existing experiment —</option>' +
+    '<vscode-option value="">— Select existing experiment —</vscode-option>' +
     availableExperiments
-      .map((e) => `<option value="${esc(e)}">${esc(e)}</option>`)
+      .map((e) => `<vscode-option value="${esc(e)}">${esc(e)}</vscode-option>`)
       .join("");
 
   experimentSelect.disabled = false;
@@ -331,21 +347,28 @@ function showFormWithPrefill(prefill: PrefillData): void {
   }
 
   // Fill form fields with prefill data
-  (formEl.querySelector("#f-title") as HTMLInputElement).value =
+  (formEl.querySelector("#f-title") as any).value =
     prefill.title ?? "";
-  (formEl.querySelector("#f-vision") as HTMLTextAreaElement).value =
+  (formEl.querySelector("#f-vision") as any).value =
     prefill.vision ?? "";
-  (formEl.querySelector("#f-problem") as HTMLTextAreaElement).value =
+  (formEl.querySelector("#f-problem") as any).value =
     prefill.problem ?? "";
-  (formEl.querySelector("#f-criteria") as HTMLTextAreaElement).value =
+  (formEl.querySelector("#f-criteria") as any).value =
     (prefill.successCriteria ?? []).join("\n");
-  (formEl.querySelector("#f-nongoals") as HTMLTextAreaElement).value =
+  (formEl.querySelector("#f-nongoals") as any).value =
     (prefill.nonGoals ?? []).join("\n");
-  (formEl.querySelector("#f-constraints") as HTMLTextAreaElement).value =
+  (formEl.querySelector("#f-constraints") as any).value =
     (prefill.constraints ?? []).join("\n");
+  (formEl.querySelector("#f-figma-url") as any).value =
+    prefill.figmaUrl ?? "";
+  (formEl.querySelector("#f-figma-mode") as any).value =
+    prefill.figmaMode ?? "import";
+  (formEl.querySelector("#f-figma-context") as any).value =
+    prefill.figmaContext ?? "";
 
   formSection.style.display = "block";
   listSection.style.display = "none";
+  requestAnimationFrame(() => initAutoGrowTextareas());
 }
 
 function hideForm(): void {
@@ -355,8 +378,8 @@ function hideForm(): void {
 }
 
 function collectFormData(): Record<string, unknown> | null {
-  const experimentSelect = formEl.querySelector("#f-experiment") as HTMLSelectElement;
-  const experimentInput = formEl.querySelector("#f-experiment-new") as HTMLInputElement;
+  const experimentSelect = formEl.querySelector("#f-experiment") as any;
+  const experimentInput = formEl.querySelector("#f-experiment-new") as any;
 
   const experimentId =
     experimentInput.value.trim() ||
@@ -370,22 +393,21 @@ function collectFormData(): Record<string, unknown> | null {
 
   return {
     experimentId,
-    title: (formEl.querySelector("#f-title") as HTMLInputElement).value.trim(),
-    vision: (
-      formEl.querySelector("#f-vision") as HTMLTextAreaElement
-    ).value.trim(),
-    problem: (
-      formEl.querySelector("#f-problem") as HTMLTextAreaElement
-    ).value.trim(),
+    title: ((formEl.querySelector("#f-title") as any).value ?? "").trim(),
+    vision: ((formEl.querySelector("#f-vision") as any).value ?? "").trim(),
+    problem: ((formEl.querySelector("#f-problem") as any).value ?? "").trim(),
     successCriteria: splitLines(
-      (formEl.querySelector("#f-criteria") as HTMLTextAreaElement).value
+      (formEl.querySelector("#f-criteria") as any).value ?? ""
     ),
     nonGoals: splitLines(
-      (formEl.querySelector("#f-nongoals") as HTMLTextAreaElement).value
+      (formEl.querySelector("#f-nongoals") as any).value ?? ""
     ),
     constraints: splitLines(
-      (formEl.querySelector("#f-constraints") as HTMLTextAreaElement).value
+      (formEl.querySelector("#f-constraints") as any).value ?? ""
     ),
+    figmaUrl: ((formEl.querySelector("#f-figma-url") as any).value ?? "").trim() || undefined,
+    figmaMode: ((formEl.querySelector("#f-figma-mode") as any).value ?? "import") || undefined,
+    figmaContext: ((formEl.querySelector("#f-figma-context") as any).value ?? "").trim() || undefined,
   };
 }
 
@@ -449,21 +471,24 @@ function buildShell(): string {
   return `
 <style>
   :root {
-    --bg: #fff; --fg: #1a1a1a; --muted: #666; --border: #e0e0e0;
-    --card-bg: #f8f8f8; --accent: #0078d4; --accent-hover: #106ebe;
-    --danger: #d13438; --success: #107c10; --warning: #ca5010;
-    --input-bg: #fff; --input-border: #ccc;
+    --bg: var(--vscode-editor-background, #fff);
+    --fg: var(--vscode-editor-foreground, #1a1a1a);
+    --muted: var(--vscode-descriptionForeground, #666);
+    --border: var(--vscode-panel-border, #e0e0e0);
+    --card-bg: var(--vscode-editorWidget-background, #f8f8f8);
+    --accent: var(--vscode-focusBorder, #0078d4);
+    --accent-hover: var(--vscode-button-hoverBackground, #106ebe);
+    --danger: var(--vscode-errorForeground, #d13438);
+    --success: var(--vscode-testing-iconPassed, #107c10);
+    --warning: var(--vscode-editorWarning-foreground, #ca5010);
+    --input-bg: var(--vscode-input-background, #fff);
+    --input-border: var(--vscode-input-border, #ccc);
     --radius: 8px; --radius-sm: 6px;
-  }
-  [data-theme="dark"] {
-    --bg: #1e1e1e; --fg: #e0e0e0; --muted: #999; --border: #333;
-    --card-bg: #252525; --accent: #4da6ff; --accent-hover: #6db8ff;
-    --danger: #f47067; --success: #3fb950; --warning: #d29922;
-    --input-bg: #2d2d2d; --input-border: #444;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: var(--vscode-font-size, 13px);
     background: var(--bg); color: var(--fg); line-height: 1.5;
   }
   #app { max-width: 640px; margin: 0 auto; padding: 20px 16px; }
@@ -477,17 +502,6 @@ function buildShell(): string {
   .intent-count { font-size: 13px; color: var(--muted); }
 
   /* Buttons */
-  .btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 7px 14px; border: none; border-radius: var(--radius-sm);
-    font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.15s;
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: var(--accent-hover); }
-  .btn-secondary {
-    background: transparent; color: var(--fg); border: 1px solid var(--border);
-  }
-  .btn-secondary:hover { background: var(--card-bg); }
   .sm-btn {
     padding: 3px 10px; border: 1px solid var(--border); border-radius: 4px;
     font-size: 11px; cursor: pointer; background: transparent; color: var(--fg);
@@ -512,6 +526,28 @@ function buildShell(): string {
   .card-title { font-size: 15px; }
   .card-actions { display: flex; gap: 2px; flex-shrink: 0; }
   .vision-text { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+
+  /* Figma link in cards */
+  .figma-link-row {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+  }
+  .figma-badge {
+    display: inline-block; padding: 1px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 500; background: #a259ff; color: #fff;
+  }
+  .figma-badge-reference {
+    background: #0078d4;
+  }
+  .figma-url {
+    font-size: 11px; color: var(--accent); text-decoration: none;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .figma-url:hover { text-decoration: underline; }
+
+  /* Figma field in form */
+  .figma-field {
+    border-top: 1px solid var(--border); padding-top: 14px; margin-top: 6px;
+  }
   .card-footer {
     display: flex; align-items: center; justify-content: space-between;
     margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);
@@ -555,15 +591,13 @@ function buildShell(): string {
     display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px;
     color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px;
   }
-  .field input, .field textarea, .field select {
-    width: 100%; padding: 8px 10px; border: 1px solid var(--input-border);
-    border-radius: var(--radius-sm); font-size: 13px;
-    background: var(--input-bg); color: var(--fg); font-family: inherit;
-    resize: vertical;
+  .field vscode-textfield, .field vscode-textarea, .field vscode-single-select {
+    width: 100%;
   }
-  .field input:focus, .field textarea:focus, .field select:focus {
-    outline: none; border-color: var(--accent);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
+  .field vscode-textarea {
+    --max-lines: 6;
+    max-height: calc(var(--max-lines) * 1.5em + 16px);
+    overflow-y: auto;
   }
   .field .helper { font-size: 11px; color: var(--muted); margin-top: 3px; }
   .field-or {
@@ -624,7 +658,6 @@ function buildShell(): string {
     <h1>Design Intent</h1>
     <span class="intent-count" id="intent-count">0 intents</span>
   </div>
-  <button class="btn btn-primary" id="new-btn">+ New Intent</button>
 </div>
 
 <div id="list-section">
@@ -636,56 +669,100 @@ function buildShell(): string {
 <div id="form-section">
   <div class="form-header">
     <h2 id="form-title">New Design Intent</h2>
-    <button class="btn btn-secondary" id="cancel-btn">Cancel</button>
   </div>
   <form id="intent-form" autocomplete="off">
     <div class="field">
       <label for="f-experiment">Experiment Folder</label>
-      <select id="f-experiment"></select>
+      <vscode-single-select id="f-experiment"></vscode-single-select>
       <div class="field-or">or create new</div>
-      <input id="f-experiment-new" type="text" placeholder="e.g. my-new-experiment" />
+      <vscode-textfield id="f-experiment-new" placeholder="e.g. my-new-experiment"></vscode-textfield>
       <div class="helper">The intent will be saved as intent.json inside this experiment folder.</div>
     </div>
     <div class="field">
       <label for="f-title">Title <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--muted)">(optional — AI will generate if blank)</span></label>
-      <input id="f-title" type="text" placeholder="Leave blank to auto-generate from experiment name" />
+      <vscode-textfield id="f-title" placeholder="Leave blank to auto-generate from experiment name"></vscode-textfield>
     </div>
     <div class="field">
       <label for="f-vision">Vision</label>
-      <textarea id="f-vision" rows="2" placeholder="What are you building? (1-2 sentences)" required></textarea>
+      <vscode-textarea id="f-vision" rows="1" placeholder="What are you building? (1-2 sentences)"></vscode-textarea>
       <div class="helper">Describe the outcome, not the implementation.</div>
     </div>
     <div class="field">
       <label for="f-problem">Problem Statement</label>
-      <textarea id="f-problem" rows="2" placeholder="What problem does this solve? Who benefits?"></textarea>
+      <vscode-textarea id="f-problem" rows="1" placeholder="What problem does this solve? Who benefits?"></vscode-textarea>
     </div>
     <div class="field">
       <label for="f-criteria">Success Criteria</label>
-      <textarea id="f-criteria" rows="3" placeholder="One per line, e.g.&#10;Shows resource health at a glance&#10;Supports both list and card views"></textarea>
+      <vscode-textarea id="f-criteria" rows="1" placeholder="One per line, e.g.&#10;Shows resource health at a glance&#10;Supports both list and card views"></vscode-textarea>
       <div class="helper">One criterion per line. How will you know it's right?</div>
     </div>
     <div class="field">
       <label for="f-nongoals">Non-Goals</label>
-      <textarea id="f-nongoals" rows="2" placeholder="One per line — what this will NOT do"></textarea>
+      <vscode-textarea id="f-nongoals" rows="1" placeholder="One per line — what this will NOT do"></vscode-textarea>
     </div>
     <div class="field">
       <label for="f-constraints">Constraints</label>
-      <textarea id="f-constraints" rows="2" placeholder="One per line, e.g.&#10;Must use Coherence components&#10;Desktop viewport only"></textarea>
+      <vscode-textarea id="f-constraints" rows="1" placeholder="One per line, e.g.&#10;Must use Coherence components&#10;Desktop viewport only"></vscode-textarea>
+    </div>
+    <div class="field figma-field">
+      <label for="f-figma-url">🎨 Figma Design <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--muted)">(optional)</span></label>
+      <vscode-textfield id="f-figma-url" placeholder="https://www.figma.com/design/..."></vscode-textfield>
+    </div>
+    <div class="field figma-field">
+      <label for="f-figma-mode">Figma Mode</label>
+      <vscode-single-select id="f-figma-mode">
+        <vscode-option value="import">Import — reproduce pixel-perfect</vscode-option>
+        <vscode-option value="reference">Reference — analyze & improve</vscode-option>
+      </vscode-single-select>
+      <div class="helper">Import: faithfully recreate the Figma design. Reference: use it as a starting point and build something better.</div>
+    </div>
+    <div class="field figma-field">
+      <label for="f-figma-context">Figma Design Spec <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--muted)">(auto-extracted)</span></label>
+      <vscode-textarea id="f-figma-context" rows="1" placeholder="Detailed design spec extracted from Figma (layout, components, spacing, colors, typography)..."></vscode-textarea>
+      <div class="helper">Auto-populated from your Figma file. Import mode uses this as a pixel-perfect blueprint; Reference mode uses it to identify areas for improvement.</div>
     </div>
     <div class="form-actions">
       <span id="auto-save-status" class="save-status"></span>
-      <button type="button" class="btn btn-secondary" id="cancel-btn-form">← Back</button>
+
     </div>
   </form>
 </div>
 `;
 }
 
-// Wire form buttons
-document.getElementById("cancel-btn-form")?.addEventListener("click", hideForm);
+
+
+// ── Auto-grow textareas ──
+
+function autoResizeTextarea(el: Element): void {
+  const inner = el.shadowRoot?.querySelector('textarea');
+  if (!inner) return;
+  inner.style.overflowY = 'hidden';
+  inner.style.height = 'auto';
+  const lineHeight = parseFloat(getComputedStyle(inner).lineHeight) || 20;
+  const maxHeight = lineHeight * 6 + 16; // ~6 lines + padding
+  if (inner.scrollHeight > maxHeight) {
+    inner.style.height = maxHeight + 'px';
+    inner.style.overflowY = 'auto';
+  } else {
+    inner.style.height = inner.scrollHeight + 'px';
+  }
+}
+
+function initAutoGrowTextareas(): void {
+  formEl.querySelectorAll('vscode-textarea').forEach((ta) => {
+    autoResizeTextarea(ta);
+  });
+}
 
 // Wire auto-save on all form fields
-formEl.addEventListener("input", scheduleAutoSave);
+formEl.addEventListener("input", (e) => {
+  const target = e.target as Element;
+  if (target?.tagName?.toLowerCase() === 'vscode-textarea') {
+    autoResizeTextarea(target);
+  }
+  scheduleAutoSave();
+});
 formEl.addEventListener("change", scheduleAutoSave);
 // Prevent default submit (Enter key in text fields)
 formEl.addEventListener("submit", (e) => { e.preventDefault(); scheduleAutoSave(); });

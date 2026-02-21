@@ -32,6 +32,8 @@ __pycache__/
 
 # Credentials
 .npmrc
+.env
+.env.local
 
 # Misc
 *.log

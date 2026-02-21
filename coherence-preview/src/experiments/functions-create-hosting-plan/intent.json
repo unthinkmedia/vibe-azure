@@ -1,0 +1,32 @@
+{
+  "experimentId": "functions-create-hosting-plan",
+  "title": "Azure Functions - Create Function App: Hosting Plan Selection",
+  "vision": "A faithful reproduction of the Azure Functions 'Create Function App' hosting plan selection page from the Figma design, enhanced with expandable feature rows for better user education.\n\nLAYOUT (from Figma):\n- Azure portal chrome: breadcrumb bar (\"Home >\"), blade header (\"Create Function app\" with pin/more-actions/close icons)\n- Section header: \"Select a hosting option\" (H2, 16px semibold)\n- Description: \"These options determine how your app scales, resources available per instance, and pricing. Learn more about Functions hosting options\" (link to docs)\n- Comparison table: 6 columns — 1 label column (~150px) + 5 plan columns (~214px each), bordered cells\n- Footer bar: docked to bottom with \"Select\" primary button\n\nCOMPARISON TABLE STRUCTURE:\nHeader row (per plan column): Radio button + Plan name (14px semibold) + Short description (13px regular)\nPlans: \n1. Flex consumption (default selected) — \"Get high scalability with compute choices, virtual networking, and pay-as-you-go billing.\"\n2. Consumption — \"Pay for compute resources when your functions are running (pay-as-you-go).\"\n3. Container Apps environment — \"Host function apps with other containerized microservices.\"\n4. Functions Premium — \"Deploy multiple function apps on the same plan with event-driven scaling.\"\n5. App Service — \"Run web apps and function apps on the same plan with more compute choices.\"\n\nFeature rows (7 rows):\n1. Serverless: ✓, ✓, ✓, -, -\n2. Dedicated compute: -, -, ✓, ✓, ✓\n3. Virtual networking: ✓ (hyperlink), -, ✓, ✓, ✓\n4. Prevent cold starts: Optional, -, Optional, Included, Included\n5. Max scale out: 1000, 200, 300, 100, 40-60\n6. Max function execution time: Unlimited, 10 minutes, Unlimited, Unlimited, Unlimited\n7. Azure OpenAI integration: ✓, -, -, -, -\n\nENHANCEMENT — EXPANDABLE ROWS:\nEach feature row is collapsible. By default shows summary value (checkmark, dash, or text). Clicking the row expands to reveal a 2-3 sentence explanation of what the feature means and why it matters for each plan. Uses a chevron icon to indicate expand/collapse state. This helps users who aren't familiar with the tradeoffs make informed hosting decisions without leaving the page.\n\nCOHERENCE COMPONENT MAPPING:\n- Page shell: ScaffoldCreateFlow pattern or manual layout with breadcrumb + blade header\n- Radio buttons: CuiRadioGroup / CuiRadio for plan selection\n- Table: Custom HTML table with Coherence tokens for borders, spacing, typography\n- Expandable rows: Chevron toggle with CSS transition for expand/collapse animation\n- Checkmarks: CuiIcon name=\"checkmark\" in green (#107C10 or status success token)\n- Footer: Sticky footer bar with CuiButton appearance=\"primary\"\n- Link: CuiLink for \"Learn more\" and \"Virtual networking\"",
+  "problem": "The current hosting plan comparison table in the Azure Functions create flow shows feature names and values but provides no context about what each feature actually means. Users unfamiliar with concepts like 'cold starts', 'virtual networking', or 'scale out' must leave the page to research these terms, creating friction in the create flow and potentially leading to suboptimal plan selection.",
+  "successCriteria": [
+    "Comparison table faithfully reproduces the Figma layout with 5 plan columns and 7 feature rows",
+    "Each plan column has a radio button for selection with Flex consumption selected by default",
+    "Feature rows are expandable/collapsible — showing summary value by default and a 2-3 sentence explanation on click",
+    "Expand/collapse uses a chevron icon indicator with smooth animation",
+    "Footer bar with Select button is docked to the bottom of the page",
+    "Plan descriptions and feature values match the Figma design exactly",
+    "Uses Coherence design tokens for all colors, typography, spacing, and borders"
+  ],
+  "nonGoals": [
+    "Full create wizard with multiple tabs/steps",
+    "Real Azure resource provisioning",
+    "Pricing calculator integration",
+    "Responsive/mobile layout"
+  ],
+  "constraints": [
+    "Import mode: Pixel-faithful recreation of Figma design using Coherence components and design tokens, enhanced with expandable rows",
+    "Single page — no routing or multi-step flow",
+    "Mock data only — no API calls",
+    "Feature explanations should be educational and accurate to real Azure Functions hosting plan differences",
+    "Table cells use consistent 16px padding per Figma spec",
+    "Selected plan column should have a visual highlight (blue border per Figma)"
+  ],
+  "createdAt": "2026-02-20T15:31:50.732Z",
+  "updatedAt": "2026-02-20T15:31:50.732Z",
+  "status": "draft"
+}

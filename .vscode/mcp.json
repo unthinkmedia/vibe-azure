@@ -20,6 +20,13 @@
 			"env": {
 				"PATH": "/Users/alexbritez/.nvm/versions/node/v22.18.0/bin:/usr/local/bin:/usr/bin:/bin"
 			}
+		},
+		"figma": {
+			"type": "http",
+			"url": "https://mcp.figma.com/mcp",
+			"headers": {
+				"Authorization": "Bearer ${env:FIGMA_ACCESS_TOKEN}"
+			}
 		}
 	}
 }

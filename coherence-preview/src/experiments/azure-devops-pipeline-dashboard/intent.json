@@ -1,0 +1,26 @@
+{
+  "experimentId": "azure-devops-pipeline-dashboard",
+  "title": "Azure DevOps Pipeline Dashboard",
+  "vision": "Build an Azure DevOps Pipeline dashboard page that gives engineering teams a fast operational view of pipeline health, run trends, stage performance, and agent capacity.",
+  "problem": "Teams lack a single at-a-glance Azure-style dashboard to monitor failing pipelines, run durations, flaky behavior, and agent pool saturation, which slows triage and release decisions.",
+  "successCriteria": [
+    "Shows pipeline health summary with pass/fail/in-progress counts and overall success-rate donut visualization",
+    "Includes recent pipeline runs timeline with duration bars, status indicators, and commit message context",
+    "Provides a Slowest Stages panel ranking longest-running pipeline stages with average durations",
+    "Displays build agent pool utilization with online/offline/busy counts and utilization context",
+    "Surfaces an alert banner for pipelines failing continuously for over 24 hours",
+    "Includes Copilot suggestion prompts for failure diagnosis and flaky test investigation"
+  ],
+  "nonGoals": [
+    "No live Azure DevOps API integration in this prototype",
+    "No deep drill-in to individual pipeline definition pages"
+  ],
+  "constraints": [
+    "Single Azure portal-style page prototype",
+    "Use Coherence components and design tokens",
+    "Use realistic mock data for pipelines, runs, stages, and agents"
+  ],
+  "createdAt": "2026-02-19T21:11:27.070Z",
+  "updatedAt": "2026-02-19T21:14:13.100Z",
+  "status": "draft"
+}

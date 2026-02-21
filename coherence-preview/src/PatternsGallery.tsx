@@ -58,6 +58,12 @@ export default function PatternsGallery() {
           tags: ['CuiCard', 'CuiBadge', 'SVG', 'Gauge'],
         },
         {
+          id: 'pattern-health-metric-card',
+          title: 'Pipeline Health Metric Card',
+          description: 'Compact KPI card with semantic status accent icon, large value, and contextual subtext.',
+          tags: ['HealthMetricCard', 'CuiIcon', 'KPI', 'Status Tokens'],
+        },
+        {
           id: 'pattern-service-card',
           title: 'Service Card',
           description: 'Outline card with icon, title, description, and bordered action footer (View / More).',

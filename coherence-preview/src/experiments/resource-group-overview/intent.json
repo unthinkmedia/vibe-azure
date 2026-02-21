@@ -1,0 +1,22 @@
+{
+  "experimentId": "resource-group-overview",
+  "title": "Azure Resource Group Overview",
+  "vision": "An Azure Resource Group overview page featuring four key sections: (1) A resource count summary showing counts by resource type (VMs, Storage Accounts, Databases, etc.) with type icons, (2) A cost breakdown donut chart showing spending distribution across resource types with total cost in the center, (3) A recent activity log listing recent operations (create, delete, modify) with timestamps, user, status badges, and resource names, and (4) A tag compliance checker table showing which resources are missing required tags (environment, owner, cost-center) with compliance status badges and a summary compliance percentage.",
+  "problem": "Resource group administrators lack a single-pane-of-glass view to understand what's in their resource group, how costs are distributed, what's been happening recently, and whether resources follow tagging governance policies. They must navigate multiple blades to get this information.",
+  "successCriteria": [
+    "Resource count summary cards showing counts by resource type with appropriate Azure icons",
+    "Cost breakdown donut chart with spending by resource type and a total cost center label",
+    "Recent activity log with timestamps, users, operations, status badges, and affected resources",
+    "Tag compliance checker showing resources missing required tags with pass/fail indicators and overall compliance percentage"
+  ],
+  "nonGoals": [],
+  "constraints": [
+    "Single page layout with no navigation between sub-pages",
+    "Mock data only — no live Azure API calls",
+    "Use Coherence design tokens and cui-* components throughout",
+    "Use shared patterns (PageHeader, PatternDonutGauge, etc.) where applicable"
+  ],
+  "createdAt": "2026-02-21T01:36:16.555Z",
+  "updatedAt": "2026-02-21T01:42:27.158Z",
+  "status": "draft"
+}

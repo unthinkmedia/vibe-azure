@@ -10,8 +10,10 @@
  *   styles.ts        — scoped CSS
  *   Navigation.tsx   — side nav component
  *   PageContent.tsx  — essentials + metrics + functions table
+ *   NetworkingPage.tsx — networking / security configuration
  *   index.tsx        — this file, orchestrates the above
  */
+import { useState } from 'react';
 import {
   CuiAppFrame,
   CuiAvatar,
@@ -28,11 +30,15 @@ import {
 import CopilotButton from '../copilot-button';
 import PageHeader from '../../patterns/PageHeader';
 import AzurePortalNav from '../../patterns/PatternAzurePortalNav';
+import Navigation from './Navigation';
 import PageContent from './PageContent';
+import NetworkingPage from './NetworkingPage';
 import { resourceName, resourceType, copilotSuggestions } from './data';
 import { styles } from './styles';
 
 export default function FunctionsOverview() {
+  const [activePage, setActivePage] = useState('overview');
+
   return (
     <>
       <CuiAppFrame skipToMainText="Skip to main content">
@@ -83,6 +89,9 @@ export default function FunctionsOverview() {
         {/* ─── Global Navigation (hamburger menu) ─── */}
         <AzurePortalNav />
 
+        {/* ─── Resource Side Nav ─── */}
+        <Navigation activePage={activePage} onNavigate={setActivePage} />
+
         {/* ─── Main Content ─── */}
         <div slot="main">
           <div style={{ padding: '8px 32px 0' }}>
@@ -95,13 +104,13 @@ export default function FunctionsOverview() {
 
           <PageHeader
             icon="https://api.iconify.design/fluent:flash-24-regular.svg"
-            title={resourceName}
+            title={activePage === 'networking' ? <>{resourceName} <span style={{ fontWeight: 'var(--font-weight-regular)' }}>| Networking</span></> : resourceName}
             subtitle={resourceType}
             showFavorite
             copilotSuggestions={copilotSuggestions}
           />
 
-          <PageContent />
+          {activePage === 'networking' ? <NetworkingPage /> : <PageContent />}
         </div>
       </CuiAppFrame>
       <style>{styles}</style>

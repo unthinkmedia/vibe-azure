@@ -15,7 +15,7 @@ An MCP server (with MCP App) that gives Claude the same Azure portal prototyping
 | **Composition patterns** | Reads pattern docs | `get_composition_pattern` tool |
 | **Mock data** | Reads sample data refs | `get_mock_data_patterns` tool |
 
-## Tools (14 total)
+## Tools (15 total)
 
 ### Knowledge Tools (text-based)
 
@@ -40,6 +40,7 @@ An MCP server (with MCP App) that gives Claude the same Azure portal prototyping
 | Tool | Description |
 |---|---|
 | `browse_design_tokens` | Interactive visual token browser with color swatches, search, and category filtering — renders inline in Claude |
+| `browse_verification_reports` | Interactive success-criteria verification report browser with scorecards, trend deltas, and actionable feedback |
 
 ## Setup
 
@@ -98,18 +99,22 @@ npm start
 ```
 mcp-server/
 ├── main.ts                    # stdio entry point
-├── server.ts                  # MCP server: 14 tools + 1 MCP App resource
+├── server.ts                  # MCP server: 15 tools + MCP App resources
 ├── token-browser.html         # MCP App view (Vite entry)
+├── verification-report.html   # MCP App view for validation scorecards
 ├── src/
+│   ├── verification-scorecard-store.ts # Reads verification snapshots/history from experiments
 │   ├── manifest-cache.ts      # Fetches + caches Coherence manifest from CDN
 │   ├── theme-cache.ts         # Fetches + caches theme CSS, parses tokens
 │   ├── content.ts             # Reads reference files from .github/skills/
-│   └── token-browser.ts       # Client-side App for token browser UI
+│   ├── token-browser.ts       # Client-side App for token browser UI
+│   └── verification-report.ts # Client-side App for scorecard and trend UI
 ├── dist/                      # Build output
 │   ├── main.js                # Compiled server
 │   ├── server.js
 │   ├── src/
-│   └── token-browser.html     # Bundled single-file MCP App
+│   ├── token-browser.html     # Bundled single-file MCP App
+│   └── verification-report.html # Bundled single-file MCP App
 ```
 
 ### Data Flow
@@ -130,3 +135,4 @@ Once connected, try these in Claude:
 - *"Search for components that support the appearance attribute"*
 - *"Get the composition pattern for the Azure portal header"*
 - *"Browse design tokens"* (opens the interactive MCP App)
+- *"Open the verification report for network-security-dashboard"* (opens the scorecard MCP App)

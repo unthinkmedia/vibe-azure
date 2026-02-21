@@ -8,6 +8,7 @@
  */
 
 import { App } from "@modelcontextprotocol/ext-apps";
+import "@vscode-elements/elements/dist/bundled.js";
 
 interface IconEntry {
   id: string;
@@ -38,9 +39,13 @@ let allSources: SourceInfo[] = [];
 let allCategories: CategoryInfo[] = [];
 let totalCount = 0;
 let selectedIcon: IconEntry | null = null;
+let lastFingerprint = "";
 
 // Currently loaded page (for lazy loading)
 let displayLimit = 100;
+
+const root = document.getElementById("app")!;
+root.innerHTML = buildShell();
 
 const searchEl = document.getElementById("search") as HTMLInputElement;
 const sourceFilterEl = document.getElementById("source-filter") as HTMLSelectElement;
@@ -90,9 +95,9 @@ const SOURCE_COLORS: Record<string, string> = {
 };
 
 function getFiltered(): IconEntry[] {
-  const q = searchEl.value.toLowerCase();
-  const src = sourceFilterEl.value;
-  const cat = categoryFilterEl.value;
+  const q = ((searchEl as any).value ?? "").toLowerCase();
+  const src = (sourceFilterEl as any).value ?? "";
+  const cat = (categoryFilterEl as any).value ?? "";
   return allIcons.filter((icon) => {
     if (src && icon.source !== src) return false;
     if (cat && icon.category !== cat) return false;
@@ -104,9 +109,9 @@ function getFiltered(): IconEntry[] {
 function render() {
   const filtered = getFiltered();
 
-  const q = searchEl.value;
-  const src = sourceFilterEl.value;
-  const cat = categoryFilterEl.value;
+  const q = (searchEl as any).value ?? "";
+  const src = (sourceFilterEl as any).value ?? "";
+  const cat = (categoryFilterEl as any).value ?? "";
   const suffix =
     (src ? ` from ${SOURCE_LABELS[src] ?? src}` : "") +
     (cat ? ` in "${cat}"` : "") +
@@ -148,21 +153,18 @@ function render() {
 
 function populateFilters() {
   // Sources
-  sourceFilterEl.innerHTML = '<option value="">All sources</option>';
+  sourceFilterEl.innerHTML = '<vscode-option value="">All sources</vscode-option>';
   for (const s of allSources) {
-    const opt = document.createElement("option");
-    opt.value = s.source;
-    opt.textContent = `${SOURCE_LABELS[s.source] ?? s.source} (${s.count})`;
-    sourceFilterEl.appendChild(opt);
+    const label = `${SOURCE_LABELS[s.source] ?? s.source} (${s.count})`;
+    sourceFilterEl.insertAdjacentHTML("beforeend",
+      `<vscode-option value="${escapeHtml(s.source)}">${escapeHtml(label)}</vscode-option>`);
   }
 
   // Categories
-  categoryFilterEl.innerHTML = '<option value="">All categories</option>';
+  categoryFilterEl.innerHTML = '<vscode-option value="">All categories</vscode-option>';
   for (const c of allCategories) {
-    const opt = document.createElement("option");
-    opt.value = c.category;
-    opt.textContent = `${c.category} (${c.count})`;
-    categoryFilterEl.appendChild(opt);
+    categoryFilterEl.insertAdjacentHTML("beforeend",
+      `<vscode-option value="${escapeHtml(c.category)}">${escapeHtml(c.category)} (${c.count})</vscode-option>`);
   }
 }
 
@@ -200,13 +202,25 @@ searchEl.addEventListener("input", () => {
   displayLimit = 100;
   render();
 });
+searchEl.addEventListener("vsc-input", () => {
+  displayLimit = 100;
+  render();
+});
 
 sourceFilterEl.addEventListener("change", () => {
   displayLimit = 100;
   render();
 });
+sourceFilterEl.addEventListener("vsc-change", () => {
+  displayLimit = 100;
+  render();
+});
 
 categoryFilterEl.addEventListener("change", () => {
+  displayLimit = 100;
+  render();
+});
+categoryFilterEl.addEventListener("vsc-change", () => {
   displayLimit = 100;
   render();
 });
@@ -232,9 +246,12 @@ newSearchEl.addEventListener("click", async () => {
   newSearchEl.textContent = "Searching...";
   try {
     const args: Record<string, string> = {};
-    if (searchEl.value) args.query = searchEl.value;
-    if (sourceFilterEl.value) args.source = sourceFilterEl.value;
-    if (categoryFilterEl.value) args.category = categoryFilterEl.value;
+    const q = (searchEl as any).value;
+    const src = (sourceFilterEl as any).value;
+    const cat = (categoryFilterEl as any).value;
+    if (q) args.query = q;
+    if (src) args.source = src;
+    if (cat) args.category = cat;
     const result = await app.callServerTool({ name: "browse_icons", arguments: args });
     if (result) handleIconData(result.structuredContent);
   } catch (err) {
@@ -297,7 +314,7 @@ function showConfirmation(icon: IconEntry) {
       <div class="confirmation-name">${escapeHtml(icon.name)}</div>
       <div class="confirmation-usage">${escapeHtml(icon.usage)}</div>
       <div class="confirmation-hint">Your selection has been saved. You can tell the assistant to use this icon now.</div>
-      <button class="confirmation-browse-btn" id="browse-again">Browse more icons</button>
+      <vscode-button id="browse-again" appearance="secondary">Browse more icons</vscode-button>
     </div>`;
   confirmationEl.style.display = "flex";
 
@@ -343,6 +360,9 @@ function handleIconData(raw: unknown) {
 }
 
 app.ontoolresult = (result) => {
+  const fp = JSON.stringify(result.structuredContent);
+  if (fp === lastFingerprint) return;
+  lastFingerprint = fp;
   handleIconData(result.structuredContent);
 };
 
@@ -359,3 +379,216 @@ app.connect().then(() => {
     document.documentElement.setAttribute("data-theme", ctx.theme);
   }
 });
+
+function buildShell(): string {
+  return `
+<style>
+  :root {
+    --bg: var(--vscode-editor-background, #fff);
+    --fg: var(--vscode-editor-foreground, #1a1a1a);
+    --border: var(--vscode-panel-border, #e0e0e0);
+    --accent: var(--vscode-focusBorder, #0078d4);
+    --card-bg: var(--vscode-editorWidget-background, #f5f5f5);
+    --card-hover: var(--vscode-list-hoverBackground, #e8e8e8);
+    --panel-bg: var(--vscode-editorWidget-background, #fff);
+    --panel-shadow: var(--vscode-widget-shadow, rgba(0,0,0,0.15));
+    --muted: var(--vscode-descriptionForeground, #888);
+    --success: var(--vscode-testing-iconPassed, #107c10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: var(--vscode-font-size, 13px);
+    background: var(--bg); color: var(--fg); padding: 16px;
+    line-height: 1.4;
+  }
+
+  /* ─── Header ─── */
+  .header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .header h1 { font-size: 18px; font-weight: 600; }
+  .header .subtitle { font-size: 12px; color: var(--muted); }
+
+  /* ─── Toolbar ─── */
+  .toolbar {
+    display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center;
+  }
+  .toolbar vscode-textfield { flex: 1; min-width: 200px; }
+
+  /* ─── Count ─── */
+  .count { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+
+  /* ─── Icon Grid ─── */
+  .icons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+  .icon-card {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 8px 8px; border-radius: 8px; background: var(--card-bg);
+    border: 1px solid var(--border); cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    text-align: center; overflow: hidden;
+  }
+  .icon-card:hover {
+    border-color: var(--accent); background: var(--card-hover);
+    transform: translateY(-1px);
+  }
+
+  .icon-preview {
+    width: 40px; height: 40px; display: flex; align-items: center;
+    justify-content: center; margin-bottom: 6px; flex-shrink: 0;
+  }
+  .icon-preview img {
+    max-width: 40px; max-height: 40px; object-fit: contain;
+  }
+  .icon-fallback {
+    width: 40px; height: 40px; align-items: center; justify-content: center;
+    font-size: 20px; color: var(--muted); border: 1px dashed var(--border); border-radius: 4px;
+  }
+  .icon-cui-name {
+    font-size: 10px; color: var(--accent); font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border: 1px dashed var(--accent);
+    border-radius: 4px; opacity: 0.8; word-break: break-all;
+    text-align: center; line-height: 1.2; padding: 2px;
+  }
+
+  .icon-label {
+    font-size: 11px; font-weight: 500; word-break: break-all;
+    max-height: 28px; overflow: hidden; line-height: 1.3;
+  }
+  .icon-source {
+    display: inline-block; padding: 1px 6px; border-radius: 8px;
+    font-size: 9px; color: #fff; margin-top: 4px; white-space: nowrap;
+  }
+
+  /* ─── Load More ─── */
+  #load-more { display: none; margin: 16px auto; }
+
+  /* ─── Detail Panel ─── */
+  .selected-panel {
+    position: fixed; bottom: -200px; left: 16px; right: 16px;
+    background: var(--panel-bg); border: 1px solid var(--border);
+    border-radius: 12px 12px 0 0; padding: 16px 20px;
+    box-shadow: 0 -4px 20px var(--panel-shadow);
+    transition: bottom 0.25s ease;
+    z-index: 100; display: flex; align-items: center; gap: 16px;
+  }
+  .selected-panel.visible { bottom: 0; }
+
+  .selected-preview {
+    width: 48px; height: 48px; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .selected-preview img {
+    max-width: 48px; max-height: 48px; object-fit: contain;
+  }
+  .selected-cui-name {
+    font-size: 12px; color: var(--accent); font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px; border: 1px dashed var(--accent);
+    border-radius: 6px; word-break: break-all; text-align: center;
+  }
+
+  .selected-info { flex: 1; min-width: 0; }
+  .selected-name { font-size: 14px; font-weight: 600; }
+  .selected-meta { display: flex; gap: 8px; align-items: center; margin: 4px 0; flex-wrap: wrap; }
+  .selected-source-chip {
+    display: inline-block; padding: 2px 8px; border-radius: 8px;
+    font-size: 10px; color: #fff;
+  }
+  .selected-category-chip {
+    font-size: 11px; color: var(--muted);
+  }
+  .selected-usage {
+    font-family: var(--vscode-editor-font-family, 'SF Mono', 'Fira Code', 'Consolas', monospace);
+    font-size: 11px; background: var(--card-bg); padding: 6px 10px;
+    border-radius: 4px; border: 1px solid var(--border);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-top: 6px; max-width: 100%;
+  }
+
+  .selected-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  /* ─── Toast ─── */
+  .copied {
+    position: fixed; top: 16px; right: 16px; background: var(--accent); color: #fff;
+    padding: 6px 16px; border-radius: 6px; font-size: 13px; opacity: 0;
+    transition: opacity 0.2s; pointer-events: none; z-index: 200;
+  }
+  .copied.show { opacity: 1; }
+
+  /* ─── Confirmation Overlay ─── */
+  .confirmation-overlay {
+    display: none; position: fixed; inset: 0; z-index: 150;
+    background: var(--bg); align-items: center; justify-content: center;
+  }
+  .confirmation-content {
+    text-align: center; padding: 32px; max-width: 400px;
+  }
+  .confirmation-icon { margin-bottom: 12px; }
+  .confirmation-check {
+    font-size: 32px; color: var(--success); margin-bottom: 8px;
+  }
+  .confirmation-title {
+    font-size: 18px; font-weight: 600; margin-bottom: 4px;
+  }
+  .confirmation-name {
+    font-size: 14px; color: var(--muted); margin-bottom: 12px;
+  }
+  .confirmation-usage {
+    font-family: var(--vscode-editor-font-family, 'SF Mono', 'Fira Code', 'Consolas', monospace);
+    font-size: 12px; background: var(--card-bg); padding: 8px 14px;
+    border-radius: 6px; border: 1px solid var(--border);
+    margin-bottom: 16px; word-break: break-all;
+  }
+  .confirmation-hint {
+    font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5;
+  }
+</style>
+
+<div class="header">
+  <h1>Icon Browser</h1>
+  <span class="subtitle">Browse all Azure & Coherence icons</span>
+</div>
+
+<div class="toolbar">
+  <vscode-textfield id="search" placeholder="Search icons by name, category, or extension..."></vscode-textfield>
+  <vscode-single-select id="source-filter">
+    <vscode-option value="">All sources</vscode-option>
+  </vscode-single-select>
+  <vscode-single-select id="category-filter">
+    <vscode-option value="">All categories</vscode-option>
+  </vscode-single-select>
+  <vscode-button id="new-search" title="Fetch new results from server">Search</vscode-button>
+</div>
+
+<div class="count" id="count">Loading icons...</div>
+<div class="icons" id="icons"></div>
+<vscode-button id="load-more" appearance="secondary" style="display:none;margin:16px auto;">Load more</vscode-button>
+
+<!-- Detail panel -->
+<div class="selected-panel" id="selected-panel">
+  <div class="selected-preview" id="selected-icon"></div>
+  <div class="selected-info">
+    <div class="selected-name" id="selected-name"></div>
+    <div class="selected-meta">
+      <span class="selected-source-chip" id="selected-source"></span>
+      <span class="selected-category-chip" id="selected-category"></span>
+    </div>
+    <div class="selected-usage" id="selected-usage"></div>
+  </div>
+  <div class="selected-actions">
+    <vscode-button id="use-btn">Use this icon</vscode-button>
+    <vscode-button id="copy-btn" appearance="secondary">Copy usage</vscode-button>
+    <vscode-button id="close-panel" appearance="icon">✕</vscode-button>
+  </div>
+</div>
+
+<div class="copied" id="copied">Copied!</div>
+
+<!-- Confirmation overlay -->
+<div class="confirmation-overlay" id="confirmation"></div>
+`;
+}

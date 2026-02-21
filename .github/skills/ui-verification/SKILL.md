@@ -306,22 +306,30 @@ For each styling decision where **no existing standard applies**:
 
 After static checks pass, **render the component and verify visually** using the Playwright browser tools and VS Code's integrated browser. This catches issues that static analysis cannot: token values resolving incorrectly, layout overflow, missing icons, wrong colors at runtime.
 
-#### 6a. Start the Dev Server
+#### 6a. Ensure Dev Server Is Running
 
-Ensure the `coherence-preview` Vite dev server is running:
+**Check whether the dev server is already running before starting a new one:**
+
+1. Run: `lsof -i :5175 2>/dev/null | grep LISTEN`
+2. If a process is listening → the server is already running. Skip to 6b.
+3. If nothing is listening → start the server as a background process:
 
 ```bash
-cd coherence-preview && npx vite
+cd coherence-preview && npx vite --port 5175
 ```
 
-The app opens at `http://localhost:5173`. Navigate to the experiment via hash: `http://localhost:5173#<experiment-id>`.
+4. Verify it responds: `curl -s -o /dev/null -w "%{http_code}" http://localhost:5175/`
+   - If `200` → proceed to 6b
+   - If not `200` → kill the process and restart. Check for port conflicts with `lsof -i :5175`.
+
+The app runs at `http://localhost:5175`. Navigate to the experiment via hash: `http://localhost:5175#<experiment-id>`.
 
 #### 6b. Open in VS Code Simple Browser
 
 Use the `open_simple_browser` tool to show the rendered component in VS Code's integrated browser panel:
 
 ```
-URL: http://localhost:5173#<experiment-id>
+URL: http://localhost:5175#<experiment-id>
 ```
 
 This gives the user an immediate visual preview alongside the code.
@@ -331,7 +339,7 @@ This gives the user an immediate visual preview alongside the code.
 Use the `browser_navigate` tool to open the experiment URL in Playwright's headless browser:
 
 ```
-URL: http://localhost:5173#<experiment-id>
+URL: http://localhost:5175#<experiment-id>
 ```
 
 #### 6d. Take a Snapshot (Accessibility Tree)

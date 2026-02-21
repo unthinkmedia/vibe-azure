@@ -170,4 +170,72 @@ export const styles = `
     color: var(--status-danger-foreground1);
     font-weight: var(--font-weight-semi-bold);
   }
+
+  /* ─── Networking page ─── */
+  .net-section {
+    margin-bottom: 24px;
+  }
+  .net-description {
+    font-size: var(--font-size-base300);
+    line-height: var(--line-height-base-300);
+    color: var(--neutral-foreground2);
+    margin: 0 0 16px;
+  }
+  .net-radio-option {
+    margin-bottom: 8px;
+  }
+  .net-radio-description {
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
+    margin: 2px 0 0 28px;
+    line-height: var(--line-height-base-200);
+  }
+  .net-accordion-content {
+    padding: 8px 0;
+  }
+  .net-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-base300);
+    background: var(--neutral-background1);
+    border: 1px solid var(--neutral-stroke2);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+  }
+  .net-table th {
+    text-align: left;
+    padding: 10px 16px;
+    font-weight: var(--font-weight-semi-bold);
+    font-size: var(--font-size-base200);
+    color: var(--neutral-foreground3);
+    background: var(--neutral-background3);
+    border-bottom: 1px solid var(--neutral-stroke2);
+  }
+  .net-table td {
+    padding: 10px 16px;
+    color: var(--neutral-foreground1);
+    border-bottom: 1px solid var(--neutral-stroke2);
+  }
+  .net-table tr:last-child td {
+    border-bottom: none;
+  }
+  .net-table tr:hover td {
+    background: var(--neutral-background1-hover);
+  }
+  .net-link {
+    color: var(--brand-foreground-link);
+    text-decoration: none;
+  }
+  .net-code {
+    font-family: var(--font-family-monospace, 'Cascadia Code', 'Consolas', monospace);
+    font-size: var(--font-size-base200);
+    padding: 2px 6px;
+    background: var(--neutral-background3);
+    border-radius: var(--border-radius-sm);
+    color: var(--neutral-foreground1);
+  }
+  .net-save-bar {
+    display: flex;
+    gap: 8px;
+  }
 `;

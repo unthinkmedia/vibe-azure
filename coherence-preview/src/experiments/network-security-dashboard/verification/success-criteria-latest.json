@@ -1,0 +1,59 @@
+{
+  "experimentId": "network-security-dashboard",
+  "intentUpdatedAt": "2026-02-19T20:44:07.391Z",
+  "verifiedAt": "2026-02-19T22:20:00.000Z",
+  "overallScore": 4.2,
+  "effectivenessPercent": 84,
+  "band": "strong-needs-minor-refinement",
+  "criteria": [
+    {
+      "id": "threat-summary-bar",
+      "criterion": "Threat summary bar with blocked attacks count, active DDoS mitigations, and open NSG rule violations",
+      "score": 5,
+      "evidence": "Top KPI bar in PageContent renders all three metrics with clear labels and values.",
+      "gap": "No significant implementation gap found.",
+      "actionableFeedback": "Optional: add trend arrows and previous-period comparison for each KPI."
+    },
+    {
+      "id": "geographic-attack-map",
+      "criterion": "Geographic attack map showing top source countries with threat counts",
+      "score": 4,
+      "evidence": "Map-style panel displays top source countries with threat totals and visual hotspots.",
+      "gap": "Limited interaction for drilling into a country segment.",
+      "actionableFeedback": "Add click-to-filter behavior to update the firewall events table by selected country."
+    },
+    {
+      "id": "firewall-events-table",
+      "criterion": "Filterable table of recent firewall events with columns: timestamp, source IP, destination, action (allow/deny), rule name, severity badge",
+      "score": 4,
+      "evidence": "Events table includes all required columns and supports filtering/search controls.",
+      "gap": "Filter state is not persisted when switching focus across panels.",
+      "actionableFeedback": "Persist active filters in component state and show chips for active filter context."
+    },
+    {
+      "id": "nsg-recommendations-panel",
+      "criterion": "Side panel showing NSG recommendations grouped by priority (critical, high, medium)",
+      "score": 4,
+      "evidence": "Right-side panel groups recommendations by critical/high/medium priority sections.",
+      "gap": "Recommendations do not expose confidence/risk rationale inline.",
+      "actionableFeedback": "Add a short rationale line and estimated risk reduction value for each recommendation."
+    },
+    {
+      "id": "copilot-suggestions",
+      "criterion": "Copilot suggestions: 'Which NSG rules are too permissive?' and 'Show me denied traffic from the last hour'",
+      "score": 4,
+      "evidence": "Page header includes both specified Copilot suggestion prompts in the suggestion list.",
+      "gap": "Prompt click behavior is static and does not pre-apply related filters yet.",
+      "actionableFeedback": "Wire each prompt to a context action that pre-filters data and opens relevant panel focus."
+    }
+  ],
+  "summary": {
+    "totalCriteria": 5,
+    "fullyMet": 1,
+    "mostlyMet": 4,
+    "partiallyMet": 0,
+    "mostlyMissing": 0,
+    "notImplemented": 0,
+    "notVerifiable": 0
+  }
+}

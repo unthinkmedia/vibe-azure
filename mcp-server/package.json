@@ -8,13 +8,14 @@
     "coherence-prototyper-mcp": "dist/main.js"
   },
   "scripts": {
-    "build": "tsc --noEmit && tsc -p tsconfig.server.json && rm -rf dist/*.html && cross-env INPUT=token-browser.html vite build && cross-env INPUT=intent-app.html vite build && cross-env INPUT=icon-browser.html vite build",
-    "start": "concurrently \"cross-env NODE_ENV=development INPUT=token-browser.html vite build --watch\" \"cross-env NODE_ENV=development INPUT=intent-app.html vite build --watch\" \"cross-env NODE_ENV=development INPUT=icon-browser.html vite build --watch\" \"tsx watch main.ts\"",
+    "build": "tsc --noEmit && tsc -p tsconfig.server.json && rm -rf dist/*.html && cross-env INPUT=token-browser.html vite build && cross-env INPUT=intent-app.html vite build && cross-env INPUT=icon-browser.html vite build && cross-env INPUT=verification-report.html vite build",
+    "start": "concurrently \"cross-env NODE_ENV=development INPUT=token-browser.html vite build --watch\" \"cross-env NODE_ENV=development INPUT=intent-app.html vite build --watch\" \"cross-env NODE_ENV=development INPUT=icon-browser.html vite build --watch\" \"cross-env NODE_ENV=development INPUT=verification-report.html vite build --watch\" \"tsx watch main.ts\"",
     "dev": "tsx main.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "^1.0.1",
     "@modelcontextprotocol/sdk": "^1.12.1",
+    "@vscode-elements/elements": "^2.5.0",
     "zod": "^3.24.4"
   },
   "devDependencies": {

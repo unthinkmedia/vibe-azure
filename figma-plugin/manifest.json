@@ -1,0 +1,7 @@
+{
+  "name": "Azure DevOps Pipeline Dashboard",
+  "id": "azure-devops-pipeline-dashboard",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"]
+}

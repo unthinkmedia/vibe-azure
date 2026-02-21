@@ -4,6 +4,7 @@
  */
 
 export interface NavItemConfig {
+  id: string;
   label: string;
   icon: string;
   iconFilled: string;
@@ -126,31 +127,95 @@ export const functions: FunctionEntry[] = [
 ];
 
 // ─── Navigation ───
+// ─── Networking page data ───
+export type SecurityLevel = 'public-all' | 'public-selected' | 'private-only';
+
+export interface IpRule {
+  name: string;
+  startIp: string;
+  endIp: string;
+}
+
+export interface VNetRule {
+  name: string;
+  vnet: string;
+  subnet: string;
+  status: 'Active' | 'Provisioning';
+}
+
+export interface PrivateEndpoint {
+  name: string;
+  subnet: string;
+  status: 'Approved' | 'Pending' | 'Rejected';
+  privateIp: string;
+}
+
+export const securityLevels: { value: SecurityLevel; label: string; description: string }[] = [
+  {
+    value: 'public-all',
+    label: 'Public access — All networks',
+    description: 'Allow inbound traffic from all networks, including the internet. Not recommended for production workloads.',
+  },
+  {
+    value: 'public-selected',
+    label: 'Public access — Selected networks',
+    description: 'Allow inbound traffic only from selected virtual networks and IP addresses. Recommended for most workloads.',
+  },
+  {
+    value: 'private-only',
+    label: 'Private access only',
+    description: 'No public access. Use private endpoints for all inbound traffic. Best for sensitive or regulated workloads.',
+  },
+];
+
+export const ipRules: IpRule[] = [
+  { name: 'Office VPN', startIp: '203.0.113.0', endIp: '203.0.113.255' },
+  { name: 'CI/CD Pipeline', startIp: '198.51.100.10', endIp: '198.51.100.10' },
+  { name: 'Partner API Gateway', startIp: '192.0.2.50', endIp: '192.0.2.60' },
+];
+
+export const vnetRules: VNetRule[] = [
+  { name: 'app-subnet-rule', vnet: 'vnet-contoso-prod', subnet: 'snet-app-tier', status: 'Active' },
+  { name: 'data-subnet-rule', vnet: 'vnet-contoso-prod', subnet: 'snet-data-tier', status: 'Active' },
+  { name: 'staging-subnet-rule', vnet: 'vnet-contoso-staging', subnet: 'snet-default', status: 'Provisioning' },
+];
+
+export const privateEndpoints: PrivateEndpoint[] = [
+  { name: 'pe-contoso-func-prod', subnet: 'snet-private-endpoints', status: 'Approved', privateIp: '10.0.4.5' },
+  { name: 'pe-contoso-func-staging', subnet: 'snet-private-endpoints', status: 'Pending', privateIp: '10.0.4.8' },
+];
+
+// ─── Navigation ───
 export const navSections: NavSectionConfig[] = [
   {
     items: [
       {
+        id: 'overview',
         label: 'Overview',
         icon: 'https://api.iconify.design/fluent:home-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:home-24-filled.svg',
         selected: true,
       },
       {
+        id: 'activity-log',
         label: 'Activity log',
         icon: 'https://api.iconify.design/fluent:document-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:document-24-filled.svg',
       },
       {
+        id: 'access-control',
         label: 'Access control (IAM)',
         icon: 'https://api.iconify.design/fluent:person-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:person-24-filled.svg',
       },
       {
+        id: 'tags',
         label: 'Tags',
         icon: 'https://api.iconify.design/fluent:tag-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:tag-24-filled.svg',
       },
       {
+        id: 'diagnose',
         label: 'Diagnose and solve problems',
         icon: 'https://api.iconify.design/fluent:stethoscope-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:stethoscope-24-filled.svg',
@@ -161,16 +226,19 @@ export const navSections: NavSectionConfig[] = [
     heading: 'Functions',
     items: [
       {
+        id: 'functions',
         label: 'Functions',
         icon: 'https://api.iconify.design/fluent:flash-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:flash-24-filled.svg',
       },
       {
+        id: 'app-keys',
         label: 'App keys',
         icon: 'https://api.iconify.design/fluent:key-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:key-24-filled.svg',
       },
       {
+        id: 'app-files',
         label: 'App files',
         icon: 'https://api.iconify.design/fluent:folder-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:folder-24-filled.svg',
@@ -181,21 +249,25 @@ export const navSections: NavSectionConfig[] = [
     heading: 'Monitoring',
     items: [
       {
+        id: 'log-stream',
         label: 'Log stream',
         icon: 'https://api.iconify.design/fluent:text-align-left-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:text-align-left-24-filled.svg',
       },
       {
+        id: 'metrics',
         label: 'Metrics',
         icon: 'https://api.iconify.design/fluent:data-bar-vertical-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:data-bar-vertical-24-filled.svg',
       },
       {
+        id: 'alerts',
         label: 'Alerts',
         icon: 'https://api.iconify.design/fluent:alert-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:alert-24-filled.svg',
       },
       {
+        id: 'diagnostic-settings',
         label: 'Diagnostic settings',
         icon: 'https://api.iconify.design/fluent:stethoscope-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:stethoscope-24-filled.svg',
@@ -206,21 +278,25 @@ export const navSections: NavSectionConfig[] = [
     heading: 'Settings',
     items: [
       {
+        id: 'configuration',
         label: 'Configuration',
         icon: 'https://api.iconify.design/fluent:settings-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:settings-24-filled.svg',
       },
       {
+        id: 'networking',
         label: 'Networking',
         icon: 'https://api.iconify.design/fluent:globe-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:globe-24-filled.svg',
       },
       {
+        id: 'scale-out',
         label: 'Scale out',
         icon: 'https://api.iconify.design/fluent:arrow-maximize-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:arrow-maximize-24-filled.svg',
       },
       {
+        id: 'properties',
         label: 'Properties',
         icon: 'https://api.iconify.design/fluent:info-24-regular.svg',
         iconFilled: 'https://api.iconify.design/fluent:info-24-filled.svg',

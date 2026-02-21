@@ -1,0 +1,67 @@
+{
+  "experimentId": "azure-devops-pipeline-dashboard",
+  "intentUpdatedAt": "2026-02-19T21:14:13.100Z",
+  "verifiedAt": "2026-02-19T21:16:21Z",
+  "overallScore": 5,
+  "effectivenessPercent": 100,
+  "band": "ready-to-share",
+  "criteria": [
+    {
+      "id": "pipeline-health-summary-donut",
+      "criterion": "Shows pipeline health summary with pass/fail/in-progress counts and overall success-rate donut visualization",
+      "score": 5,
+      "evidence": "`PageContent.tsx` renders health KPI cards from `healthMetrics` and an SVG success-rate donut bound to `successRate`.",
+      "gap": "No significant implementation gap found.",
+      "actionableFeedback": "Optional: add period-over-period trend deltas on each KPI card."
+    },
+    {
+      "id": "recent-runs-timeline-duration-status-commit",
+      "criterion": "Includes recent pipeline runs timeline with duration bars, status indicators, and commit message context",
+      "score": 5,
+      "evidence": "`PageContent.tsx` timeline list maps `recentRuns` into status pills, proportional duration bars, and commit message rows.",
+      "gap": "No significant implementation gap found.",
+      "actionableFeedback": "Optional: add click-through affordance to open a run details blade."
+    },
+    {
+      "id": "slowest-stages-breakdown",
+      "criterion": "Provides a Slowest Stages panel ranking longest-running pipeline stages with average durations",
+      "score": 5,
+      "evidence": "`PageContent.tsx` renders a stage table from `slowestStages` with avg duration and visual duration bars.",
+      "gap": "No significant implementation gap found.",
+      "actionableFeedback": "Optional: add sorting toggles for Avg vs P95 duration."
+    },
+    {
+      "id": "agent-pool-utilization",
+      "criterion": "Displays build agent pool utilization with online/offline/busy counts and utilization context",
+      "score": 5,
+      "evidence": "`PageContent.tsx` maps `agentPools` to online/busy/offline summaries and utilization progress bars with ARIA values.",
+      "gap": "No significant implementation gap found.",
+      "actionableFeedback": "Optional: surface queued jobs per pool to complement utilization."
+    },
+    {
+      "id": "failing-pipelines-alert-banner",
+      "criterion": "Surfaces an alert banner for pipelines failing continuously for over 24 hours",
+      "score": 5,
+      "evidence": "`LongFailureAlert` in `PageContent.tsx` uses `CuiMessageBar intent=\"warning\" shape=\"square\"` with 24h+ failing pipeline details from `longFailingPipelines`.",
+      "gap": "No significant implementation gap found.",
+      "actionableFeedback": "Optional: add deep links to each failing pipeline in the alert payload."
+    },
+    {
+      "id": "copilot-suggestions-diagnostics-flaky-tests",
+      "criterion": "Includes Copilot suggestion prompts for failure diagnosis and flaky test investigation",
+      "score": 5,
+      "evidence": "`index.tsx` passes required prompts via `copilotSuggestions` prop on shared `PageHeader`, including both requested suggestion strings.",
+      "gap": "No significant implementation gap found.",
+      "actionableFeedback": "Optional: wire each suggestion to a contextual filter/query action."
+    }
+  ],
+  "summary": {
+    "totalCriteria": 6,
+    "fullyMet": 6,
+    "mostlyMet": 0,
+    "partiallyMet": 0,
+    "mostlyMissing": 0,
+    "notImplemented": 0,
+    "notVerifiable": 0
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "experimentId": "logic-app-designer",
+  "title": "Logic App Designer",
+  "vision": "Azure Logic App visual workflow designer with canvas, draggable workflow nodes (triggers/actions), connector lines, and a side panel for step configuration. Mimics the real Logic App Designer experience in the Azure portal.",
+  "problem": "Need a prototype of the Logic App Designer to explore visual workflow builder UX patterns — node layout, connector routing, canvas interaction, and step configuration.",
+  "successCriteria": [
+    "Canvas renders workflow nodes connected by vertical connector lines",
+    "Trigger node and action nodes are visually distinct",
+    "Nodes can be expanded to show configuration details",
+    "Add-step button appears between nodes",
+    "Toolbar provides Save, Discard, Run Trigger, and Designer/Code View toggle"
+  ],
+  "nonGoals": [
+    "Actual workflow execution",
+    "Real API connectivity",
+    "Drag-and-drop node reordering"
+  ],
+  "constraints": [
+    "Use Coherence design tokens for all colors, spacing, typography",
+    "Follow Azure portal resource page shell pattern"
+  ],
+  "createdAt": "2026-02-21T00:00:00.000Z",
+  "updatedAt": "2026-02-21T00:00:00.000Z",
+  "status": "confirmed"
+}

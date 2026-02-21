@@ -1,0 +1,9 @@
+{
+  "id": "curated:logic-app",
+  "name": "logic-app",
+  "source": "curated",
+  "category": "API & Integration",
+  "url": "https://raw.githubusercontent.com/maskati/azure-icons/main/svg/Microsoft_Azure_EMA/Workflow.svg",
+  "usage": "azureIcon('logic-app')",
+  "selectedAt": "2026-02-21T18:21:04.242Z"
+}

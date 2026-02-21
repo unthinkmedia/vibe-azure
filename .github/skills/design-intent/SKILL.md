@@ -77,6 +77,21 @@ Parse the user's description and map to these fields:
 
 Generate a title automatically from the description — do NOT ask the user for one.
 
+#### Determine Layout (Side Panel vs Full Width)
+
+Before calling the MCP tool, determine the correct page layout from the user's description. This ensures the builder picks the right scaffold.
+
+**Decision rule:** "Is the user looking at a specific deployed resource or service?"
+
+| Signal in user request | Layout | Add to constraints |
+|------------------------|--------|-------------------|
+| "overview page", "resource page", "settings page", mentions a specific resource name/type | **Side Panel** | `"Layout: side-panel (resource-scoped page with CuiSideNav)"` |
+| "home page", "create flow", "marketplace", "browse page", "landing page", "wizard" | **Full Width** | `"Layout: full-width (portal-level page, no section nav)"` |
+| Mentions "section nav", "left navigation", "side navigation" | **Side Panel** | `"Layout: side-panel"` |
+| Service blade (Monitor, Defender, etc.) | **Side Panel (collapsible)** | `"Layout: service-blade (collapsible sidebar)"` |
+
+Add the layout constraint to `prefillConstraints` so it persists into `intent.json` and the builder can read it without guessing.
+
 ### 2. Call the `design_intent` MCP Tool
 
 Call `design_intent` with all prefill parameters. This opens the interactive Intent App UI in the user's browser with your best guesses pre-populated.

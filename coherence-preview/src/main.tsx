@@ -345,10 +345,23 @@ const scaffolds: Entry[] = [
     description: 'Categories sidebar with two-column service + marketplace product grid (matches "Create a resource" landing page)',
     component: lazy(() => import('./patterns/ScaffoldMarketplaceBrowse')),
   },
+  {
+    id: 'scaffold-home-page',
+    title: 'Home Page',
+    description: 'Azure portal landing page with service tiles row, resource tabs (Recent/Favorite/Shared), filter toolbar, and resource table',
+    component: lazy(() => import('./patterns/ScaffoldHomePage')),
+  },
+  {
+    id: 'scaffold-browse-page',
+    title: 'Browse Page',
+    description: 'Full-width resource browse page with toolbar, filter pills, and data table with checkboxes (matches Subscriptions, All Resources, etc.)',
+    component: lazy(() => import('./patterns/ScaffoldBrowsePage')),
+  },
 ];
 
-// All entries combined for lookup
-const allEntries = [...experiments, ...patterns, ...scaffolds];
+// Initial scaffold list (may shrink at runtime via delete API)
+const initialScaffolds = scaffolds;
+const initialAllEntries = [...experiments, ...patterns, ...initialScaffolds];
 
 type TabId = 'experiments' | 'patterns' | 'scaffolds';
 
@@ -358,55 +371,116 @@ const tabDescriptions: Record<TabId, string> = {
   scaffolds: 'Starter page templates with pre-wired layout structure. Clone and customize to kick-start a new prototype.',
 };
 
-const tabs: { id: TabId; label: string; count: number }[] = [
-  { id: 'experiments', label: 'Experiments', count: experiments.length },
-  { id: 'patterns', label: 'Patterns', count: patterns.length },
-  { id: 'scaffolds', label: 'Scaffolds', count: scaffolds.length },
-];
-
 function formatDate(iso: string) {
   const d = new Date(iso + 'T00:00:00');
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-function EntryCard({ entry }: { entry: Entry }) {
+function EntryCard({ entry, onDelete }: { entry: Entry; onDelete?: (id: string) => void }) {
   return (
-    <a
-      href={`#${entry.id}`}
+    <div
       style={{
-        display: 'block',
-        padding: '16px 20px',
+        display: 'flex',
+        alignItems: 'stretch',
         borderRadius: 8,
         border: '1px solid var(--neutral-stroke2)',
         background: 'var(--neutral-background1)',
-        textDecoration: 'none',
-        color: 'inherit',
         transition: 'box-shadow 0.15s',
+        overflow: 'hidden',
       }}
       onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)')}
       onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>{entry.title}</div>
-        {entry.date && (
-          <div style={{ fontSize: 12, color: 'var(--neutral-foreground3)', whiteSpace: 'nowrap', marginLeft: 12 }}>
-            {formatDate(entry.date)}
-          </div>
-        )}
-      </div>
-      <div style={{ fontSize: 13, color: 'var(--neutral-foreground3)' }}>{entry.description}</div>
-    </a>
+      <a
+        href={`#${entry.id}`}
+        style={{
+          display: 'block',
+          padding: '16px 20px',
+          flex: 1,
+          textDecoration: 'none',
+          color: 'inherit',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>{entry.title}</div>
+          {entry.date && (
+            <div style={{ fontSize: 12, color: 'var(--neutral-foreground3)', whiteSpace: 'nowrap', marginLeft: 12 }}>
+              {formatDate(entry.date)}
+            </div>
+          )}
+        </div>
+        <div style={{ fontSize: 13, color: 'var(--neutral-foreground3)' }}>{entry.description}</div>
+      </a>
+      {onDelete && (
+        <button
+          onClick={() => {
+            if (confirm(`Delete scaffold "${entry.title}"?\n\nThis removes the .tsx file and unregisters it. Cannot be undone.`)) {
+              onDelete(entry.id);
+            }
+          }}
+          title={`Delete ${entry.title}`}
+          aria-label={`Delete ${entry.title}`}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 40,
+            border: 'none',
+            borderLeft: '1px solid var(--neutral-stroke2)',
+            background: 'transparent',
+            color: 'var(--neutral-foreground3)',
+            cursor: 'pointer',
+            fontSize: 16,
+            transition: 'background 0.15s, color 0.15s',
+            flexShrink: 0,
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = 'var(--status-danger-background1, #fdf3f4)';
+            e.currentTarget.style.color = 'var(--status-danger-foreground1, #b10e1c)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.color = 'var(--neutral-foreground3)';
+          }}
+        >
+          🗑
+        </button>
+      )}
+    </div>
   );
 }
 
 function App() {
+  const [liveScaffolds, setLiveScaffolds] = useState<Entry[]>(initialScaffolds);
+  const allEntries = [...experiments, ...patterns, ...liveScaffolds];
+
   const [activeId, setActiveId] = useState<string | null>(() => {
-    return parseHash(window.location.hash.slice(1), allEntries).entryId;
+    return parseHash(window.location.hash.slice(1), initialAllEntries).entryId;
   });
   const [subRoute, setSubRoute] = useState<string | undefined>(() => {
-    return parseHash(window.location.hash.slice(1), allEntries).subRoute;
+    return parseHash(window.location.hash.slice(1), initialAllEntries).subRoute;
   });
   const [activeTab, setActiveTab] = useState<TabId>('experiments');
+
+  const handleDeleteScaffold = async (id: string) => {
+    try {
+      const res = await fetch(`/api/scaffold/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        alert(`Failed to delete: ${body.error || res.statusText}`);
+        return;
+      }
+      setLiveScaffolds(prev => prev.filter(s => s.id !== id));
+    } catch (err) {
+      alert(`Delete failed: ${err}`);
+    }
+  };
+
+  const tabs: { id: TabId; label: string; count: number }[] = [
+    { id: 'experiments', label: 'Experiments', count: experiments.length },
+    { id: 'patterns', label: 'Patterns', count: patterns.length },
+    { id: 'scaffolds', label: 'Scaffolds', count: liveScaffolds.length },
+  ];
 
   useEffect(() => {
     const onHashChange = () => {
@@ -454,7 +528,7 @@ function App() {
   const tabContent: Record<TabId, Entry[]> = {
     experiments,
     patterns,
-    scaffolds,
+    scaffolds: liveScaffolds,
   };
 
   const currentEntries = tabContent[activeTab];
@@ -514,7 +588,11 @@ function App() {
       {/* Tab content */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {currentEntries.map(entry => (
-          <EntryCard key={entry.id} entry={entry} />
+          <EntryCard
+            key={entry.id}
+            entry={entry}
+            onDelete={activeTab === 'scaffolds' ? handleDeleteScaffold : undefined}
+          />
         ))}
       </div>
     </div>

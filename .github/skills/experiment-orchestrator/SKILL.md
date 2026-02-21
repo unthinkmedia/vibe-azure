@@ -75,7 +75,17 @@ For **reference** mode:
    - `prefillSuccessCriteria` — criteria that measure improvement over the reference (e.g. "Clearer information hierarchy than reference", "Better use of whitespace")
    - `prefillConstraints` — include "Use Figma design as reference only — build an improved solution using Coherence best practices" as the first constraint
 
-**Step E: Pass both the URL, mode, and detailed spec** to the INTENT phase via `prefillFigmaUrl`, `prefillFigmaMode`, and `prefillFigmaContext` on the `design_intent` tool call.
+**Step E: Determine Layout from Figma structure:**
+
+Examine the Figma design to determine whether the page uses a side panel or full width:
+- If the Figma shows a left sidebar with resource/service navigation items → layout is **side-panel**
+- If the Figma is full width (home, create wizard, browse) → layout is **full-width**
+- If the Figma shows a collapsible service sidebar → layout is **service-blade**
+- Add the layout constraint (e.g. `"Layout: side-panel"`) to `prefillConstraints`
+
+See the full decision guide: `coherence-ui/references/patterns/page-layout-decision.md`
+
+**Step F: Pass both the URL, mode, and detailed spec** to the INTENT phase via `prefillFigmaUrl`, `prefillFigmaMode`, and `prefillFigmaContext` on the `design_intent` tool call.
 
 The intent form opens pre-populated. The user reviews, tweaks if needed, and confirms.
 

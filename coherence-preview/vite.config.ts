@@ -25,50 +25,65 @@ function scaffoldApi() {
         const mainPath = path.resolve(srcDir, 'main.tsx');
         const galleryPath = path.resolve(srcDir, 'PatternsGallery.tsx');
 
-        // 1. Find the scaffold entry in main.tsx to get the file path
-        let mainSrc = fs.readFileSync(mainPath, 'utf-8');
+        /**
+         * Safe line-based removal: find the line containing `id: '<id>'`,
+         * walk backwards to the opening `{` and forwards to the closing `},`
+         * and remove only those lines.
+         */
+        function removeEntryBlock(filePath: string, targetId: string): string | null {
+          const src = fs.readFileSync(filePath, 'utf-8');
+          const lines = src.split('\n');
+          const idPattern = new RegExp(`id:\\s*'${targetId}'`);
 
-        // Match the full scaffold object block: { id: 'scaffold-xxx', ... },
-        const entryRegex = new RegExp(
-          `\\{[\\s\\S]*?id:\\s*'${id}'[\\s\\S]*?\\},?\\n`,
-        );
-        const match = mainSrc.match(entryRegex);
-        if (!match) {
+          // Find the line with the matching id
+          const idLineIdx = lines.findIndex(l => idPattern.test(l));
+          if (idLineIdx === -1) return null;
+
+          // Walk backward to find opening `{` (line that starts with whitespace + `{`)
+          let startIdx = idLineIdx;
+          while (startIdx > 0 && !lines[startIdx].trimStart().startsWith('{')) {
+            startIdx--;
+          }
+
+          // Walk forward to find closing `},` or `}` (line that starts with whitespace + `}`)
+          let endIdx = idLineIdx;
+          while (endIdx < lines.length - 1 && !lines[endIdx].trimStart().startsWith('}')) {
+            endIdx++;
+          }
+
+          // Extract the import path before removal
+          const block = lines.slice(startIdx, endIdx + 1).join('\n');
+          const importMatch = block.match(/import\(['"](.+?)['"]\)/);
+          const importPath = importMatch ? importMatch[1] : null;
+
+          // Remove the lines
+          lines.splice(startIdx, endIdx - startIdx + 1);
+          fs.writeFileSync(filePath, lines.join('\n'), 'utf-8');
+
+          return importPath;
+        }
+
+        // 1. Remove from main.tsx
+        const importPath = removeEntryBlock(mainPath, id);
+        if (importPath === null && !fs.readFileSync(mainPath, 'utf-8').includes(`'${id}'`)) {
           res.statusCode = 404;
           res.end(JSON.stringify({ error: `Scaffold "${id}" not found in main.tsx` }));
           return;
         }
 
-        // Extract the import path from the matched block
-        const importMatch = match[0].match(/import\(['"](.+?)['"]\)/);
-        let tsxFile: string | null = null;
-        if (importMatch) {
-          const rel = importMatch[1]; // e.g. './patterns/ScaffoldResourcePage'
-          tsxFile = path.resolve(srcDir, rel + '.tsx');
-        }
-
-        // 2. Remove the scaffold entry from the scaffolds array in main.tsx
-        mainSrc = mainSrc.replace(match[0], '');
-        fs.writeFileSync(mainPath, mainSrc, 'utf-8');
-
-        // 3. Remove matching item from PatternsGallery.tsx if it exists
+        // 2. Remove from PatternsGallery.tsx if present
         if (fs.existsSync(galleryPath)) {
-          let gallerySrc = fs.readFileSync(galleryPath, 'utf-8');
-          const galleryRegex = new RegExp(
-            `\\{[\\s\\S]*?id:\\s*'${id}'[\\s\\S]*?\\},?\\n`,
-          );
-          const galleryMatch = gallerySrc.match(galleryRegex);
-          if (galleryMatch) {
-            gallerySrc = gallerySrc.replace(galleryMatch[0], '');
-            fs.writeFileSync(galleryPath, gallerySrc, 'utf-8');
-          }
+          removeEntryBlock(galleryPath, id);
         }
 
-        // 4. Delete the .tsx file
+        // 3. Delete the .tsx file
         const deleted: string[] = [];
-        if (tsxFile && fs.existsSync(tsxFile)) {
-          fs.unlinkSync(tsxFile);
-          deleted.push(path.relative(srcDir, tsxFile));
+        if (importPath) {
+          const tsxFile = path.resolve(srcDir, importPath + '.tsx');
+          if (fs.existsSync(tsxFile)) {
+            fs.unlinkSync(tsxFile);
+            deleted.push(path.relative(srcDir, tsxFile));
+          }
         }
 
         res.setHeader('Content-Type', 'application/json');

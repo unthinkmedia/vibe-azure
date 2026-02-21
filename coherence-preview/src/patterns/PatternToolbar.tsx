@@ -111,13 +111,22 @@ export default function PatternToolbar() {
           <li>Vertical dividers: <code>CuiDivider orientation="vertical"</code> with 20px height</li>
           <li>Dropdown triggers: icon in <code>slot="start"</code>, chevron-down in <code>slot="end"</code></li>
           <li>Group: primary actions → data actions → destructive → meta</li>
+          <li>No wrapping: toolbar must never wrap to a second line — add <code>flex-wrap: nowrap</code> on <code>cui-toolbar</code> and <code>white-space: nowrap</code> on buttons via <code>::part(button-control)</code> to pierce the shadow DOM</li>
         </ul>
       </div>
       <style>{`
         body { margin: 0; }
+        cui-toolbar {
+          flex-wrap: nowrap;
+        }
         cui-toolbar cui-button,
         cui-toolbar cui-menu cui-button {
           white-space: nowrap;
+        }
+        cui-toolbar cui-button::part(button-control),
+        cui-toolbar cui-menu cui-button::part(button-control) {
+          white-space: nowrap;
+          flex-wrap: nowrap;
         }
       `}</style>
     </>

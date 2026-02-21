@@ -151,20 +151,45 @@ The Figma design is a **reference to improve upon**, NOT a blueprint to reproduc
 
 **Why this gate exists:** Without it, experiments get built without user review, wasting effort if the design direction was wrong. This gate was added after a real incident where the build phase ran before intent capture.
 
-## Step 1: Identify Page Type
+## Step 1: Identify Page Type & Layout
 
 **In Figma Import Mode:** Skip the scaffold table — the Figma design defines the page structure. Read the `figmaContext` to determine the layout instead. Still use the scaffolds as a reference for file structure conventions.
 
 **In Figma Reference Mode:** Use the scaffold table normally — pick the page type that best fits the IMPROVED design, not necessarily what the Figma used.
 
-| Page Type | Scaffold | When to Use |
-|-----------|----------|-------------|
-| Resource Page | `assets/scaffolds/azure-resource-page/` | Default for any Azure resource |
-| List Page | `assets/scaffolds/azure-list-page/` | Selectable list + detail layout |
-| Overview Page | `assets/scaffolds/azure-overview-page/` | Resource overview/dashboard |
-| Marketplace Browse | `assets/scaffolds/azure-marketplace-browse/` | Service catalog, marketplace |
-| Create Flow | `assets/flows/azure-create-flow/` | Multi-step creation wizard |
-| Multi-Page Flow | `assets/flows/azure-multi-page-flow/` | End-to-end user journeys |
+### Step 1a: Determine Layout (Side Panel or Full Width)
+
+⚠️ **Every Azure page uses ONE of two layouts. Getting this wrong breaks the entire page structure.**
+
+**Decision rule:** Ask — "Is the user looking at a specific deployed resource or service?"
+- **YES → Side Panel** (section nav with `CuiSideNav` at 220px, left of content, below header/title)
+- **NO → Full Width** (no section nav, content fills `slot="main"`)
+
+| Layout | Page Types | Key Signal |
+|--------|------------|------------|
+| **Side Panel** | Resource overview, resource sub-page, resource list, service blade, detail page | URL-like path: `/resourceGroups/rg-1/providers/Microsoft.Web/sites/my-app` |
+| **Full Width** | Home page, create wizard, marketplace browse, all-resources list, browse page (empty state) | Portal-level page, no specific resource in context |
+
+**Hard rules:**
+- **NEVER** add a side panel to: create flows, home pages, marketplace browse, or initial browse/empty-state pages
+- **ALWAYS** add a side panel to: resource overview, resource sub-pages, detail pages, service landing pages
+- If `intent.json` has a `layout` field, use that value (it was explicitly confirmed by the user)
+- Content sidebars (category filters, list panels) are NOT section navs — they go inside the content area of a full-width layout
+
+See the full decision guide: `coherence-ui/references/patterns/page-layout-decision.md`
+
+### Step 1b: Pick the Scaffold
+
+| Page Type | Layout | Scaffold | When to Use |
+|-----------|--------|----------|-------------|
+| Resource Page | Side Panel | `ScaffoldResourcePage` | Default for any Azure resource sub-page |
+| Overview Page | Side Panel | `ScaffoldOverviewPage` | Resource overview with essentials + card grid |
+| List Page | Side Panel | `ScaffoldListPage` | Selectable list + detail layout |
+| Service Blade | Side Panel (collapsible) | `ScaffoldServiceBlade` | Service-level pages (Monitor, Defender, etc.) |
+| Home Page | Full Width | `ScaffoldHomePage` | Portal landing page |
+| Create Flow | Full Width | `ScaffoldCreateFlow` | Multi-step creation wizard |
+| Marketplace Browse | Full Width | `ScaffoldMarketplaceBrowse` | Service catalog with category sidebar |
+| Multi-Page Flow | Mixed | `ScaffoldMultiPageFlow` | Browse (full) → Create (full) → Detail (side panel) |
 
 See [references/page-types.md](references/page-types.md) for detailed anatomy.
 
@@ -192,16 +217,28 @@ Also read the Composition Patterns table in the coherence-ui SKILL.md.
 
 Create the experiment folder at `coherence-preview/src/experiments/<experiment-id>/` with the standard file structure:
 
-### Single-Page Experiments
+### Single-Page Experiments (Side Panel Layout)
 
 ```
 <experiment-id>/
-  index.tsx          # CuiAppFrame + Header + AzurePortalNav + section nav + PageContent
+  index.tsx          # CuiAppFrame + Header + AzurePortalNav + slot="main" flex + section nav + PageContent
   data.ts            # Types, interfaces, mock data, nav config
   styles.ts          # Scoped CSS as exported string
   Navigation.tsx     # Section nav: <nav> + CuiSideNav (NOT CuiDrawer slot="navigation")
   PageContent.tsx    # Toolbar + page body
 ```
+
+### Single-Page Experiments (Full Width Layout)
+
+```
+<experiment-id>/
+  index.tsx          # CuiAppFrame + Header + AzurePortalNav + slot="main" (NO flex, NO nav) + PageContent
+  data.ts            # Types, interfaces, mock data
+  styles.ts          # Scoped CSS as exported string
+  PageContent.tsx    # Full-width page body (breadcrumb + PageHeader + content)
+```
+
+**Key difference:** Side Panel layout uses `display: flex; height: 100%` on `slot="main"` with a `<nav>` sibling. Full Width layout does NOT — the `slot="main"` div contains the content directly.
 
 ### Multi-Page Flow Experiments
 

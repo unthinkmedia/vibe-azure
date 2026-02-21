@@ -10,7 +10,6 @@ import {
   CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
   CuiNavHeading,
@@ -22,6 +21,7 @@ import {
   CuiToolbar,
 } from '@charm-ux/cui/react';
 import PageHeader from '../../../patterns/PageHeader';
+import AzurePortalNav from '../../../patterns/PatternAzurePortalNav';
 import {
   experimentId,
   resourceName,
@@ -55,23 +55,27 @@ export default function DetailPage() {
           </CuiPopOver>
         </CuiHeader>
 
-        <CuiDrawer slot="navigation" id="navigation-drawer" inline position="start" breakpoint="686px" open>
-          <CuiSideNav size="small">
-            {detailNavSections.map((section, si) => (
-              <div key={si}>
-                {section.dividerBefore && <CuiDivider />}
-                {section.heading && <CuiNavHeading>{section.heading}</CuiNavHeading>}
-                {section.items.map((item) => (
-                  <CuiNavItem key={item.label} label={item.label} href="#" selected={item.selected || undefined}>
-                    <CuiIcon slot="icon" url={item.icon} selectedUrl={item.iconFilled} />
-                  </CuiNavItem>
-                ))}
-              </div>
-            ))}
-          </CuiSideNav>
-        </CuiDrawer>
+        {/* ─── Global Navigation ─── */}
+        <AzurePortalNav />
 
-        <div slot="main">
+        <div slot="main" style={{ display: 'flex', height: '100%' }}>
+          <nav style={{ width: 220, minWidth: 220, borderRight: '1px solid var(--neutral-stroke2)', background: 'var(--neutral-background1)', overflowY: 'auto', flexShrink: 0 }}>
+            <CuiSideNav size="small">
+              {detailNavSections.map((section, si) => (
+                <div key={si}>
+                  {section.dividerBefore && <CuiDivider />}
+                  {section.heading && <CuiNavHeading>{section.heading}</CuiNavHeading>}
+                  {section.items.map((item) => (
+                    <CuiNavItem key={item.label} label={item.label} href="#" selected={item.selected || undefined}>
+                      <CuiIcon slot="icon" url={item.icon} selectedUrl={item.iconFilled} />
+                    </CuiNavItem>
+                  ))}
+                </div>
+              ))}
+            </CuiSideNav>
+          </nav>
+
+          <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
           <div style={{ padding: '8px 32px 0' }}>
             <CuiBreadcrumb label="Navigation" size="small">
               <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
@@ -105,6 +109,7 @@ export default function DetailPage() {
             <p style={{ color: 'var(--neutral-foreground2)' }}>
               Resource {resourceName} created successfully. Customize this page with your resource details.
             </p>
+          </div>
           </div>
         </div>
       </CuiAppFrame>

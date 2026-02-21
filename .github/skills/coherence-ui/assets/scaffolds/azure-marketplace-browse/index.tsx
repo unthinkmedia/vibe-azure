@@ -23,6 +23,7 @@ import {
   CuiSearchBox,
 } from '@charm-ux/cui/react';
 import PageHeader from '../../patterns/PageHeader';
+import AzurePortalNav from '../../patterns/PatternAzurePortalNav';
 import PageContent from './PageContent';
 import { headerTitle, pageTitle, breadcrumb, copilotSuggestions } from './data';
 import { styles } from './styles';
@@ -78,6 +79,9 @@ export default function MarketplaceBrowsePage() {
             </div>
           </CuiPopOver>
         </CuiHeader>
+
+        {/* ─── Global Navigation (hamburger-toggled overlay) ─── */}
+        <AzurePortalNav />
 
         {/* ─── Main Slot ─── */}
         <div slot="main" className="create-resource-page">

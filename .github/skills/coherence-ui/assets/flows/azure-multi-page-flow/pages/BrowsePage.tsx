@@ -10,7 +10,6 @@ import {
   CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
   CuiNavItem,
@@ -20,6 +19,7 @@ import {
   CuiSideNav,
 } from '@charm-ux/cui/react';
 import PageHeader from '../../../patterns/PageHeader';
+import AzurePortalNav from '../../../patterns/PatternAzurePortalNav';
 import { experimentId, browseTitle, browseSubtitle, copilotSuggestions } from '../data';
 import { styles } from '../styles';
 
@@ -51,15 +51,19 @@ export default function BrowsePage() {
           </CuiPopOver>
         </CuiHeader>
 
-        <CuiDrawer slot="navigation" id="navigation-drawer" inline position="start" breakpoint="686px" open>
-          <CuiSideNav size="small">
-            <CuiNavItem label="Home" href={`#${experimentId}`}>
-              <CuiIcon slot="icon" url="https://api.iconify.design/fluent:home-24-regular.svg" selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg" />
-            </CuiNavItem>
-          </CuiSideNav>
-        </CuiDrawer>
+        {/* ─── Global Navigation ─── */}
+        <AzurePortalNav />
 
-        <div slot="main">
+        <div slot="main" style={{ display: 'flex', height: '100%' }}>
+          <nav style={{ width: 220, minWidth: 220, borderRight: '1px solid var(--neutral-stroke2)', background: 'var(--neutral-background1)', overflowY: 'auto', flexShrink: 0 }}>
+            <CuiSideNav size="small">
+              <CuiNavItem label="Home" href={`#${experimentId}`}>
+                <CuiIcon slot="icon" url="https://api.iconify.design/fluent:home-24-regular.svg" selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg" />
+              </CuiNavItem>
+            </CuiSideNav>
+          </nav>
+
+          <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
           <div style={{ padding: '8px 24px 0' }}>
             <CuiBreadcrumb label="Navigation" size="small">
               <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
@@ -90,6 +94,7 @@ export default function BrowsePage() {
               <CuiIcon slot="start" name="add" />
               Create
             </CuiButton>
+          </div>
           </div>
         </div>
       </CuiAppFrame>

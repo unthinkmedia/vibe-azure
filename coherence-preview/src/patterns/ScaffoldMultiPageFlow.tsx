@@ -27,6 +27,7 @@ import {
   CuiToolbar,
 } from '@charm-ux/cui/react';
 import { useState } from 'react';
+import CopilotButton from '../experiments/copilot-button';
 import { azureIcon } from './azure-icons';
 import PageHeader from './PageHeader';
 import AzurePortalNav from './PatternAzurePortalNav';
@@ -43,14 +44,37 @@ function ScaffoldBrowse({ onNavigate }: { onNavigate: (page: string) => void }) 
           <span className="font-base400">Microsoft Azure</span>
         </CuiButton>
         <CuiSearchBox slot="search" hideLabel placeholder="Search resources, services, and docs (G+/)" />
+        <CopilotButton slot="search" />
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
+          <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
+          <CuiIcon name="alert" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
+          <CuiIcon name="settings" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
+          <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
+          <CuiIcon name="person-feedback" />
+        </CuiButton>
         <CuiPopOver slot="actions-end" fixedPlacement>
           <CuiButton slot="anchor" appearance="subtle" shape="rounded" size="large" iconOnly>
             <CuiAvatar size={24} name="Alex Britez" />
           </CuiButton>
           <CuiPersona>
             <CuiAvatar name="Alex Britez" />
-            <div slot="primary">Alex Britez</div>
+            <div slot="primary">alexbritez@microsoft.co...</div>
+            <div slot="secondary">MICROSOFT (MICROSOFT.ONM...)</div>
           </CuiPersona>
+          <CuiDivider className="my-xl" />
+          <div className="d-flex flex-column align-start">
+            <CuiButton appearance="link">Your profile</CuiButton>
+            <CuiButton appearance="link">View account</CuiButton>
+            <CuiButton appearance="link">Sign Out</CuiButton>
+          </div>
         </CuiPopOver>
       </CuiHeader>
 
@@ -103,14 +127,37 @@ function ScaffoldCreate({ onNavigate }: { onNavigate: (page: string) => void }) 
           <span className="font-base400">Microsoft Azure</span>
         </CuiButton>
         <CuiSearchBox slot="search" hideLabel placeholder="Search resources, services, and docs (G+/)" />
+        <CopilotButton slot="search" />
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
+          <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
+          <CuiIcon name="alert" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
+          <CuiIcon name="settings" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
+          <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
+          <CuiIcon name="person-feedback" />
+        </CuiButton>
         <CuiPopOver slot="actions-end" fixedPlacement>
           <CuiButton slot="anchor" appearance="subtle" shape="rounded" size="large" iconOnly>
             <CuiAvatar size={24} name="Alex Britez" />
           </CuiButton>
           <CuiPersona>
             <CuiAvatar name="Alex Britez" />
-            <div slot="primary">Alex Britez</div>
+            <div slot="primary">alexbritez@microsoft.co...</div>
+            <div slot="secondary">MICROSOFT (MICROSOFT.ONM...)</div>
           </CuiPersona>
+          <CuiDivider className="my-xl" />
+          <div className="d-flex flex-column align-start">
+            <CuiButton appearance="link">Your profile</CuiButton>
+            <CuiButton appearance="link">View account</CuiButton>
+            <CuiButton appearance="link">Sign Out</CuiButton>
+          </div>
         </CuiPopOver>
       </CuiHeader>
 
@@ -161,14 +208,37 @@ function ScaffoldDetail({ onNavigate }: { onNavigate: (page: string) => void }) 
           <span className="font-base400">Microsoft Azure</span>
         </CuiButton>
         <CuiSearchBox slot="search" hideLabel placeholder="Search resources, services, and docs (G+/)" />
+        <CopilotButton slot="search" />
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
+          <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
+          <CuiIcon name="alert" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
+          <CuiIcon name="settings" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
+          <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
+        </CuiButton>
+        <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
+          <CuiIcon name="person-feedback" />
+        </CuiButton>
         <CuiPopOver slot="actions-end" fixedPlacement>
           <CuiButton slot="anchor" appearance="subtle" shape="rounded" size="large" iconOnly>
             <CuiAvatar size={24} name="Alex Britez" />
           </CuiButton>
           <CuiPersona>
             <CuiAvatar name="Alex Britez" />
-            <div slot="primary">Alex Britez</div>
+            <div slot="primary">alexbritez@microsoft.co...</div>
+            <div slot="secondary">MICROSOFT (MICROSOFT.ONM...)</div>
           </CuiPersona>
+          <CuiDivider className="my-xl" />
+          <div className="d-flex flex-column align-start">
+            <CuiButton appearance="link">Your profile</CuiButton>
+            <CuiButton appearance="link">View account</CuiButton>
+            <CuiButton appearance="link">Sign Out</CuiButton>
+          </div>
         </CuiPopOver>
       </CuiHeader>
 

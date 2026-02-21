@@ -5,83 +5,7 @@
  * Each card links to a live preview via hash navigation.
  */
 
-export default function PatternsGallery() {
-  const sections: {
-    title: string;
-    description: string;
-    items: { id: string; title: string; description: string; tags: string[] }[];
-  }[] = [
-    {
-      title: 'Composition Patterns',
-      description: 'Focused demos of individual Azure portal UI patterns. Each pattern can be composed into full pages.',
-      items: [
-        {
-          id: 'pattern-page-header',
-          title: 'Page Header',
-          description: 'Consistent title bar with icon, title, favorite, more actions, and optional Copilot suggestions. Used by all page types.',
-          tags: ['PageHeader', 'CopilotSuggestions', 'CuiIcon', 'CuiButton'],
-        },
-        {
-          id: 'pattern-header',
-          title: 'Azure Portal Header',
-          description: 'Header bar with search, Copilot button, and avatar popover with persona card.',
-          tags: ['CuiHeader', 'CuiSearchBox', 'CuiAvatar', 'CuiPopOver'],
-        },
-        {
-          id: 'pattern-side-nav',
-          title: 'Side Nav with Iconify Icons',
-          description: 'Side navigation using Iconify SVG URLs with regular/filled icon pairs and section headings.',
-          tags: ['CuiDrawer', 'CuiSideNav', 'CuiNavItem', 'CuiIcon'],
-        },
-        {
-          id: 'pattern-azure-portal-nav',
-          title: 'Azure Portal Global Nav',
-          description: 'Portal-wide hamburger menu with Create a resource, Home, Dashboard, All services, and Favorites.',
-          tags: ['CuiDrawer', 'CuiSideNav', 'CuiNavItem', 'Global Nav'],
-        },
-        {
-          id: 'pattern-toolbar',
-          title: 'Resource Page Toolbar',
-          description: 'Horizontal action bar with subtle buttons, vertical dividers, and dropdown menus.',
-          tags: ['CuiToolbar', 'CuiButton', 'CuiMenu', 'CuiDivider'],
-        },
-        {
-          id: 'pattern-resource-shell',
-          title: 'Resource Page Shell',
-          description: 'Full page scaffold combining all patterns: app frame, header, side nav, breadcrumb, title, and toolbar.',
-          tags: ['CuiAppFrame', 'All Patterns'],
-        },
-        {
-          id: 'pattern-donut-gauge',
-          title: 'Donut Gauge Readiness Card',
-          description: 'SVG ring gauge with color-coded arc, centered score, category breakdown, and status badge.',
-          tags: ['CuiCard', 'CuiBadge', 'SVG', 'Gauge'],
-        },
-        {
-          id: 'pattern-health-metric-card',
-          title: 'Pipeline Health Metric Card',
-          description: 'Compact KPI card with semantic status accent icon, large value, and contextual subtext.',
-          tags: ['HealthMetricCard', 'CuiIcon', 'KPI', 'Status Tokens'],
-        },
-        {
-          id: 'pattern-service-card',
-          title: 'Service Card',
-          description: 'Outline card with icon, title, description, and bordered action footer (View / More).',
-          tags: ['CuiCard', 'CuiButton', 'CuiIcon', 'ServiceCard'],
-        },
-      ],
-    },
-    {
-      title: 'Page Scaffolds',
-      description: 'Complete Azure portal page templates. Each scaffold is a starting point for a specific page type.',
-      items: [
-        {
-          id: 'scaffold-resource-page',
-          title: 'Resource Page',
-          description: 'Standard Azure resource blade with header, side nav, breadcrumb, toolbar, and content area.',
-          tags: ['Overview', 'Detail', 'Default'],
-        },
-        {
+export default function PatternsGallery()         {
           id: 'scaffold-list-page',
           title: 'List Page',
           description: 'Two-column layout with scrollable list panel and detail area. For APIs, subscriptions, etc.',
@@ -104,6 +28,12 @@ export default function PatternsGallery() {
           title: 'Service Blade',
           description: 'Alternate layout with full-width title bar above a collapsible service sidebar + content. Matches Monitor, Defender, etc.',
           tags: ['Service', 'Blade', 'Sidebar', 'Monitor'],
+        },
+        {
+          id: 'scaffold-home-page',
+          title: 'Home Page',
+          description: 'Azure portal landing page with service tiles, resource tabs, filter toolbar, and resource table.',
+          tags: ['Home', 'Landing', 'Services', 'Resources Table'],
         },
       ],
     },

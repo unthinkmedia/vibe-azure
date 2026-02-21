@@ -160,6 +160,12 @@ function renderExperimentOptions(): void {
     experimentSelect.appendChild(option);
   }
 
+  // Hide the dropdown when only one experiment is shown
+  const toolbar = document.querySelector(".toolbar") as HTMLElement | null;
+  if (toolbar) {
+    toolbar.style.display = reports.length <= 1 ? "none" : "flex";
+  }
+
   if (previous && reports.some((r) => r.experimentId === previous)) {
     selectedExperimentId = previous;
   } else {
@@ -182,6 +188,14 @@ function renderEmptyState(message: string): void {
 function renderData(data: VerificationToolData): void {
   const latest = data.latest;
   const history = data.history;
+
+  // Update the title to include experiment name when scoped to one
+  const headerTitle = document.querySelector(".header h1") as HTMLElement | null;
+  if (headerTitle && data.selectedExperimentId && data.reports.length <= 1) {
+    headerTitle.textContent = `Verification: ${data.selectedExperimentId}`;
+  } else if (headerTitle) {
+    headerTitle.textContent = "Success Criteria Verification Report";
+  }
 
   if (!latest) {
     renderEmptyState("No verification snapshot is available for this experiment yet.");

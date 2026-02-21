@@ -1,6 +1,5 @@
 // @ts-nocheck
 import {
-  CuiDrawer,
   CuiIcon,
   CuiNavHeading,
   CuiNavItem,
@@ -10,14 +9,7 @@ import { navSections } from './data';
 
 export default function Navigation() {
   return (
-    <CuiDrawer
-      slot="navigation"
-      id="navigation-drawer"
-      inline
-      position="start"
-      breakpoint="686px"
-      open
-    >
+    <nav style={{ width: 220, minWidth: 220, borderRight: '1px solid var(--neutral-stroke2)', background: 'var(--neutral-background1)', overflowY: 'auto', flexShrink: 0 }}>
       <CuiSideNav size="small">
         {navSections.map((section, si) => (
           <div key={si}>
@@ -39,6 +31,6 @@ export default function Navigation() {
           </div>
         ))}
       </CuiSideNav>
-    </CuiDrawer>
+    </nav>
   );
 }

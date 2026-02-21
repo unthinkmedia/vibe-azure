@@ -410,9 +410,14 @@ export function createServer(): McpServer {
       },
     },
     async ({ experimentId }) => {
-      const reports = await listVerificationExperiments();
+      const allReports = await listVerificationExperiments();
       const selectedExperimentId =
-        experimentId ?? reports[0]?.experimentId ?? null;
+        experimentId ?? allReports[0]?.experimentId ?? null;
+
+      // Only include the current experiment's report row
+      const reports = selectedExperimentId
+        ? allReports.filter((r) => r.experimentId === selectedExperimentId)
+        : allReports;
 
       const report = selectedExperimentId
         ? await getVerificationReport(selectedExperimentId)
@@ -459,9 +464,14 @@ export function createServer(): McpServer {
       },
     },
     async ({ experimentId }) => {
-      const reports = await listVerificationExperiments();
+      const allReports = await listVerificationExperiments();
       const selectedExperimentId =
-        experimentId ?? reports[0]?.experimentId ?? null;
+        experimentId ?? allReports[0]?.experimentId ?? null;
+
+      // Only include the current experiment's report row
+      const reports = selectedExperimentId
+        ? allReports.filter((r) => r.experimentId === selectedExperimentId)
+        : allReports;
 
       const report = selectedExperimentId
         ? await getVerificationReport(selectedExperimentId)

@@ -84,11 +84,12 @@ export default function ResourceGroupOverview() {
         {/* ─── Global Navigation (hamburger menu) ─── */}
         <AzurePortalNav />
 
-        {/* ─── Side Navigation ─── */}
-        <Navigation />
-
         {/* ─── Main Content ─── */}
-        <div slot="main">
+        <div slot="main" style={{ display: 'flex', height: '100%' }}>
+          {/* ─── Section Side Navigation ─── */}
+          <Navigation />
+
+          <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
           <div style={{ padding: '8px 32px 0' }}>
             <CuiBreadcrumb label="Navigation" size="small">
               <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
@@ -106,6 +107,7 @@ export default function ResourceGroupOverview() {
           />
 
           <PageContent />
+          </div>
         </div>
       </CuiAppFrame>
       <style>{styles}</style>

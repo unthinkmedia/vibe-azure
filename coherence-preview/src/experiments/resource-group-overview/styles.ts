@@ -102,8 +102,8 @@ export const styles = `
     flex-direction: column;
   }
   .resource-count-value {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: var(--font-size-base500);
+    font-weight: var(--font-weight-bold);
     line-height: 1.1;
     color: var(--neutral-foreground1);
     font-variant-numeric: tabular-nums;
@@ -153,13 +153,13 @@ export const styles = `
     pointer-events: none;
   }
   .donut-total {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: var(--font-size-base500);
+    font-weight: var(--font-weight-bold);
     line-height: 1;
     color: var(--neutral-foreground1);
   }
   .donut-total-label {
-    font-size: 11px;
+    font-size: var(--font-size-base100);
     color: var(--neutral-foreground3);
     margin-top: 2px;
   }
@@ -186,7 +186,7 @@ export const styles = `
     color: var(--neutral-foreground1);
   }
   .donut-legend-value {
-    font-weight: 600;
+    font-weight: var(--font-weight-semi-bold);
     font-variant-numeric: tabular-nums;
     color: var(--neutral-foreground1);
   }
@@ -245,8 +245,8 @@ export const styles = `
     gap: 4px;
     padding: 2px 8px;
     border-radius: var(--border-radius-sm);
-    font-size: 11px;
-    font-weight: 600;
+    font-size: var(--font-size-base100);
+    font-weight: var(--font-weight-semi-bold);
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
@@ -283,8 +283,8 @@ export const styles = `
     gap: 12px;
   }
   .compliance-pct {
-    font-size: 32px;
-    font-weight: 700;
+    font-size: var(--font-size-hero700);
+    font-weight: var(--font-weight-bold);
     color: var(--neutral-foreground1);
     line-height: 1;
   }
@@ -299,7 +299,7 @@ export const styles = `
   }
   .compliance-count {
     font-size: var(--font-size-base200);
-    font-weight: 600;
+    font-weight: var(--font-weight-semi-bold);
     color: var(--neutral-foreground1);
   }
   .compliance-table {
@@ -332,7 +332,7 @@ export const styles = `
   }
   .compliance-resource-type {
     color: var(--neutral-foreground3);
-    font-size: 11px;
+    font-size: var(--font-size-base100);
   }
   .compliance-status-row {
     display: flex;

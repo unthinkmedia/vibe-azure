@@ -38,12 +38,19 @@ import {
 } from '@charm-ux/cui/react';
 import { ServiceCard } from './PatternServiceCard';
 import CopilotButton from '../experiments/copilot-button';
-import CopilotSuggestions from './CopilotSuggestions';
 import { azureIcon } from './azure-icons';
+import PageHeader from './PageHeader';
 import AzurePortalNav from './PatternAzurePortalNav';
 
 /* ─── Service nav items (customize per service) ─── */
-const navSections = [
+interface NavItem {
+  label: string;
+  name?: string;
+  azureIconKey?: string;
+  selected?: boolean;
+}
+
+const navSections: { heading: string | null; items: NavItem[] }[] = [
   {
     heading: null,
     items: [
@@ -96,27 +103,6 @@ export default function ScaffoldServiceBlade() {
     /* ─── Full-width blade header area ─── */
     .blade-breadcrumb {
       padding: 4px 16px 0;
-    }
-    .blade-title-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 4px 16px 2px;
-    }
-    .blade-title {
-      margin: 0;
-      font-size: 20px;
-      font-weight: var(--font-weight-regular);
-      color: var(--neutral-foreground-1);
-    }
-    .blade-title-bold {
-      font-weight: var(--font-weight-semibold);
-    }
-    .blade-subtitle {
-      font-size: var(--font-size-base-100);
-      color: var(--neutral-foreground-3);
-      margin: 0;
-      padding: 0 16px 4px;
     }
 
     /* Info message bar — blue Azure style for intent="info" */
@@ -230,9 +216,9 @@ export default function ScaffoldServiceBlade() {
             hideLabel
             placeholder="Search resources, services, and docs (G+/)"
           />
-          <CopilotButton slot="overflow-actions" />
+          <CopilotButton slot="search" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon name="code-regular" />
+            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
             <CuiIcon name="alert" />
@@ -241,7 +227,7 @@ export default function ScaffoldServiceBlade() {
             <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon name="info" />
+            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
@@ -278,31 +264,19 @@ export default function ScaffoldServiceBlade() {
             </CuiBreadcrumb>
           </div>
 
-          {/* Title bar — full width */}
-          <div className="blade-title-bar">
-            <CuiIcon
-              url={azureIcon('monitor')}
-              style={{ fontSize: '24px' }}
-            />
-            <h1 className="blade-title">
-              <span className="blade-title-bold">{serviceName}</span> | {pageTitle}
-            </h1>
-            <CuiButton appearance="subtle" iconOnly size="small" aria-label="More actions">
-              <CuiIcon name="more-horizontal" />
-            </CuiButton>
-            <CopilotButton />
-            {/* Copilot suggestion pills */}
-            <CopilotSuggestions
-              suggestions={[
-                'Summarize these Monitor services in a table',
-                'Run an anomaly investigation into my resource',
-                'Catch me up on my alerts',
-              ]}
-            />
-          </div>
-
-          {/* Subtitle */}
-          <p className="blade-subtitle">Microsoft</p>
+          {/* Title — shared PageHeader, full width above sidebar */}
+          <PageHeader
+            icon={azureIcon('monitor')}
+            title={<><strong>{serviceName}</strong> | {pageTitle}</>}
+            subtitle="Microsoft"
+            titleWeight="regular"
+            horizontalPadding="16px"
+            copilotSuggestions={[
+              'Summarize these Monitor services in a table',
+              'Run an anomaly investigation into my resource',
+              'Catch me up on my alerts',
+            ]}
+          />
 
           {/* ─── Body: sidebar + content ─── */}
           <div className="blade-body">

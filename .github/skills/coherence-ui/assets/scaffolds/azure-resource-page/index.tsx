@@ -26,6 +26,7 @@ import {
   CuiSearchBox,
 } from '@charm-ux/cui/react';
 import PageHeader from '../../patterns/PageHeader';
+import AzurePortalNav from '../../patterns/PatternAzurePortalNav';
 import Navigation from './Navigation';
 import PageContent from './PageContent';
 import { resourceName, pageTitle, resourceType, copilotSuggestions } from './data';
@@ -81,11 +82,13 @@ export default function AzureResourcePage() {
           </CuiPopOver>
         </CuiHeader>
 
-        {/* ─── Side Navigation ─── */}
-        <Navigation />
+        {/* ─── Global Navigation (hamburger-toggled overlay) ─── */}
+        <AzurePortalNav />
 
-        {/* ─── Main Content ─── */}
-        <div slot="main">
+        {/* ─── Main Content (flex: section nav + page body) ─── */}
+        <div slot="main" style={{ display: 'flex', height: '100%' }}>
+          <Navigation />
+          <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
           <div style={{ padding: '8px 32px 0' }}>
             <CuiBreadcrumb label="Navigation" size="small">
               <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
@@ -103,6 +106,7 @@ export default function AzureResourcePage() {
           />
 
           <PageContent />
+          </div>
         </div>
       </CuiAppFrame>
       <style>{styles}</style>

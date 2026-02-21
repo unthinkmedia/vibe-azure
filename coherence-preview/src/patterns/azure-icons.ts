@@ -122,6 +122,7 @@ export const AZURE_ICONS: Record<string, string> = {
   // ─── Portal & Management ───
   'resource-group':     `${BASE}/HubsExtension/ResourceGroups.svg`,
   'subscription':       `${BASE}/Microsoft_Azure_Billing/Subscription.svg`,
+  'quickstart-center':  `${BASE}/Microsoft_Azure_GettingStarted/GettingStarted.svg`,
   'dashboard':          `${BASE}/Microsoft_Azure_PortalDashboard/Dashboards.svg`,
   'home':               'https://raw.githubusercontent.com/benc-uk/icon-collection/master/azure-cds/general-17-Home.svg',
   'automation':         `${BASE}/Microsoft_Azure_Automation/Account.svg`,

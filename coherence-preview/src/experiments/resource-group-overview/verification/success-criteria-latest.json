@@ -1,0 +1,68 @@
+{
+  "experimentId": "resource-group-overview",
+  "verifiedAt": "2026-02-21T02:35:00.000Z",
+  "overallScore": 20,
+  "maxScore": 20,
+  "effectivenessPct": 100,
+  "criteria": [
+    {
+      "id": 1,
+      "description": "Resource count summary cards showing counts by resource type with appropriate Azure icons",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "8 resource type cards in 4-col responsive grid, each with Fluent icon, count value, and type label. Icons colored per service type."
+    },
+    {
+      "id": 2,
+      "description": "Cost breakdown donut chart with spending by resource type and a total cost center label",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "SVG multi-segment donut with $4,827.56 center label, 5-item legend with amounts and percentages, period footer."
+    },
+    {
+      "id": 3,
+      "description": "Recent activity log with timestamps, users, operations, status badges, and affected resources",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "8-row table with all columns. Operation type badges (create/modify/delete), CuiBadge status colors, linked resource names with subtypes."
+    },
+    {
+      "id": 4,
+      "description": "Tag compliance checker showing resources missing required tags with pass/fail indicators and overall compliance percentage",
+      "score": 5,
+      "maxScore": 5,
+      "evidence": "42% compliance badge, 5/12 summary, required tag badges, 12-row table with checkmark/dismiss icons, Compliant/Non-compliant badges."
+    }
+  ],
+  "codeAuditFindings": {
+    "fixed": [
+      "Replaced 6 hardcoded font-size values with design tokens (var(--font-size-base*))",
+      "Replaced 5 hardcoded font-weight values with design tokens (var(--font-weight-*))",
+      "Replaced inline fontSize: 11 with var(--font-size-base100) in JSX"
+    ],
+    "acceptable": [
+      "Hardcoded hex colors in data.ts for data visualization (6 instances) — standard practice for multi-series charts",
+      "Custom .op-type-badge instead of CuiBadge — uses proper Coherence tokens",
+      "PatternDonutGauge not reused — different purpose (single-arc score vs multi-segment cost chart)",
+      "Custom HTML tables — acceptable in prototypes"
+    ]
+  },
+  "staticAnalysis": {
+    "cssProperties": "pass",
+    "colors": "pass",
+    "typography": "pass",
+    "spacing": "pass",
+    "borders": "pass",
+    "shadows": "pass",
+    "focusStates": "warn — resource count cards lack keyboard focus (prototype-acceptable)",
+    "layout": "pass",
+    "accessibility": "pass",
+    "portalConventions": "pass"
+  },
+  "sharedPatterns": {
+    "PageHeader": true,
+    "CopilotButton": true,
+    "AzurePortalNav": true,
+    "CopilotSuggestions": true
+  }
+}

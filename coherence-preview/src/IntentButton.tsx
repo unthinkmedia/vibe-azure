@@ -37,27 +37,10 @@ export default function IntentButton({ experimentId }: Props) {
   const [open, setOpen] = useState(false);
   const [intent, setIntent] = useState<DesignIntent | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
-  const [popoverPos, setPopoverPos] = useState<{ top: number; left: number } | null>(null);
 
   useEffect(() => {
     setIntent(getIntent(experimentId));
   }, [experimentId]);
-
-  useEffect(() => {
-    if (open && btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      const popoverWidth = 400;
-      // Align left edge to button, then clamp so it stays within viewport
-      let left = rect.left;
-      if (left + popoverWidth > window.innerWidth - 8) {
-        left = window.innerWidth - popoverWidth - 8;
-      }
-      if (left < 8) left = 8;
-      setPopoverPos({ top: rect.bottom + 8, left });
-    } else {
-      setPopoverPos(null);
-    }
-  }, [open]);
 
   const statusColor = intent ? (STATUS_COLORS[intent.status] ?? '#8a8886') : '#8a8886';
 
@@ -93,23 +76,21 @@ export default function IntentButton({ experimentId }: Props) {
           <>
             <div
               onClick={() => setOpen(false)}
-              style={{ position: 'fixed', inset: 0, zIndex: 10000 }}
-            />
+              style={{ position: 'fixed', inset: 0, zIndex: 10000, background: 'rgba(0,0,0,.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
             <div
+              onClick={e => e.stopPropagation()}
               style={{
-                position: 'fixed',
-                top: (btnRef.current?.getBoundingClientRect().bottom ?? 40) + 8,
-                left: Math.max(8, Math.min(
-                  (btnRef.current?.getBoundingClientRect().left ?? 8),
-                  window.innerWidth - 360 - 8
-                )),
+                position: 'relative',
                 zIndex: 10001,
                 background: 'var(--neutral-background1, #fff)',
                 border: '1px solid var(--neutral-stroke1)',
                 borderRadius: 8,
                 boxShadow: '0 8px 24px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10)',
                 padding: 20,
-                width: 350,
+                width: 520,
+                maxHeight: '80vh',
+                overflowY: 'auto',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
@@ -141,6 +122,7 @@ export default function IntentButton({ experimentId }: Props) {
               }}>
                 💡 <strong>Tip:</strong> The Intent MCP App lets you view, edit, and manage all your design intents in one place.
               </div>
+            </div>
             </div>
           </>
         )}
@@ -174,28 +156,27 @@ export default function IntentButton({ experimentId }: Props) {
         Intent
       </button>
 
-      {open && popoverPos && (
+      {open && (
         <>
           {/* Backdrop */}
           <div
             onClick={() => setOpen(false)}
-            style={{ position: 'fixed', inset: 0, zIndex: 10000 }}
-          />
-          {/* Popover */}
+            style={{ position: 'fixed', inset: 0, zIndex: 10000, background: 'rgba(0,0,0,.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+          {/* Modal */}
           <div
+            onClick={e => e.stopPropagation()}
             style={{
-              position: 'fixed',
-              top: popoverPos.top,
-              left: popoverPos.left,
+              position: 'relative',
               zIndex: 10001,
               background: 'var(--neutral-background1, #fff)',
               border: '1px solid var(--neutral-stroke1)',
               borderRadius: 8,
               boxShadow: '0 8px 24px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10)',
               padding: 0,
-              width: 400,
-              maxHeight: 'calc(100vh - 80px)',
-              overflow: 'auto',
+              width: 520,
+              maxHeight: '80vh',
+              overflowY: 'auto',
             }}
           >
             {/* Header */}
@@ -269,6 +250,7 @@ export default function IntentButton({ experimentId }: Props) {
                 Created {intent.createdAt.slice(0, 10)}
               </div>
             </div>
+          </div>
           </div>
         </>
       )}

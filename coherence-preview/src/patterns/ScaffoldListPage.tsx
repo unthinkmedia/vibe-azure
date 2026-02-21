@@ -110,7 +110,7 @@ export default function AzureListPage() {
           />
           <CopilotButton slot="search" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon name="code-regular" />
+            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
             <CuiIcon name="alert" />
@@ -119,7 +119,7 @@ export default function AzureListPage() {
             <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon name="info" />
+            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
@@ -130,8 +130,8 @@ export default function AzureListPage() {
             </CuiButton>
             <CuiPersona>
               <CuiAvatar name="Alex Britez" />
-              <div slot="primary">Alex Britez</div>
-              <div slot="secondary">Available</div>
+              <div slot="primary">alexbritez@microsoft.co...</div>
+              <div slot="secondary">MICROSOFT (MICROSOFT.ONM...)</div>
             </CuiPersona>
             <CuiDivider className="my-xl" />
             <div className="d-flex flex-column align-start">

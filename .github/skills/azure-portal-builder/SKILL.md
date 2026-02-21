@@ -45,7 +45,7 @@ For each UI element in the Figma design:
 
 | Figma Element | Coherence Component |
 |---------------|---------------------|
-| Side navigation / left rail | `CuiDrawer` + `CuiSideNav` + `CuiNavItem` + `CuiNavHeading` |
+| Side navigation / left rail | Section nav: `<nav>` + `CuiSideNav` + `CuiNavItem` inside `slot="main"` flex container (NOT `CuiDrawer slot="navigation"` — see two-tier nav rule below) |
 | Top header bar | `CuiHeader` (or shared `PageHeader` pattern) |
 | Breadcrumb trail | `CuiBreadcrumb` + `CuiBreadcrumbItem` |
 | Toolbar / action bar | `CuiToolbar` + `CuiButton` + `CuiButtonGroup` |
@@ -196,10 +196,10 @@ Create the experiment folder at `coherence-preview/src/experiments/<experiment-i
 
 ```
 <experiment-id>/
-  index.tsx          # CuiAppFrame + Header + Navigation + PageContent
+  index.tsx          # CuiAppFrame + Header + AzurePortalNav + section nav + PageContent
   data.ts            # Types, interfaces, mock data, nav config
   styles.ts          # Scoped CSS as exported string
-  Navigation.tsx     # CuiDrawer + CuiSideNav
+  Navigation.tsx     # Section nav: <nav> + CuiSideNav (NOT CuiDrawer slot="navigation")
   PageContent.tsx    # Toolbar + page body
 ```
 
@@ -215,6 +215,31 @@ Create the experiment folder at `coherence-preview/src/experiments/<experiment-i
     CreatePage.tsx
     DetailPage.tsx
 ```
+
+### Two-Tier Navigation Architecture (CRITICAL)
+
+⚠️ **Azure portal has TWO navigation tiers. Mixing them causes layout bugs.**
+
+| Tier | Component | Slot | Purpose |
+|------|-----------|------|---------|
+| Global nav | `AzurePortalNav` (shared pattern) | `slot="navigation"` (internally) | Hamburger-toggled overlay: Create a resource, Home, Dashboard, Favorites |
+| Section nav | `<nav>` + `CuiSideNav` | Inside `slot="main"` flex container | Resource/blade-specific: Overview, Activity log, Settings, etc. |
+
+**NEVER put section nav in `slot="navigation"`.** Only `AzurePortalNav` uses that slot. Section nav goes inside `slot="main"` as a flex sibling:
+
+```tsx
+<CuiAppFrame>
+  <AzurePortalNav />
+  <div slot="main" style={{ display: 'flex', height: '100%' }}>
+    <nav style={{ width: 220, minWidth: 220, borderRight: '1px solid var(--neutral-stroke2)', background: 'var(--neutral-background1)', overflowY: 'auto', flexShrink: 0 }}>
+      <CuiSideNav size="small">...section items...</CuiSideNav>
+    </nav>
+    <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>...content...</div>
+  </div>
+</CuiAppFrame>
+```
+
+**Why:** If two `CuiDrawer` components both claim `slot="navigation"`, they collide inside a single `<aside>` in the CuiAppFrame shadow DOM — causing a large empty area, broken hamburger toggle, and invisible section nav.
 
 Use the `coherence-ui` skill to look up component APIs (fetch the manifest) and the `azure-mock-data` skill for realistic fake data.
 

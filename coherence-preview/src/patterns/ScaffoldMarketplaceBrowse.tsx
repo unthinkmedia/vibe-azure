@@ -22,6 +22,8 @@ import { useState } from 'react';
 import {
   CuiAppFrame,
   CuiAvatar,
+  CuiBreadcrumb,
+  CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
   CuiHeader,
@@ -130,12 +132,6 @@ const styles = `
   .mb-header-area {
     padding: 16px 24px 0;
     background: var(--neutral-background1);
-  }
-
-  .mb-breadcrumb {
-    font-size: var(--font-size-base200);
-    color: var(--neutral-foreground3);
-    margin: 0 0 8px;
   }
 
   .mb-body {
@@ -373,7 +369,7 @@ export default function ScaffoldMarketplaceBrowse() {
           />
           <CopilotButton slot="search" />
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon name="code-regular" />
+            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
             <CuiIcon name="alert" />
@@ -382,7 +378,7 @@ export default function ScaffoldMarketplaceBrowse() {
             <CuiIcon name="settings" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon name="info" />
+            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
           </CuiButton>
           <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
             <CuiIcon name="person-feedback" />
@@ -393,13 +389,14 @@ export default function ScaffoldMarketplaceBrowse() {
             </CuiButton>
             <CuiPersona>
               <CuiAvatar name="Alex Britez" />
-              <div slot="primary">Alex Britez</div>
-              <div slot="secondary">alexbritez@microsoft.com</div>
+              <div slot="primary">alexbritez@microsoft.co...</div>
+              <div slot="secondary">MICROSOFT (MICROSOFT.ONM...)</div>
             </CuiPersona>
-            <CuiDivider style={{ margin: '12px 0' }} />
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <CuiDivider className="my-xl" />
+            <div className="d-flex flex-column align-start">
+              <CuiButton appearance="link">Your profile</CuiButton>
               <CuiButton appearance="link">View account</CuiButton>
-              <CuiButton appearance="link">Sign out</CuiButton>
+              <CuiButton appearance="link">Sign Out</CuiButton>
             </div>
           </CuiPopOver>
         </CuiHeader>
@@ -411,7 +408,9 @@ export default function ScaffoldMarketplaceBrowse() {
         <div slot="main" className="mb-page">
           {/* Breadcrumb + Title + Copilot Suggestions */}
           <div className="mb-header-area">
-            <div className="mb-breadcrumb">{breadcrumbLabel}</div>
+            <CuiBreadcrumb label="Navigation" size="small">
+              <CuiBreadcrumbItem href="#">{breadcrumbLabel}</CuiBreadcrumbItem>
+            </CuiBreadcrumb>
             <PageHeader
               title={pageTitle}
               copilotSuggestions={copilotSuggestions}

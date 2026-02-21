@@ -137,7 +137,7 @@ function ActivityLog() {
               </td>
               <td>
                 <a href="#" className="activity-resource-link">{entry.resource}</a>
-                <div style={{ fontSize: 11, color: 'var(--neutral-foreground3)' }}>{entry.resourceType}</div>
+                <div style={{ fontSize: 'var(--font-size-base100)', color: 'var(--neutral-foreground3)' }}>{entry.resourceType}</div>
               </td>
               <td className="activity-user">{entry.user}</td>
               <td>

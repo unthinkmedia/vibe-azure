@@ -1,4 +1,94 @@
-# Advanced MCP App Patterns
+# MCP App Patterns
+
+## Table of Contents
+
+- [Polling for Live Data](#polling-for-live-data)
+- [Updating Model Context](#updating-model-context)
+- [Sending Follow-Up Messages](#sending-follow-up-messages)
+- [Error Handling](#error-handling)
+- [Deduplicate Re-Deliveries](#deduplicate-re-deliveries)
+- [CSP and CORS](#csp-and-cors)
+- [Chunked Data Loading](#chunked-data-loading)
+- [Fullscreen Mode](#fullscreen-mode)
+- [View State Persistence](#view-state-persistence)
+- [Streaming / Partial Tool Input](#streaming--partial-tool-input)
+- [Pausing When Offscreen](#pausing-when-offscreen)
+
+## Polling for Live Data
+
+Use an app-only tool the View polls at intervals:
+
+```typescript
+let intervalId: number | null = null;
+
+async function poll() {
+  const result = await app.callServerTool({
+    name: "my_app_poll_data",
+    arguments: {},
+  });
+  updateUI(result.structuredContent);
+}
+
+function startPolling() {
+  if (intervalId !== null) return;
+  poll();
+  intervalId = window.setInterval(poll, 2000);
+}
+
+app.onteardown = async () => {
+  if (intervalId !== null) clearInterval(intervalId);
+  return {};
+};
+```
+
+## Updating Model Context
+
+Inform the model about user interactions:
+
+```typescript
+await app.updateModelContext({
+  content: [{ type: "text", text: `User selected item "${selectedItem.name}".` }],
+});
+```
+
+## Sending Follow-Up Messages
+
+Trigger model responses from the View:
+
+```typescript
+await app.sendMessage({
+  role: "user",
+  content: [{ type: "text", text: "Analyze the selected data" }],
+});
+```
+
+## Error Handling
+
+Return `isError: true` from tool handlers for validation errors. Use `updateModelContext` for runtime errors in the View:
+
+```typescript
+try {
+  // risky operation
+} catch (err) {
+  await app.updateModelContext({
+    content: [{ type: "text", text: `Error: ${(err as Error).message}` }],
+  });
+}
+```
+
+## Deduplicate Re-Deliveries
+
+Hosts may re-deliver `ontoolresult` on scroll/resize. Always fingerprint:
+
+```typescript
+let lastFingerprint = "";
+app.ontoolresult = (result) => {
+  const fp = JSON.stringify(result.structuredContent);
+  if (fp === lastFingerprint) return;
+  lastFingerprint = fp;
+  // process data...
+};
+```
 
 ## CSP and CORS
 

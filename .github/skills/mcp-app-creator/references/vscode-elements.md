@@ -2,6 +2,17 @@
 
 All MCP App UIs **MUST** use `@vscode-elements/elements` web components to match VS Code's native look and feel. These are Lit-based web components that inherit VS Code's CSS custom properties.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Import Strategy](#import-strategy)
+- [Component Catalog](#component-catalog)
+  - Buttons, Text Input, Select/Dropdown, Checkbox & Radio, Badge, Icon, Label, Divider
+  - Collapsible/Accordion, Tabs, Table, Tree View, Scrollable Container
+  - Progress Indicators, Split Layout, Context Menu, Toolbar, Form Layout
+- [VS Code UX Design Rules](#vs-code-ux-design-rules) — Layout, Typography, Colors, Interaction, Accessibility, Theming
+- [Complete Example](#complete-example)
+
 ## Installation
 
 ```bash

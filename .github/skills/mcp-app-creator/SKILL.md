@@ -9,6 +9,9 @@ description: >-
   "make this tool visual". Covers project setup, server registration, client-side
   View code, theming, app-only tools, vite bundling, and testing. All UI MUST use
   @vscode-elements/elements web components and follow VS Code UX design patterns.
+  DO NOT USE FOR: building standard MCP servers/tools without UI, general web apps
+  (React/Vue/Svelte), Copilot Extensions (use azure-hosted-copilot-sdk), or
+  Azure portal prototypes (use experiment-orchestrator).
 ---
 
 # MCP App Creator
@@ -19,40 +22,52 @@ data logic; the resource contains the HTML View rendered in a sandboxed iframe.
 
 ## Key Concepts
 
-- **Tool** — Server-side handler registered with `registerAppTool`. Returns `content` (text for the model) and optionally `structuredContent` (data for the UI).
+- **Tool** — Server-side handler registered with `registerAppTool`. Returns `content` (text for the model — **required**) and optionally `structuredContent` (data for the UI — omit if the tool has no View to update).
 - **UI Resource** — HTML page registered with `registerAppResource` at a `ui://` URI. Bundled into a single file by Vite.
 - **View** — The HTML/JS running in the iframe. Uses the `App` class from `@modelcontextprotocol/ext-apps` to communicate with the host.
 - **App-only tools** — Tools with `visibility: ["app"]` that are hidden from the model and callable only by the View (for polling, CRUD, pagination, etc.).
 
 ## Workflow
 
-1. **Understand the requirement** — What data does the tool return? What UI interaction is needed?
-2. **Scaffold the MCP App** — Create the HTML entry, TypeScript source, register tool + resource on the server.
-3. **Build the View** — Use `@vscode-elements/elements` web components exclusively for UI. Wire up `ontoolresult`, `callServerTool`, theming.
-4. **Register in Vite** — Add the HTML entry to the build scripts.
-5. **Test** — Build and verify the app renders correctly.
+1. **Discover existing conventions** — If adding to an existing server, read `server.ts`, `package.json`, `tsconfig.server.json`, and `vite.config.ts` first. Match the project's established patterns for file organization, naming, build scripts, and registration style.
+2. **Understand the requirement** — What data does the tool return? What UI interaction is needed?
+3. **Scaffold the MCP App** — For greenfield projects, run `scripts/scaffold.sh <app-name>` to generate a complete working starter. For existing servers, create the HTML entry, TypeScript source, register tool + resource on the server.
+4. **Build the View** — Use `@vscode-elements/elements` web components exclusively for UI. Wire up `ontoolresult`, `callServerTool`, theming.
+5. **Register in Vite** — Add the HTML entry to the build config, following the project's existing build approach.
+6. **Test** — Build and verify the app renders correctly.
 
-## Project Structure (within an existing MCP server)
+## Project Structure
 
+MCP App projects need a clear separation between server code (compiled by tsc) and client View code (bundled by Vite). Two common layouts exist:
+
+**Option A: Separate directories** (cleaner — no exclude lists needed)
 ```
 mcp-server/
 ├── server.ts              ← registerAppTool + registerAppResource
 ├── main.ts                ← entry point (StdioServerTransport)
-├── vite.config.ts         ← Vite config (vite-plugin-singlefile)
-├── tsconfig.json          ← Client-side TS config (targets src/)
-├── tsconfig.server.json   ← Server-side TS config (targets server.ts, main.ts, lib/)
-├── <app-name>.html        ← HTML entry point for the View
-├── src/
-│   └── <app-name>.ts      ← Client-side View logic (Vite only — NOT compiled by tsc)
-├── lib/                   ← Server-side helpers (compiled by tsc, imported by server.ts)
+├── lib/                   ← Server-side helpers (compiled by tsc)
 │   └── <data-module>.ts
+├── src/                   ← Client-side Views only (Vite handles)
+│   └── <app-name>.ts
+├── <app-name>.html        ← HTML entry point for the View
 └── dist/
-    └── <app-name>.html    ← Bundled single-file output
 ```
 
-> **Key rule:** `src/` = client files (Vite handles). `lib/` or root = server files (tsc handles). Never put client View code where `tsconfig.server.json` can see it.
+**Option B: Flat src/ with explicit excludes** (simpler for small projects)
+```
+mcp-server/
+├── server.ts
+├── main.ts
+├── src/                   ← Both client + server files, client excluded from tsconfig.server.json
+│   ├── <app-name>.ts      ← CLIENT (excluded from server tsconfig)
+│   └── <data-module>.ts   ← SERVER (imported by server.ts)
+├── <app-name>.html
+└── dist/
+```
 
-For greenfield projects, see [references/project-setup.md](references/project-setup.md).
+> **Key rule:** Client View code must never be compiled by the server tsconfig. Use either directory separation (Option A) or explicit `exclude` entries (Option B). When adding to an existing project, **read `tsconfig.server.json` to determine which approach is already in use.**
+
+For greenfield projects, see [references/project-setup.md](references/project-setup.md). For adding a new app to an existing multi-app server, see [references/adding-to-existing-server.md](references/adding-to-existing-server.md).
 
 ## Step 1: Server-Side Registration
 
@@ -176,6 +191,7 @@ Create `src/<app-name>.ts`. **All UI MUST use `@vscode-elements/elements` web co
 
 ```typescript
 import { App } from "@modelcontextprotocol/ext-apps";
+import "@vscode-elements/elements/dist/bundled.js";
 
 // ── Types ──
 interface MyData {
@@ -190,7 +206,7 @@ let lastFingerprint = "";
 // ── App setup ──
 const app = new App({ name: "My App", version: "1.0.0" });
 const root = document.getElementById("app")!;
-root.innerHTML = buildShell();
+root.innerHTML = "<p>Loading…</p>";
 
 // ── Handle initial tool result ──
 app.ontoolresult = (result) => {
@@ -266,18 +282,33 @@ body {
 
 ## Step 4: Vite Configuration
 
-The HTML must be bundled into a **single file** using `vite-plugin-singlefile`. The `INPUT` env var selects the entry:
+The HTML must be bundled into a **single file** using `vite-plugin-singlefile`. Two multi-app build approaches exist — **check the project's existing `vite.config.ts` and `package.json` to determine which is in use:**
 
+**Approach A: Multi-entry config** (builds all apps in one pass)
 ```typescript
-// vite.config.ts
-import { defineConfig } from "vite";
-import { viteSingleFile } from "vite-plugin-singlefile";
-
 export default defineConfig({
   plugins: [viteSingleFile()],
   build: {
     outDir: "dist",
-    emptyOutDir: false, // preserve other built apps
+    emptyOutDir: false,
+    rollupOptions: {
+      input: {
+        "app-a": "app-a.html",
+        "app-b": "app-b.html",
+        "my-app": "my-app.html",  // ← add new entry here
+      },
+    },
+  },
+});
+```
+
+**Approach B: INPUT env var** (builds one app per invocation, chained in scripts)
+```typescript
+export default defineConfig({
+  plugins: [viteSingleFile()],
+  build: {
+    outDir: "dist",
+    emptyOutDir: false,
     rollupOptions: {
       input: process.env.INPUT || "my-app.html",
     },
@@ -285,19 +316,7 @@ export default defineConfig({
 });
 ```
 
-Add to the build script in `package.json`:
-
-```jsonc
-{
-  "scripts": {
-    "build": "tsc --noEmit && tsc -p tsconfig.server.json && cross-env INPUT=my-app.html vite build",
-    "start": "concurrently \"cross-env NODE_ENV=development INPUT=my-app.html vite build --watch\" \"tsx watch main.ts\""
-  }
-}
-```
-
-When adding to an existing server with multiple apps, chain builds:
-
+With Approach B, chain the new app onto the existing build script:
 ```jsonc
 {
   "scripts": {
@@ -306,99 +325,39 @@ When adding to an existing server with multiple apps, chain builds:
 }
 ```
 
-## Step 5: Patterns
+See **[references/project-setup.md](references/project-setup.md)** for full Vite config and build script details.
 
-### Polling for Live Data
+## Step 5: Common Patterns
 
-Use an app-only tool the View polls at intervals:
+The View communicates with the server and host through several key APIs:
 
-```typescript
-let intervalId: number | null = null;
+- **Polling** — Use an app-only tool + `setInterval` for live data updates
+- **Model context** — Call `app.updateModelContext()` to inform the model about user interactions
+- **Follow-up messages** — Call `app.sendMessage()` to trigger model responses from the View
+- **Error handling** — Return `isError: true` from tool handlers; use `updateModelContext` for View-side errors
+- **Deduplication** — Fingerprint `ontoolresult` payloads (hosts may re-deliver on scroll/resize)
+- **CSP/CORS** — Declare `connectDomains`/`resourceDomains` for network requests from the iframe
+- **Chunked loading** — Paginate large payloads with app-only tools
+- **Fullscreen** — Toggle via `app.requestDisplayMode()`
+- **State persistence** — Use `localStorage` keyed by server-generated `viewUUID`
+- **Streaming preview** — Use `ontoolinputpartial` for progressive rendering during argument streaming
 
-async function poll() {
-  const result = await app.callServerTool({
-    name: "my_app_poll_data",
-    arguments: {},
-  });
-  updateUI(result.structuredContent);
-}
-
-function startPolling() {
-  if (intervalId !== null) return;
-  poll();
-  intervalId = window.setInterval(poll, 2000);
-}
-
-app.onteardown = async () => {
-  if (intervalId !== null) clearInterval(intervalId);
-  return {};
-};
-```
-
-### Updating Model Context
-
-Inform the model about user interactions:
-
-```typescript
-await app.updateModelContext({
-  content: [{ type: "text", text: `User selected item "${selectedItem.name}".` }],
-});
-```
-
-### Sending Follow-Up Messages
-
-Trigger model responses from the View:
-
-```typescript
-await app.sendMessage({
-  role: "user",
-  content: [{ type: "text", text: "Analyze the selected data" }],
-});
-```
-
-### Error Handling
-
-Return `isError: true` from tool handlers for validation errors. Use `updateModelContext` for runtime errors in the View:
-
-```typescript
-try {
-  // risky operation
-} catch (err) {
-  await app.updateModelContext({
-    content: [{ type: "text", text: `Error: ${(err as Error).message}` }],
-  });
-}
-```
-
-### Deduplicate Re-Deliveries
-
-Hosts may re-deliver `ontoolresult` on scroll/resize. Always fingerprint:
-
-```typescript
-let lastFingerprint = "";
-app.ontoolresult = (result) => {
-  const fp = JSON.stringify(result.structuredContent);
-  if (fp === lastFingerprint) return;
-  lastFingerprint = fp;
-  // process data...
-};
-```
+See **[references/patterns.md](references/patterns.md)** for full code examples of all patterns above.
 
 ## Dependencies
 
-```bash
-# Runtime
-npm install @modelcontextprotocol/ext-apps @modelcontextprotocol/sdk zod
+See **[references/project-setup.md](references/project-setup.md)** Step 2 for the full install commands. In summary:
 
-# Dev
-npm install -D typescript vite vite-plugin-singlefile @types/node tsx concurrently cross-env
-
-# UI components (MANDATORY)
-npm install @vscode-elements/elements
-```
+- **Runtime:** `@modelcontextprotocol/ext-apps`, `@modelcontextprotocol/sdk`, `zod`
+- **Dev:** `typescript`, `vite`, `vite-plugin-singlefile`, `@types/node`, `tsx`, `concurrently`, `cross-env`
+- **UI (mandatory):** `@vscode-elements/elements`
 
 ## References
 
 - **[references/vscode-elements.md](references/vscode-elements.md)** — Full component catalog, usage examples, and VS Code UX design rules
-- **[references/project-setup.md](references/project-setup.md)** — Greenfield project scaffolding (tsconfig, package.json, main.ts)
-- **[references/patterns.md](references/patterns.md)** — Advanced patterns: CSP/CORS, chunked data, fullscreen, view state persistence, partial streaming
+- **[references/project-setup.md](references/project-setup.md)** — Greenfield project scaffolding (tsconfig, package.json, main.ts, Vite config, build scripts)
+- **[references/adding-to-existing-server.md](references/adding-to-existing-server.md)** — Adding a new app to a multi-app server: registration, build chaining, data modules, tsconfig excludes
+- **[references/patterns.md](references/patterns.md)** — All patterns: polling, model context, error handling, deduplication, CSP/CORS, chunked data, fullscreen, state persistence, streaming
+- **[references/troubleshooting.md](references/troubleshooting.md)** — Symptoms → causes → fixes for build errors, blank views, missing data, CSP issues, and more
+- **[references/example-app.md](references/example-app.md)** — Complete counter app showing the full data round-trip: Tool → View → App-Only Tool → Model context update
+- **[scripts/scaffold.sh](scripts/scaffold.sh)** — Generate a complete working MCP App project from a single command

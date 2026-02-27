@@ -6,16 +6,16 @@ description: Rapidly scaffold Azure portal page prototypes using Coherence UI co
 # Azure Portal Prototyper — Facade
 
 > **This skill has been decomposed into four phase-specific skills with an orchestrator.**
-> It exists as a trigger surface — when activated, it delegates to the `experiment-orchestrator` skill.
+> It exists as a trigger surface — when activated, it delegates to the `azure-experiment-orchestrator` skill.
 
 ## What to Do
 
-**Invoke the `experiment-orchestrator` skill** with the user's full request. The orchestrator will:
+**Invoke the `azure-experiment-orchestrator` skill** with the user's full request. The orchestrator will:
 
-1. **INTENT** — Capture design intent via the MCP UI (`design-intent` skill)
+1. **INTENT** — Capture design intent via the MCP UI (`coherence-design-intent` skill)
 2. **BUILD** — Generate the experiment files (`azure-portal-builder` skill)
-3. **VERIFY** — Run UI verification (`experiment-verify` skill)
-4. **DEPLOY** — Publish to Azure Static Web Apps (`experiment-deploy` skill)
+3. **VERIFY** — Run UI verification (`coherence-experiment-verify` skill)
+4. **DEPLOY** — Publish to Azure Static Web Apps (`azure-experiment-deploy` skill)
 
 The orchestrator detects which phase the experiment is in and dispatches to the correct skill automatically.
 
@@ -27,11 +27,11 @@ The monolithic workflow allowed phases to be skipped (e.g., bypassing the intent
 
 | Phase | Skill | Responsibility |
 |-------|-------|----------------|
-| Intent | `design-intent` | Call `design_intent` MCP tool, save intent.json |
+| Intent | `coherence-design-intent` | Call `design_intent` MCP tool, save intent.json |
 | Build | `azure-portal-builder` | Read intent.json, generate experiment files, register |
-| Verify | `experiment-verify` | Run ui-verification, fix violations |
-| Deploy | `experiment-deploy` | Run share-experiment, return URL |
-| **Orchestrator** | `experiment-orchestrator` | Detect phase, dispatch to correct skill |
+| Verify | `coherence-experiment-verify` | Run coherence-ui-verification, fix violations |
+| Deploy | `azure-experiment-deploy` | Run azure-share-experiment, return URL |
+| **Orchestrator** | `azure-experiment-orchestrator` | Detect phase, dispatch to correct skill |
 
 ## References
 

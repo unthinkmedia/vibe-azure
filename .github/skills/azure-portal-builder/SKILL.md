@@ -1,6 +1,6 @@
 ---
 name: azure-portal-builder
-description: "Build an Azure portal prototype from a confirmed intent.json. Only use AFTER the design-intent skill has captured and the user has confirmed intent.json. Triggers on: \"build it\", \"implement the experiment\", \"start building\", or when explicitly dispatched by the experiment-orchestrator. Do NOT call the design_intent MCP tool — that is the design-intent skill's job."
+description: "Build an Azure portal prototype from a confirmed intent.json. Only use AFTER the coherence-design-intent skill has captured and the user has confirmed intent.json. Triggers on: \"build it\", \"implement the experiment\", \"start building\", or when explicitly dispatched by the azure-experiment-orchestrator. Do NOT call the design_intent MCP tool — that is the coherence-design-intent skill's job."
 ---
 
 # Azure Portal Builder
@@ -17,7 +17,7 @@ Build complete Azure portal page prototypes from a confirmed design intent. Prod
 
 > _"No design intent found for this experiment. Please say 'create an intent for \<description\>' first."_
 
-**Do NOT call the `design_intent` MCP tool. Do NOT create intent.json yourself.** That is the `design-intent` skill's exclusive responsibility.
+**Do NOT call the `design_intent` MCP tool. Do NOT create intent.json yourself.** That is the `coherence-design-intent` skill's exclusive responsibility.
 
 **If it exists:** Read the full document and use it as the **PRIMARY INSTRUCTION SOURCE** for all build decisions. Every component choice, layout decision, and mock data selection should trace back to a field in the intent.
 
@@ -344,13 +344,13 @@ Then tell the user:
 
 > _"Build complete. The experiment compiles and is registered. Say **'verify it'** to run UI verification, or navigate to `http://localhost:5175#<experiment-id>` to preview."_
 
-**Do NOT run UI verification yourself.** That is the `experiment-verify` skill's job.
+**Do NOT run UI verification yourself.** That is the `coherence-experiment-verify` skill's job.
 
 ## Hard Boundaries
 
 - **Do NOT** call the `design_intent` MCP tool
 - **Do NOT** create or modify `intent.json`
-- **Do NOT** run UI verification (Steps 1–7 of ui-verification skill)
+- **Do NOT** run UI verification (Steps 1–7 of coherence-ui-verification skill)
 - **Do NOT** deploy to Azure Static Web Apps
 - Your job ends when the experiment compiles and is registered in `main.tsx`
 

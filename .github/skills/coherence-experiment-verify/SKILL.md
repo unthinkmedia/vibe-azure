@@ -1,11 +1,11 @@
 ---
-name: experiment-verify
-description: "Verify a built experiment against Coherence styling standards, accessibility rules, and intent success-criteria effectiveness. Only use AFTER the azure-portal-builder skill has produced a compiling experiment. Triggers on: \"verify it\", \"check the UI\", \"run verification\", or when dispatched by the experiment-orchestrator. Delegates to the ui-verification skill for the full check, then grades success criteria with actionable feedback."
+name: coherence-experiment-verify
+description: "Verify a built experiment against Coherence styling standards, accessibility rules, and intent success-criteria effectiveness. Only use AFTER the azure-portal-builder skill has produced a compiling experiment. Triggers on: \"verify it\", \"check the UI\", \"run verification\", or when dispatched by the azure-experiment-orchestrator. Delegates to the coherence-ui-verification skill for the full check, then grades success criteria with actionable feedback."
 ---
 
 # Experiment Verify
 
-Gate-checks a built experiment then delegates to the `ui-verification` skill for full styling, accessibility, and visual verification.
+Gate-checks a built experiment then delegates to the `coherence-ui-verification` skill for full styling, accessibility, and visual verification.
 
 ## Step 0: Verify Build Exists (HARD GATE)
 
@@ -46,18 +46,18 @@ cd coherence-preview && npx vite --port 5175
    - If `200` → proceed
    - If not → kill and restart, or check for port conflicts
 
-**Do NOT skip this step.** The ui-verification skill's visual checks (Playwright, Simple Browser) will fail without a running server.
+**Do NOT skip this step.** The coherence-ui-verification skill's visual checks (Playwright, Simple Browser) will fail without a running server.
 
-## Step 2: Delegate to ui-verification Skill
+## Step 2: Delegate to coherence-ui-verification Skill
 
-Run the **full** `ui-verification` skill workflow (Steps 0–7):
+Run the **full** `coherence-ui-verification` skill workflow (Steps 0–7):
 
 1. **Step 0** — Custom Code Audit (native components, shared patterns, experiment conventions)
 2. **Steps 1–5** — Static analysis (styling standards registry + manifest + theme CSS)
 3. **Step 6** — Visual verification (Playwright + VS Code Simple Browser)
 4. **Step 7** — Final confirmation
 
-Follow all instructions in the `ui-verification` skill exactly. Do not skip steps.
+Follow all instructions in the `coherence-ui-verification` skill exactly. Do not skip steps.
 
 ## Step 3: Grade Intent Success Criteria Effectiveness
 
@@ -111,7 +111,7 @@ If `successCriteria` is empty, report:
 
 In addition to the markdown table, emit a JSON report that follows:
 
-- Schema: `.github/skills/experiment-verify/success-criteria-scorecard.schema.json`
+- Schema: `.github/skills/coherence-experiment-verify/success-criteria-scorecard.schema.json`
 - Latest snapshot path: `coherence-preview/src/experiments/<id>/verification/success-criteria-latest.json`
 - History path: `coherence-preview/src/experiments/<id>/verification/success-criteria-history.json`
 

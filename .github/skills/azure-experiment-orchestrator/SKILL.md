@@ -1,5 +1,5 @@
 ---
-name: experiment-orchestrator
+name: azure-experiment-orchestrator
 description: "Orchestrate the full Azure portal experiment lifecycle: intent → build → verify → deploy. Use when the user asks to build, create, prototype, or mock an Azure portal page. Also triggers on: \"build me an Azure page\", \"create an Azure portal prototype\", \"prototype a resource blade\", or any request that would have previously triggered the azure-portal-prototyper skill. Detects the current phase automatically and dispatches to the correct phase-specific skill."
 ---
 
@@ -13,10 +13,10 @@ State machine that manages the full lifecycle of an Azure portal experiment acro
 INTENT  →  BUILD  →  VERIFY  →  DEPLOY
   ↑          ↑         ↑          ↑
   │          │         │          │
-design-   azure-    experiment-  experiment-
-intent    portal-   verify       deploy
-skill     builder                skill
-          skill
+coherence-   azure-    coherence-  azure-
+design-   portal-   experiment-  experiment-
+intent    builder   verify       deploy
+skill     skill                skill
 ```
 
 ## Step 1: Identify the Experiment
@@ -132,7 +132,7 @@ Based on the detected phase, delegate to the appropriate skill:
 
 > _"Starting design intent capture for `<id>`..."_
 
-Invoke the **design-intent** skill. This will:
+Invoke the **coherence-design-intent** skill. This will:
 1. Call the `design_intent` MCP tool with the user's description
 2. Wait for user to click **Accept** in the intent UI
 3. Save `intent.json` to the experiment folder
@@ -156,7 +156,7 @@ Invoke the **azure-portal-builder** skill. This will:
 
 > _"Build complete. Running UI verification for `<id>`..."_
 
-Invoke the **experiment-verify** skill. This will:
+Invoke the **coherence-experiment-verify** skill. This will:
 1. Run the custom code audit
 2. Run static analysis against standards, manifest, and theme CSS
 3. Run visual verification via Playwright
@@ -174,8 +174,8 @@ Invoke the **experiment-verify** skill. This will:
 
 > _"Deploying experiment `<id>` to Azure Static Web Apps..."_
 
-Invoke the **experiment-deploy** skill. This will:
-1. Run the share-experiment workflow
+Invoke the **azure-experiment-deploy** skill. This will:
+1. Run the azure-share-experiment workflow
 2. Return the shareable URL
 
 **After completion:** Report the URL and end.
@@ -234,8 +234,8 @@ Track each experiment independently by ID. If the user switches topics, re-run S
 | "Build me an Azure X page" | Phase detection → likely INTENT |
 | "Build using this Figma URL" | Figma extraction → INTENT (import mode — pixel-perfect) |
 | "Take a look at this Figma and improve it" | Figma extraction → INTENT (reference mode — analyze & improve) |
-| "Create an intent for X" | INTENT (design-intent skill) |
+| "Create an intent for X" | INTENT (coherence-design-intent skill) |
 | "Build it" / "Implement it" | BUILD (azure-portal-builder skill) |
-| "Verify it" / "Check the UI" | VERIFY (experiment-verify skill) |
-| "Deploy it" / "Share it" | DEPLOY (experiment-deploy skill) |
+| "Verify it" / "Check the UI" | VERIFY (coherence-experiment-verify skill) |
+| "Deploy it" / "Share it" | DEPLOY (azure-experiment-deploy skill) |
 | "Start over" | Delete experiment folder, re-detect → INTENT |

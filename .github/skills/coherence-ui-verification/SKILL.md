@@ -1,5 +1,5 @@
 ---
-name: ui-verification
+name: coherence-ui-verification
 description: "Verify custom UI components against Coherence styling standards before finalizing. Automatically runs after creating or modifying custom UI (non-standard components, custom layouts, token overrides). Checks spacing, typography, colors, borders, shadows, interaction states, accessibility, and layout conventions against three authoritative sources: the styling standards registry, the live API manifest, and the theme CSS. Includes a visual verification step using Playwright (browser_navigate, browser_snapshot, browser_take_screenshot, browser_evaluate) and VS Code's Simple Browser to confirm rendered output matches standards at runtime. When no standard exists for a decision, asks the user whether to save it as a new standard for future components."
 ---
 
@@ -85,7 +85,7 @@ List `coherence-preview/src/patterns/` and check whether any shared pattern comp
 
 Also read the `references/patterns/*.md` docs from the coherence-ui skill to check for documented patterns that may not have a shared component yet.
 
-**Action:** Replace custom implementations with the shared pattern. If no shared pattern exists but the code is reusable, consider creating one via the pattern-creator skill.
+**Action:** Replace custom implementations with the shared pattern. If no shared pattern exists but the code is reusable, consider creating one via the coherence-pattern-creator skill.
 
 #### 0c. Compare Against Similar Experiments
 
@@ -296,7 +296,7 @@ For each styling decision where **no existing standard applies**:
 2. **Ask the user**: _"No existing standard covers [description]. Should I save this as a standard for future components?"_
 3. If the user says **yes**:
    - Add the new rule to `.github/skills/coherence-ui/references/styling-standards.md` under the appropriate section table
-   - If the pattern is complex enough (multi-component, reusable), also trigger the **pattern-creator** skill workflow:
+   - If the pattern is complex enough (multi-component, reusable), also trigger the **coherence-pattern-creator** skill workflow:
      1. Create a pattern file in `references/patterns/`
      2. Register in the Composition Patterns table in `coherence-ui/SKILL.md`
      3. Add a memory note to `/memories/coherence-patterns.md`
@@ -463,7 +463,7 @@ After all violations are fixed and new standards are optionally saved:
 |-------|-----------------|
 | **coherence-ui** | Provides the manifest, theme CSS, component references, and pattern docs used for verification |
 | **azure-portal-prototyper** | Verification runs automatically after any prototype is generated |
-| **pattern-creator** | Triggered when a new standard is saved as a reusable pattern |
+| **coherence-pattern-creator** | Triggered when a new standard is saved as a reusable pattern |
 | **coherence-live-preview** | Dev server startup + experiment registration for visual verification |
 | **Playwright MCP tools** | `browser_navigate`, `browser_snapshot`, `browser_take_screenshot`, `browser_evaluate`, `browser_hover`, `browser_click`, `browser_press_key`, `browser_resize` — used in Step 6 for runtime visual/a11y verification |
 | **VS Code Simple Browser** | `open_simple_browser` — shows the rendered component inline in VS Code for the user to see |

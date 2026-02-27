@@ -289,14 +289,14 @@ The workspace includes a set of Copilot skills under `.github/skills/` that give
 | Skill | What It Does |
 |---|---|
 | `coherence-ui` | Component APIs, design tokens, theming, accessibility guides |
-| `design-intent` | Captures What/Why/Success Criteria before building a prototype |
+| `coherence-design-intent` | Captures What/Why/Success Criteria before building a prototype |
 | `azure-portal-builder` | Builds experiments from a confirmed intent.json |
-| `experiment-orchestrator` | Routes through the full lifecycle: intent → build → verify → deploy |
-| `experiment-verify` | Checks experiments against Coherence styling and a11y standards |
-| `experiment-deploy` | Deploys experiments to Azure Static Web Apps |
+| `azure-experiment-orchestrator` | Routes through the full lifecycle: intent → build → verify → deploy |
+| `coherence-experiment-verify` | Checks experiments against Coherence styling and a11y standards |
+| `azure-experiment-deploy` | Deploys experiments to Azure Static Web Apps |
 | `azure-mock-data` | Generates realistic fake Azure data for prototypes |
-| `ui-verification` | Visual verification using Playwright browser automation |
-| `pattern-creator` | Creates and registers reusable composition patterns |
+| `coherence-ui-verification` | Visual verification using Playwright browser automation |
+| `coherence-pattern-creator` | Creates and registers reusable composition patterns |
 
 ### Workflow for Building a New Experiment
 
@@ -304,8 +304,8 @@ The AI follows this lifecycle when you ask it to build an Azure portal page:
 
 1. **Intent** — The `design_intent` MCP tool opens an interactive form to capture goals, success criteria, and constraints. The result is saved as `intent.json` in the experiment folder.
 2. **Build** — The `azure-portal-builder` skill generates the experiment files (data, styles, component) using the intent as the primary instruction source.
-3. **Verify** — The `experiment-verify` skill checks the built UI against Coherence standards and grades success criteria.
-4. **Deploy** — The `experiment-deploy` skill publishes to Azure Static Web Apps for sharing.
+3. **Verify** — The `coherence-experiment-verify` skill checks the built UI against Coherence standards and grades success criteria.
+4. **Deploy** — The `azure-experiment-deploy` skill publishes to Azure Static Web Apps for sharing.
 
 ---
 

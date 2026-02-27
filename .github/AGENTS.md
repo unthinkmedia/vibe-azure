@@ -16,7 +16,7 @@ This workspace includes agent skills under `.github/skills/`. **Always check if 
 
 **How to use it:** Read `.github/skills/coherence-ui/SKILL.md` first. It will direct you to fetch the manifest, theme CSS, or specific reference files as needed. Never guess at component APIs — the manifest is the source of truth.
 
-## pattern-creator
+## coherence-pattern-creator
 
 **Trigger:** "save this as a pattern", "create a pattern", "add a composition pattern", "document this pattern", or when a reusable component recipe, workaround, or token override is discovered during prototyping.
 
@@ -25,9 +25,9 @@ This workspace includes agent skills under `.github/skills/`. **Always check if 
 - Template for pattern file structure
 - Checklist ensuring all registration points are updated (pattern file, SKILL.md index, memory note)
 
-**How to use it:** Read `.github/skills/pattern-creator/SKILL.md` and follow all four steps. Skipping the registration step means the pattern is invisible to future sessions.
+**How to use it:** Read `.github/skills/coherence-pattern-creator/SKILL.md` and follow all four steps. Skipping the registration step means the pattern is invisible to future sessions.
 
-## design-intent
+## coherence-design-intent
 
 **Trigger:** Any time a designer describes what they want to build, starts a new experiment, mentions prototyping a new page, or explicitly asks about "design intent", "intent", or "capture the goals".
 
@@ -64,9 +64,9 @@ This workspace includes agent skills under `.github/skills/`. **Always check if 
 
 When asked to build, create, prototype, or mock an Azure portal page:
 
-1. **ALWAYS route through the experiment-orchestrator skill**
+1. **ALWAYS route through the azure-experiment-orchestrator skill**
 2. **ALWAYS check the filesystem** for `coherence-preview/src/experiments/<id>/intent.json` before writing any code
-3. **If no intent.json exists**, run the design-intent skill first — never skip to building
+3. **If no intent.json exists**, run the coherence-design-intent skill first — never skip to building
 4. **Never create .ts/.tsx experiment files** until intent.json is confirmed on disk
 
 ### General

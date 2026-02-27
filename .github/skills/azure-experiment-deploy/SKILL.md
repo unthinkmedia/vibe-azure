@@ -1,11 +1,11 @@
 ---
-name: experiment-deploy
-description: "Deploy a verified experiment to Azure Static Web Apps. Only use AFTER the experiment-verify skill has confirmed all checks pass. Triggers on: \"deploy it\", \"publish it\", \"share it\", \"host it\", \"get a shareable link\", or when dispatched by the experiment-orchestrator. Delegates to the share-experiment skill for the actual deployment."
+name: azure-experiment-deploy
+description: "Deploy a verified experiment to Azure Static Web Apps. Only use AFTER the coherence-experiment-verify skill has confirmed all checks pass. Triggers on: \"deploy it\", \"publish it\", \"share it\", \"host it\", \"get a shareable link\", or when dispatched by the azure-experiment-orchestrator. Delegates to the azure-share-experiment skill for the actual deployment."
 ---
 
 # Experiment Deploy
 
-Gate-checks a verified experiment then delegates to the `share-experiment` skill for deployment.
+Gate-checks a verified experiment then delegates to the `azure-share-experiment` skill for deployment.
 
 ## Step 0: Verify Experiment Is Ready (HARD GATE)
 
@@ -29,15 +29,15 @@ Also confirm the build compiles:
 cd coherence-preview && npx vite build --mode development
 ```
 
-## Step 1: Delegate to share-experiment Skill
+## Step 1: Delegate to azure-share-experiment Skill
 
-Run the **full** `share-experiment` skill workflow:
+Run the **full** `azure-share-experiment` skill workflow:
 
 1. First-time setup (if not already done): create Azure Static Web App resource, add deployment token, copy config files
 2. Deploy via push or PR
 3. Construct the shareable link: `https://<app-name>.azurestaticapps.net/#<experiment-id>`
 
-Follow all instructions in the `share-experiment` skill exactly.
+Follow all instructions in the `azure-share-experiment` skill exactly.
 
 ## Step 2: Report
 
@@ -53,4 +53,4 @@ After deployment:
 - **Do NOT** call the `design_intent` MCP tool
 - **Do NOT** build experiment code (no creating `.tsx` files)
 - **Do NOT** run UI verification
-- Your only job is gating + delegating to `share-experiment`
+- Your only job is gating + delegating to `azure-share-experiment`

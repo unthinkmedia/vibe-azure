@@ -1,5 +1,5 @@
 ---
-name: pattern-creator
+name: coherence-pattern-creator
 description: Create, register, and validate new Coherence UI composition patterns. Use when discovering a reusable UI pattern, component workaround, or token override that should be captured for future experiments. Triggers on "save this as a pattern", "create a pattern", "add a composition pattern", "document this pattern", or when a reusable component recipe is identified during prototyping.
 ---
 

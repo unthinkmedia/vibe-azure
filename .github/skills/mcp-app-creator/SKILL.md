@@ -11,7 +11,7 @@ description: >-
   @vscode-elements/elements web components and follow VS Code UX design patterns.
   DO NOT USE FOR: building standard MCP servers/tools without UI, general web apps
   (React/Vue/Svelte), Copilot Extensions (use azure-hosted-copilot-sdk), or
-  Azure portal prototypes (use experiment-orchestrator).
+  Azure portal prototypes (use azure-experiment-orchestrator).
 ---
 
 # MCP App Creator

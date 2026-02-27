@@ -196,4 +196,4 @@ When the verification skill encounters a styling decision with **no established 
 2. Explain what was used and why there's no standard yet
 3. Ask: _"Should I save this as a standard for future components?"_
 4. If yes, add a row to the appropriate section table above
-5. Follow the pattern-creator checklist if it qualifies as a full composition pattern
+5. Follow the coherence-pattern-creator checklist if it qualifies as a full composition pattern

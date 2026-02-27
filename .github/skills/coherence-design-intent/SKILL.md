@@ -1,5 +1,5 @@
 ---
-name: design-intent
+name: coherence-design-intent
 description: "Capture design intent for a new Coherence experiment. Triggers on: \"build me a...\", \"prototype a...\", \"create an Azure page\", \"scaffold a...\", or any request to build a new Azure portal UI. Do NOT build anything — only capture intent and get user confirmation. Your job is done when intent.json exists and the user has confirmed."
 ---
 

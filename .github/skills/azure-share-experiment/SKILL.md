@@ -1,5 +1,5 @@
 ---
-name: share-experiment
+name: azure-share-experiment
 description: Deploy and share Coherence preview experiments via Azure Static Web Apps. Use when the user says "deploy", "publish", "share", or "host" in combination with experiment, preview, or prototype. Also triggers on "share this with my team", "deploy to Azure", "make this accessible", or "get a shareable link".
 ---
 

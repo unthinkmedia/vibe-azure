@@ -265,12 +265,12 @@ Cross-cutting design guidance. Read when the topic is relevant.
 
 ## Styling Standards & Verification
 
-Codified spacing, typography, color, border, shadow, state, layout, and accessibility rules extracted from the Coherence component library, manifest API, theme CSS, and all established patterns. **Read before building custom UI** and use the **ui-verification** skill to check compliance after.
+Codified spacing, typography, color, border, shadow, state, layout, and accessibility rules extracted from the Coherence component library, manifest API, theme CSS, and all established patterns. **Read before building custom UI** and use the **coherence-ui-verification** skill to check compliance after.
 
 | Resource | Reference |
-|----------|-----------|
+|----------|-----------||
 | Styling Standards Registry | [references/styling-standards.md](references/styling-standards.md) |
-| UI Verification Skill (checklist) | `../../ui-verification/SKILL.md` |
+| UI Verification Skill (checklist) | `../../coherence-ui-verification/SKILL.md` |
 
 The verification skill cross-references three sources: the standards registry, the live API manifest, and the theme CSS. When it encounters a styling decision with no established standard, it asks the user whether to save it as a new rule.
 

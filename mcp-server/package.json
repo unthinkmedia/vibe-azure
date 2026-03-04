@@ -1,7 +1,7 @@
 {
   "name": "@unthinkmedia/coherence-prototyper-mcp",
-  "version": "1.2.0",
-  "description": "MCP server + MCP App for Azure portal prototyping with Coherence UI — complements the VS Code skills",
+  "version": "1.3.0",
+  "description": "MCP server + MCP Apps for Azure portal prototyping with Coherence UI",
   "type": "module",
   "main": "dist/main.js",
   "bin": {

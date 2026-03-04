@@ -9,24 +9,17 @@
 import { useState, FormEvent } from 'react';
 import {
   CuiAppFrame,
-  CuiAvatar,
-  CuiBreadcrumb,
-  CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
-  CuiHeader,
-  CuiIcon,
   CuiInput,
-  CuiPersona,
-  CuiPopOver,
-  CuiSearchBox,
   CuiSelect,
   CuiTab,
   CuiTabPanel,
   CuiTabs,
 } from '@charm-ux/cui/react';
-import CopilotButton from '../experiments/copilot-button';
 import { azureIcon } from './azure-icons';
+import AzurePortalHeader from './AzurePortalHeader';
+import AzureBreadcrumb from './AzureBreadcrumb';
 import PageHeader from './PageHeader';
 import AzurePortalNav from './PatternAzurePortalNav';
 
@@ -77,62 +70,14 @@ export default function AzureCreateFlow() {
   return (
     <>
       <CuiAppFrame skipToMainText="Skip to main content">
-        {/* ─── Header ─── */}
-        <CuiHeader slot="header" navigationIconLabel="toggle navigation">
-          <CuiButton slot="title" appearance="transparent">
-            <span className="font-base400">Microsoft Azure</span>
-          </CuiButton>
-          <CuiSearchBox
-            slot="search"
-            hideLabel
-            placeholder="Search resources, services, and docs (G+/)"
-          />
-          <CopilotButton slot="search" />
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
-            <CuiIcon name="alert" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
-            <CuiIcon name="settings" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
-            <CuiIcon name="person-feedback" />
-          </CuiButton>
-          <CuiPopOver slot="actions-end" fixedPlacement>
-            <CuiButton slot="anchor" appearance="subtle" shape="rounded" size="large" iconOnly>
-              <CuiAvatar size={24} name="Alex Britez" />
-            </CuiButton>
-            <CuiPersona>
-              <CuiAvatar name="Alex Britez" />
-              <div slot="primary">alexbritez@microsoft.co...</div>
-              <div slot="secondary">MICROSOFT (MICROSOFT.ONM...)</div>
-            </CuiPersona>
-            <CuiDivider className="my-xl" />
-            <div className="d-flex flex-column align-start">
-              <CuiButton appearance="link">Your profile</CuiButton>
-              <CuiButton appearance="link">View account</CuiButton>
-              <CuiButton appearance="link">Sign Out</CuiButton>
-            </div>
-          </CuiPopOver>
-        </CuiHeader>
+        <AzurePortalHeader />
 
         {/* ─── Global Navigation (hamburger menu) ─── */}
         <AzurePortalNav />
 
         {/* ─── Main Content ─── */}
         <div slot="main">
-          {/* Breadcrumb */}
-          <div style={{ padding: '8px 32px 0' }}>
-            <CuiBreadcrumb label="Navigation" size="small">
-              <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
-              <CuiBreadcrumbItem active current="page">Create {resourceTypeLabel}</CuiBreadcrumbItem>
-            </CuiBreadcrumb>
-          </div>
+          <AzureBreadcrumb items={['Home', `Create ${resourceTypeLabel}`]} padding="32px" />
 
           {/* Page title */}
           <PageHeader title={`Create ${resourceTypeLabel}`} subtitle={resourceTypeLabel} />

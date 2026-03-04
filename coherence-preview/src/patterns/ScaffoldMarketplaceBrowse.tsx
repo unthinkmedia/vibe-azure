@@ -21,19 +21,12 @@
 import { useState } from 'react';
 import {
   CuiAppFrame,
-  CuiAvatar,
-  CuiBreadcrumb,
-  CuiBreadcrumbItem,
-  CuiButton,
-  CuiDivider,
-  CuiHeader,
   CuiIcon,
-  CuiPersona,
-  CuiPopOver,
   CuiSearchBox,
 } from '@charm-ux/cui/react';
-import CopilotButton from '../experiments/copilot-button';
 import { azureIcon } from './azure-icons';
+import AzurePortalHeader from './AzurePortalHeader';
+import AzureBreadcrumb from './AzureBreadcrumb';
 import PageHeader from './PageHeader';
 import AzurePortalNav from './PatternAzurePortalNav';
 
@@ -56,9 +49,7 @@ interface MarketplaceItem {
 
 // ─── Data (customize these) ───
 
-const headerTitle = 'Microsoft Azure';
 const pageTitle = 'Create a resource';
-const breadcrumbLabel = 'Home';
 
 const copilotSuggestions = [
   'Design a new Azure workload',
@@ -166,14 +157,14 @@ const styles = `
   }
 
   .mb-cat-link.active {
-    font-weight: 600;
+    font-weight: var(--font-weight-semi-bold);
     color: var(--neutral-foreground1);
     background: var(--subtle-background-selected);
   }
 
   .mb-cat-heading {
     font-size: var(--font-size-base200);
-    font-weight: 600;
+    font-weight: var(--font-weight-semi-bold);
     color: var(--neutral-foreground3);
     padding: 12px 12px 8px;
     margin: 0;
@@ -242,7 +233,7 @@ const styles = `
 
   .mb-col-title {
     font-size: var(--font-size-base400);
-    font-weight: 600;
+    font-weight: var(--font-weight-semi-bold);
     color: var(--neutral-foreground1);
     margin: 0;
   }
@@ -295,7 +286,7 @@ const styles = `
 
   .mb-item-name {
     font-size: var(--font-size-base300);
-    font-weight: 600;
+    font-weight: var(--font-weight-semi-bold);
     color: var(--neutral-foreground1);
     white-space: nowrap;
     overflow: hidden;
@@ -357,49 +348,7 @@ export default function ScaffoldMarketplaceBrowse() {
   return (
     <>
       <CuiAppFrame skipToMainText="Skip to main content">
-        {/* ─── Header ─── */}
-        <CuiHeader slot="header" navigationIconLabel="toggle navigation">
-          <CuiButton slot="title" appearance="transparent">
-            <span className="font-base400">{headerTitle}</span>
-          </CuiButton>
-          <CuiSearchBox
-            slot="search"
-            hideLabel
-            placeholder="Search resources, services, and docs (G+/)"
-          />
-          <CopilotButton slot="search" />
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
-            <CuiIcon name="alert" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
-            <CuiIcon name="settings" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
-            <CuiIcon name="person-feedback" />
-          </CuiButton>
-          <CuiPopOver slot="actions-end" fixedPlacement>
-            <CuiButton slot="anchor" appearance="subtle" shape="rounded" size="large" iconOnly>
-              <CuiAvatar size={24} name="Alex Britez" />
-            </CuiButton>
-            <CuiPersona>
-              <CuiAvatar name="Alex Britez" />
-              <div slot="primary">alexbritez@microsoft.co...</div>
-              <div slot="secondary">MICROSOFT (MICROSOFT.ONM...)</div>
-            </CuiPersona>
-            <CuiDivider className="my-xl" />
-            <div className="d-flex flex-column align-start">
-              <CuiButton appearance="link">Your profile</CuiButton>
-              <CuiButton appearance="link">View account</CuiButton>
-              <CuiButton appearance="link">Sign Out</CuiButton>
-            </div>
-          </CuiPopOver>
-        </CuiHeader>
+        <AzurePortalHeader />
 
         {/* ─── Global Navigation (hamburger menu) ─── */}
         <AzurePortalNav />
@@ -408,9 +357,7 @@ export default function ScaffoldMarketplaceBrowse() {
         <div slot="main" className="mb-page">
           {/* Breadcrumb + Title + Copilot Suggestions */}
           <div className="mb-header-area">
-            <CuiBreadcrumb label="Navigation" size="small">
-              <CuiBreadcrumbItem href="#">{breadcrumbLabel}</CuiBreadcrumbItem>
-            </CuiBreadcrumb>
+            <AzureBreadcrumb items={['Home']} padding="0" />
             <PageHeader
               title={pageTitle}
               copilotSuggestions={copilotSuggestions}

@@ -31,71 +31,32 @@
 import { useState } from 'react';
 import {
   CuiAppFrame,
-  CuiAvatar,
-  CuiBreadcrumb,
-  CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
-  CuiHeader,
   CuiIcon,
   CuiInput,
   CuiMenu,
   CuiMenuItem,
-  CuiNavHeading,
-  CuiNavItem,
-  CuiPersona,
-  CuiPopOver,
-  CuiSearchBox,
-  CuiSideNav,
   CuiToolbar,
 } from '@charm-ux/cui/react';
-import CopilotButton from '../experiments/copilot-button';
 import { azureIcon } from './azure-icons';
 import PageHeader from './PageHeader';
 import AzurePortalNav from './PatternAzurePortalNav';
+import AzurePortalHeader from './AzurePortalHeader';
+import AzureBreadcrumb from './AzureBreadcrumb';
+import BladeSidebar, { bladeSidebarStyles } from './BladeSidebar';
+import { toolbarNoWrapStyles } from './scaffold-styles';
 
-// ─── Types ───
-
-interface NavItemConfig {
-  label: string;
-  iconName?: string;
-  iconUrl?: string;
-  selected?: boolean;
-}
-
-interface NavSectionConfig {
-  heading?: string;
-  items: NavItemConfig[];
-}
-
-type WorkflowNodeType = 'trigger' | 'action' | 'condition' | 'foreach' | 'scope';
-
-interface WorkflowNode {
-  id: string;
-  type: WorkflowNodeType;
-  title: string;
-  subtitle: string;
-  icon: string;
-  status?: 'success' | 'failed' | 'skipped' | 'running' | 'pending';
-  expanded?: boolean;
-  children?: WorkflowNode[];
-  config?: Record<string, string>;
-}
-
-interface ConnectorCategory {
-  label: string;
-  connectors: { name: string; icon: string }[];
-}
+import type { BladeNavSection } from './BladeSidebar';
 
 // ─── Data (TODO: customize these) ───
 
-const headerTitle = 'Microsoft Azure';
 const pageTitle = 'my-workflow';                    // TODO: resource name
 const resourceType = 'Logic app';                   // TODO: resource type
 const breadcrumb = ['Home', 'my-resource-group', 'my-workflow']; // TODO
 const serviceIconKey = 'logic-app';                 // TODO: azure-icons key
 
-const navSections: NavSectionConfig[] = [
+const navSections: BladeNavSection[] = [
   {
     items: [
       { label: 'Overview', iconUrl: 'https://api.iconify.design/fluent:home-24-regular.svg' },
@@ -108,7 +69,7 @@ const navSections: NavSectionConfig[] = [
   {
     heading: 'Development Tools',
     items: [
-      { label: 'Designer', iconUrl: 'https://api.iconify.design/fluent:design-ideas-24-regular.svg', selected: true },
+      { label: 'Designer', iconUrl: 'https://api.iconify.design/fluent:design-ideas-24-regular.svg' },
       { label: 'Code view', iconUrl: 'https://api.iconify.design/fluent:code-24-regular.svg' },
       { label: 'Versions', iconUrl: 'https://api.iconify.design/fluent:history-24-regular.svg' },
       { label: 'API connections', iconUrl: 'https://api.iconify.design/fluent:plug-connected-24-regular.svg' },
@@ -130,6 +91,27 @@ const navSections: NavSectionConfig[] = [
     ],
   },
 ];
+
+// ─── Types ───
+
+type WorkflowNodeType = 'trigger' | 'action' | 'condition' | 'foreach' | 'scope';
+
+interface WorkflowNode {
+  id: string;
+  type: WorkflowNodeType;
+  title: string;
+  subtitle: string;
+  icon: string;
+  status?: 'success' | 'failed' | 'skipped' | 'running' | 'pending';
+  expanded?: boolean;
+  children?: WorkflowNode[];
+  config?: Record<string, string>;
+}
+
+interface ConnectorCategory {
+  label: string;
+  connectors: { name: string; icon: string }[];
+}
 
 // TODO: define your workflow nodes
 const workflowNodes: WorkflowNode[] = [
@@ -346,31 +328,6 @@ function ConfigPanel({ node, onClose }: { node: WorkflowNode; onClose: () => voi
   );
 }
 
-// ─── Navigation Sidebar ───
-
-function Navigation() {
-  return (
-    <CuiSideNav size="small">
-      {navSections.map((section, si) => (
-        <span key={si}>
-          {section.heading && <CuiNavHeading>{section.heading}</CuiNavHeading>}
-          {section.items.map((item, ii) => (
-            <CuiNavItem
-              key={ii}
-              label={item.label}
-              href="#"
-              selected={item.selected || undefined}
-            >
-              {item.iconUrl && <CuiIcon slot="icon" url={item.iconUrl} />}
-              {item.iconName && <CuiIcon slot="icon" name={item.iconName} />}
-            </CuiNavItem>
-          ))}
-        </span>
-      ))}
-    </CuiSideNav>
-  );
-}
-
 // ─── Styles ───
 
 const styles = `
@@ -386,52 +343,8 @@ const styles = `
     height: 100%;
   }
 
-  .blade-body {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
-
-  .blade-sidebar {
-    width: 220px;
-    min-width: 220px;
-    border-right: 1px solid var(--neutral-stroke2);
-    background: var(--neutral-background1);
-    overflow-y: auto;
-    transition: width 0.2s ease, min-width 0.2s ease;
-  }
-  .blade-sidebar.collapsed {
-    width: 0;
-    min-width: 0;
-    overflow: hidden;
-    border-right: none;
-  }
-
-  .blade-toggle-strip {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 28px;
-    min-width: 28px;
-    padding-top: 8px;
-    background: var(--neutral-background2);
-    border-right: 1px solid var(--neutral-stroke2);
-  }
-
-  .blade-content {
-    flex: 1;
-    overflow: hidden;
-    background: var(--neutral-background2);
-    display: flex;
-    flex-direction: row;
-  }
-
-  /* ─── Toolbar no-wrap ─── */
-  cui-toolbar { flex-wrap: nowrap; }
-  cui-toolbar cui-button,
-  cui-toolbar cui-menu cui-button { white-space: nowrap; }
-  cui-toolbar cui-button::part(button-control),
-  cui-toolbar cui-menu cui-button::part(button-control) { white-space: nowrap; flex-wrap: nowrap; }
+  ${bladeSidebarStyles}
+  ${toolbarNoWrapStyles}
 
   /* ─── Designer Toolbar ─── */
   .designer-toolbar {
@@ -498,9 +411,9 @@ const styles = `
     justify-content: center;
     flex-shrink: 0;
   }
-  .trigger .node-icon { background: var(--brand-background1); color: white; }
+  .trigger .node-icon { background: var(--brand-background1); color: var(--neutral-foreground-on-brand); }
   .action .node-icon  { background: var(--neutral-background4); }
-  .condition .node-icon { background: #4285f4; color: white; }
+  .condition .node-icon { background: var(--brand-background1); color: var(--neutral-foreground-on-brand); }
 
   .node-title { flex: 1; min-width: 0; }
   .node-title-text {
@@ -714,7 +627,7 @@ const styles = `
 // ─── Main Component ───
 
 export default function ScaffoldDesignerBlade() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedNav, setSelectedNav] = useState('Designer');
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'designer' | 'code'>('designer');
   const [showAddPanel, setShowAddPanel] = useState(false);
@@ -725,70 +638,12 @@ export default function ScaffoldDesignerBlade() {
   return (
     <>
       <CuiAppFrame skipToMainText="Skip to main content">
-        {/* ─── Header ─── */}
-        <CuiHeader slot="header" navigationIconLabel="toggle navigation">
-          <CuiButton slot="title" appearance="transparent">
-            <span className="font-base400">{headerTitle}</span>
-          </CuiButton>
-          <CuiSearchBox
-            slot="search"
-            hideLabel
-            placeholder="Search resources, services, and docs (G+/)"
-          />
-          <CopilotButton slot="search" />
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
-            <CuiIcon name="alert" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
-            <CuiIcon name="settings" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
-            <CuiIcon name="person-feedback" />
-          </CuiButton>
-          <CuiPopOver slot="actions-end" fixedPlacement>
-            <CuiButton slot="anchor" appearance="subtle" shape="rounded" size="large" iconOnly>
-              <CuiAvatar size={24} name="Alex Britez" />
-            </CuiButton>
-            <CuiPersona>
-              <CuiAvatar name="Alex Britez" />
-              <div slot="primary">Alex Britez</div>
-              <div slot="secondary">Available</div>
-            </CuiPersona>
-            <CuiDivider className="my-xl" />
-            <div className="d-flex flex-column align-start">
-              <CuiButton appearance="link">Your profile</CuiButton>
-              <CuiButton appearance="link">View account</CuiButton>
-              <CuiButton appearance="link">Sign Out</CuiButton>
-            </div>
-          </CuiPopOver>
-        </CuiHeader>
-
-        {/* ─── Global Navigation ─── */}
+        <AzurePortalHeader />
         <AzurePortalNav />
 
         {/* ─── Main Content ─── */}
         <div slot="main" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          {/* Breadcrumb — full width */}
-          <div style={{ padding: '4px 16px 0' }}>
-            <CuiBreadcrumb label="Navigation" size="small">
-              {breadcrumb.map((crumb, i) => (
-                <CuiBreadcrumbItem
-                  key={i}
-                  href="#"
-                  active={i === breadcrumb.length - 1 || undefined}
-                  current={i === breadcrumb.length - 1 ? 'page' : undefined}
-                >
-                  {crumb}
-                </CuiBreadcrumbItem>
-              ))}
-            </CuiBreadcrumb>
-          </div>
+          <AzureBreadcrumb items={breadcrumb} />
 
           {/* Title — full width above sidebar */}
           <PageHeader
@@ -798,26 +653,20 @@ export default function ScaffoldDesignerBlade() {
             titleWeight="regular"
             horizontalPadding="16px"
             showFavorite
+            copilotSuggestions={[
+              'Explain the workflow logic in this designer',
+              'Find errors or missing connections',
+              'Suggest optimizations for this flow',
+            ]}
           />
 
           {/* ─── Body: sidebar + content ─── */}
-          <div className="blade-body">
-            <nav className={`blade-sidebar ${sidebarOpen ? '' : 'collapsed'}`} aria-label="Resource navigation">
-              <Navigation />
-            </nav>
-
-            <div className="blade-content">
-              <div className="blade-toggle-strip">
-                <CuiButton
-                  appearance="subtle"
-                  size="small"
-                  iconOnly
-                  aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-                  onClick={() => setSidebarOpen(!sidebarOpen)}
-                >
-                  <CuiIcon name={sidebarOpen ? 'chevron-left' : 'arrow-right'} />
-                </CuiButton>
-              </div>
+          <BladeSidebar
+            navSections={navSections}
+            selectedNav={selectedNav}
+            onNavChange={setSelectedNav}
+            ariaLabel="Resource navigation"
+          >
 
               {/* Designer content */}
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -936,8 +785,7 @@ export default function ScaffoldDesignerBlade() {
                   )}
                 </div>
               </div>
-            </div>
-          </div>
+          </BladeSidebar>
         </div>
       </CuiAppFrame>
       <style>{styles}</style>

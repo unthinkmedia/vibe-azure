@@ -21,40 +21,28 @@
 import { useState } from 'react';
 import {
   CuiAppFrame,
-  CuiAvatar,
-  CuiBreadcrumb,
-  CuiBreadcrumbItem,
   CuiButton,
-  CuiDivider,
-  CuiHeader,
   CuiIcon,
   CuiMessageBar,
-  CuiNavHeading,
-  CuiNavItem,
-  CuiPersona,
-  CuiPopOver,
-  CuiSearchBox,
-  CuiSideNav,
 } from '@charm-ux/cui/react';
 import { ServiceCard } from './PatternServiceCard';
-import CopilotButton from '../experiments/copilot-button';
 import { azureIcon } from './azure-icons';
 import PageHeader from './PageHeader';
 import AzurePortalNav from './PatternAzurePortalNav';
+import AzurePortalHeader from './AzurePortalHeader';
+import AzureBreadcrumb from './AzureBreadcrumb';
+import BladeSidebar, { bladeSidebarStyles } from './BladeSidebar';
+import { infoMessageBarStyles, bladeTabStyles } from './scaffold-styles';
+
+import type { BladeNavSection } from './BladeSidebar';
 
 /* ─── Service nav items (customize per service) ─── */
-interface NavItem {
-  label: string;
-  name?: string;
-  azureIconKey?: string;
-  selected?: boolean;
-}
 
-const navSections: { heading: string | null; items: NavItem[] }[] = [
+const navSections: BladeNavSection[] = [
   {
     heading: null,
     items: [
-      { label: 'Overview', name: 'navigation', selected: true },
+      { label: 'Overview', name: 'navigation' },
       { label: 'Activity log', azureIconKey: 'activity-log' },
       { label: 'Alerts', name: 'alert' },
       { label: 'Issues (preview)', name: 'warning' },
@@ -81,7 +69,6 @@ const navSections: { heading: string | null; items: NavItem[] }[] = [
 ];
 
 export default function ScaffoldServiceBlade() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selected, setSelected] = useState('Overview');
   const [bannerVisible, setBannerVisible] = useState(true);
 
@@ -94,95 +81,10 @@ export default function ScaffoldServiceBlade() {
     [slot='main'] {
       min-width: 320px;
       padding: 0;
-      background: var(--neutral-background-1);
+      background: var(--neutral-background1);
       display: flex;
       flex-direction: column;
       height: 100%;
-    }
-
-    /* ─── Full-width blade header area ─── */
-    .blade-breadcrumb {
-      padding: 4px 16px 0;
-    }
-
-    /* Info message bar — blue Azure style for intent="info" */
-    cui-message-bar[intent='info'] {
-      --message-bar-bg-color: var(--brand-background2);
-      --message-bar-icon-fg-color: var(--brand-foreground-link);
-      --message-bar-border: 1px solid var(--brand-stroke1);
-    }
-
-    /* Tabs */
-    .blade-tabs {
-      display: flex;
-      gap: 0;
-      padding: 0;
-      border-bottom: 1px solid var(--neutral-stroke-2);
-    }
-    .blade-tab {
-      padding: 8px 16px;
-      font-size: var(--font-size-base-300);
-      font-weight: var(--font-weight-regular);
-      color: var(--neutral-foreground-2);
-      border: none;
-      background: none;
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .blade-tab.active {
-      color: var(--brand-foreground-link);
-      border-bottom-color: var(--brand-foreground-link);
-      font-weight: var(--font-weight-semibold);
-    }
-
-    /* ─── Body: sidebar + content ─── */
-    .blade-body {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    /* Collapsible sidebar */
-    .blade-sidebar {
-      width: 220px;
-      min-width: 220px;
-      border-right: 1px solid var(--neutral-stroke-2);
-      background: var(--neutral-background-1);
-      overflow-y: auto;
-      transition: width 0.2s ease, min-width 0.2s ease;
-    }
-    .blade-sidebar.collapsed {
-      width: 0;
-      min-width: 0;
-      overflow: hidden;
-      border-right: none;
-    }
-
-    /* Toggle strip — thin column between sidebar and content */
-    .blade-toggle-strip {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 28px;
-      min-width: 28px;
-      padding-top: 8px;
-      background: var(--neutral-background-1);
-      border-right: 1px solid var(--neutral-stroke-2);
-    }
-
-    /* Content area */
-    .blade-content {
-      flex: 1;
-      overflow: hidden;
-      background: var(--neutral-background-1);
-      display: flex;
-      flex-direction: row;
-    }
-    .blade-content-inner {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px 24px;
     }
 
     /* Card grid for overview content */
@@ -190,14 +92,14 @@ export default function ScaffoldServiceBlade() {
       margin-bottom: 28px;
     }
     .blade-card-section h2 {
-      font-size: 18px;
-      font-weight: var(--font-weight-semibold);
-      color: var(--neutral-foreground-1);
+      font-size: var(--font-size-base500);
+      font-weight: var(--font-weight-semi-bold);
+      color: var(--neutral-foreground1);
       margin: 0 0 4px;
     }
     .blade-card-section p {
-      font-size: var(--font-size-base-200);
-      color: var(--neutral-foreground-3);
+      font-size: var(--font-size-base200);
+      color: var(--neutral-foreground3);
       margin: 0 0 14px;
     }
     .blade-card-section p a {
@@ -209,68 +111,27 @@ export default function ScaffoldServiceBlade() {
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 12px;
     }
+
+    .blade-content-inner {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 24px;
+    }
+
+    ${bladeSidebarStyles}
+    ${infoMessageBarStyles}
+    ${bladeTabStyles}
   `;
 
   return (
     <>
       <CuiAppFrame skipToMainText="Skip to main content">
-        {/* ─── Header (standard Azure portal header) ─── */}
-        <CuiHeader slot="header" navigationIconLabel="toggle navigation">
-          <CuiButton slot="title" appearance="transparent">
-            <span className="font-base400">Microsoft Azure</span>
-          </CuiButton>
-          <CuiSearchBox
-            slot="search"
-            hideLabel
-            placeholder="Search resources, services, and docs (G+/)"
-          />
-          <CopilotButton slot="search" />
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Cloud Shell">
-            <CuiIcon url="https://api.iconify.design/fluent:terminal-24-regular.svg" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Notifications">
-            <CuiIcon name="alert" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Settings">
-            <CuiIcon name="settings" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Help + support">
-            <CuiIcon url="https://api.iconify.design/fluent:question-circle-24-regular.svg" />
-          </CuiButton>
-          <CuiButton slot="overflow-actions" appearance="subtle" shape="rounded" size="large" iconOnly aria-label="Feedback">
-            <CuiIcon name="person-feedback" />
-          </CuiButton>
-          <CuiPopOver slot="actions-end" fixedPlacement>
-            <CuiButton slot="anchor" appearance="subtle" shape="rounded" size="large" iconOnly>
-              <CuiAvatar size={24} name="Alex Britez" />
-            </CuiButton>
-            <CuiPersona>
-              <CuiAvatar name="Alex Britez" />
-              <div slot="primary">alexbritez@microsoft.co...</div>
-              <div slot="secondary">MICROSOFT (MICROSOFT.ONM...)</div>
-            </CuiPersona>
-            <CuiDivider className="my-xl" />
-            <div className="d-flex flex-column align-start">
-              <CuiButton appearance="link">Your profile</CuiButton>
-              <CuiButton appearance="link">View account</CuiButton>
-              <CuiButton appearance="link">Sign Out</CuiButton>
-            </div>
-          </CuiPopOver>
-        </CuiHeader>
-
-        {/* ─── Global Navigation (hamburger menu) ─── */}
+        <AzurePortalHeader />
         <AzurePortalNav />
-
-        {/* ─── No section navigation slot — sidebar is inside main ─── */}
 
         {/* ─── Main ─── */}
         <div slot="main" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          {/* Breadcrumb — full width */}
-          <div className="blade-breadcrumb">
-            <CuiBreadcrumb label="Navigation" size="small">
-              <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
-            </CuiBreadcrumb>
-          </div>
+          <AzureBreadcrumb items={['Home']} />
 
           {/* Title — shared PageHeader, full width above sidebar */}
           <PageHeader
@@ -287,49 +148,11 @@ export default function ScaffoldServiceBlade() {
           />
 
           {/* ─── Body: sidebar + content ─── */}
-          <div className="blade-body">
-            {/* Collapsible service sidebar */}
-            <nav className={`blade-sidebar ${sidebarOpen ? '' : 'collapsed'}`} aria-label="Service navigation">
-              <CuiSideNav size="small">
-                {navSections.map((section, si) => (
-                  <span key={si}>
-                    {section.heading && <CuiNavHeading>{section.heading}</CuiNavHeading>}
-                    {section.items.map((item) => (
-                      <CuiNavItem
-                        key={item.label}
-                        label={item.label}
-                        href="#"
-                        selected={selected === item.label ? true : undefined}
-                        onClick={() => setSelected(item.label)}
-                      >
-                        {item.name ? (
-                          <CuiIcon slot="icon" name={item.name} />
-                        ) : (
-                          <CuiIcon slot="icon" url={azureIcon(item.azureIconKey!)} />
-                        )}
-                      </CuiNavItem>
-                    ))}
-                  </span>
-                ))}
-              </CuiSideNav>
-            </nav>
-
-            {/* Content area */}
-            <div className="blade-content">
-              {/* Sidebar toggle strip */}
-              <div className="blade-toggle-strip">
-                <CuiButton
-                  appearance="subtle"
-                  size="small"
-                  iconOnly
-                  aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-                  onClick={() => setSidebarOpen(!sidebarOpen)}
-                >
-                  <CuiIcon name={sidebarOpen ? 'chevron-left' : 'arrow-right'} />
-                </CuiButton>
-              </div>
-
-              <div className="blade-content-inner">
+          <BladeSidebar
+            navSections={navSections}
+            selectedNav={selected}
+            onNavChange={setSelected}
+          >
                 {/* Info banner — inside content area */}
                 <CuiMessageBar
                   intent="info"
@@ -381,9 +204,7 @@ export default function ScaffoldServiceBlade() {
                     ))}
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
+          </BladeSidebar>
         </div>
       </CuiAppFrame>
       <style>{styles}</style>

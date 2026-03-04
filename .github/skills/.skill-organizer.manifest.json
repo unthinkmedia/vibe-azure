@@ -16,6 +16,7 @@
     "coherence-pattern-creator",
     "coherence-ui",
     "coherence-ui-verification",
+    "debug",
     "mcp-app-creator",
     "skill-creator"
   ]

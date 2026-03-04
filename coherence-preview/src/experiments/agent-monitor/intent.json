@@ -1,0 +1,24 @@
+{
+  "experimentId": "agent-monitor",
+  "title": "Agent Monitoring Dashboard",
+  "vision": "A centralized Azure portal page to monitor all AI agents in one view — showing their health status, recent activity, performance metrics (latency, success rate, invocations), and resource usage.",
+  "problem": "When running multiple AI agents (cost optimization agents, IaC generators, code explorers, MCP builders), there is no single view to see which agents are healthy, which are failing, how often they're invoked, or their performance trends.",
+  "successCriteria": [
+    "Agent cards showing name, description, status (healthy/degraded/offline), and last active time",
+    "Summary KPI row: total agents, healthy count, degraded count, total invocations (24h)",
+    "Activity table showing recent agent invocations with timestamp, duration, and result",
+    "Copilot suggestions for common monitoring actions"
+  ],
+  "nonGoals": [
+    "Real-time WebSocket streaming",
+    "Agent configuration or deployment controls",
+    "Integration with actual agent telemetry APIs"
+  ],
+  "constraints": [
+    "Layout: full-width (monitoring dashboard, not a single resource page)",
+    "Use HealthMetricCard pattern for KPI summary row",
+    "Use PageHeader pattern with copilot suggestions",
+    "Use CuiTable for recent activity log",
+    "Agents: AzqrCostOptimizeAgent, AzureCostOptimizeAgent, MCP AppService Builder, Azure IaC Exporter, Azure IaC Generator, Explore"
+  ]
+}

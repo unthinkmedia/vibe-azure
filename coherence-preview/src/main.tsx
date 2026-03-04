@@ -34,6 +34,14 @@ function parseHash(hash: string, entries: Entry[]): { entryId: string | null; su
 // ─── Experiments (with dates, newest first) ───
 const experiments: Entry[] = [
   {
+    id: 'agent-monitor',
+    title: 'Agent Monitoring Dashboard',
+    description: 'Centralized monitoring view for all AI agents — health status, KPI summary (total/healthy/degraded/invocations), agent cards with latency and success rates, and recent activity table',
+    component: lazy(() => import('./experiments/agent-monitor')),
+    date: '2026-03-04',
+    tags: ['dashboard', 'full-width', 'monitoring', 'table', 'cards', 'copilot'],
+  },
+  {
     id: 'logic-app-designer',
     title: 'Logic App Designer',
     description: 'Visual workflow designer with canvas, draggable nodes (triggers/actions/conditions), connector lines, branching UI, config side panel, and code view toggle',

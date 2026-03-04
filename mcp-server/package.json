@@ -1,5 +1,5 @@
 {
-  "name": "@vibe-azure/coherence-prototyper-mcp",
+  "name": "@unthinkmedia/coherence-prototyper-mcp",
   "version": "1.0.0",
   "description": "MCP server + MCP App for Azure portal prototyping with Coherence UI — complements the VS Code skills",
   "type": "module",

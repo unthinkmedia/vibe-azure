@@ -1,0 +1,22 @@
+{
+  "managedFolders": [
+    "electron"
+  ],
+  "manualFolders": [
+    "azure-experiment-deploy",
+    "azure-experiment-orchestrator",
+    "azure-mock-data",
+    "azure-portal-builder",
+    "azure-portal-prototyper",
+    "azure-share-experiment",
+    "azure-swa-cli-deploy",
+    "coherence-design-intent",
+    "coherence-experiment-verify",
+    "coherence-live-preview",
+    "coherence-pattern-creator",
+    "coherence-ui",
+    "coherence-ui-verification",
+    "mcp-app-creator",
+    "skill-creator"
+  ]
+}

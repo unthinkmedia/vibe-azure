@@ -13,6 +13,17 @@ import { execSync } from "node:child_process";
 
 const GITHUB_REPO = "unthinkmedia/vibe-azure";
 const PATTERNS_PATH = "coherence-preview/src/patterns";
+const SKILLS_PATH = ".github/skills";
+const AGENTS_FILE = ".github/AGENTS.md";
+const PROMPTS_PATH = ".github/prompts";
+
+// Directories/files to skip when fetching skills from GitHub
+const SKILL_EXCLUDE = new Set([
+  ".browser-profile",
+  ".skill-organizer.manifest.json",
+  ".DS_Store",
+  "__pycache__",
+]);
 
 async function githubFetch(apiPath: string): Promise<any> {
   const headers: Record<string, string> = {
@@ -36,6 +47,33 @@ async function githubGetFileContent(filePath: string): Promise<string> {
     return Buffer.from(data.content, "base64").toString("utf-8");
   }
   throw new Error(`Unexpected response for ${filePath}`);
+}
+
+/** Recursively fetch all files under a GitHub directory, respecting excludes. */
+async function githubFetchTree(
+  dirPath: string,
+  exclude = SKILL_EXCLUDE
+): Promise<Array<{ path: string; content: string }>> {
+  const results: Array<{ path: string; content: string }> = [];
+  const listing: any[] = await githubFetch(`contents/${dirPath}`);
+
+  for (const entry of listing) {
+    const name = entry.name as string;
+    if (exclude.has(name) || name.endsWith(".pyc")) continue;
+
+    if (entry.type === "dir") {
+      const children = await githubFetchTree(entry.path, exclude);
+      results.push(...children);
+    } else if (entry.type === "file") {
+      try {
+        const content = await githubGetFileContent(entry.path);
+        results.push({ path: entry.path, content });
+      } catch {
+        // skip files that can't be fetched
+      }
+    }
+  }
+  return results;
 }
 
 async function writeFile(
@@ -112,27 +150,22 @@ export async function initWorkspace(targetDir: string): Promise<void> {
     2
   );
 
-  // .npmrc — try local monorepo first, then GitHub
-  let npmrc = "";
-  const monorepoNpmrc = path.resolve(
-    import.meta.dirname,
-    "../../coherence-preview/.npmrc"
+  // .npmrc — registry pointer only (secrets belong in ~/.npmrc)
+  const FEED_URL =
+    "pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm";
+  const npmrc = `@charm-ux:registry=https://${FEED_URL}/registry/\nalways-auth=true\n`;
+
+  // Check if ~/.npmrc already has feed credentials
+  const globalNpmrc = path.join(
+    process.env.HOME || process.env.USERPROFILE || "~",
+    ".npmrc"
   );
-  if (existsSync(monorepoNpmrc)) {
-    try {
-      npmrc = await fsp.readFile(monorepoNpmrc, "utf-8");
-    } catch {
-      /* fall through */
-    }
-  }
-  if (!npmrc) {
-    try {
-      npmrc = await githubGetFileContent("coherence-preview/.npmrc");
-    } catch {
-      warnings.push(
-        "Could not find .npmrc for @charm-ux registry. Copy it from a team member or the monorepo's coherence-preview/.npmrc."
-      );
-    }
+  let hasGlobalAuth = false;
+  try {
+    const globalContent = await fsp.readFile(globalNpmrc, "utf-8");
+    hasGlobalAuth = globalContent.includes(FEED_URL);
+  } catch {
+    // ~/.npmrc doesn't exist yet
   }
 
   const viteConfig = `import { defineConfig } from 'vite';
@@ -257,9 +290,7 @@ createRoot(document.getElementById('root')!).render(<App />);
   // Write all files
   process.stdout.write(`   Writing project files...`);
   await writeFile(absDir, "package.json", packageJson, created);
-  if (npmrc) {
-    await writeFile(absDir, ".npmrc", npmrc, created);
-  }
+  await writeFile(absDir, ".npmrc", npmrc, created);
   await writeFile(absDir, "vite.config.ts", viteConfig, created);
   await writeFile(absDir, "tsconfig.json", tsconfig, created);
   await writeFile(absDir, "index.html", indexHtml, created);
@@ -279,8 +310,47 @@ createRoot(document.getElementById('root')!).render(<App />);
   }
   console.log(` ✓ (${created.length} files)`);
 
+  // Fetch and install skills, AGENTS.md, and prompts from GitHub
+  let skillCount = 0;
+  try {
+    process.stdout.write(`   Installing skills from GitHub...`);
+
+    // Skills
+    const skillFiles = await githubFetchTree(SKILLS_PATH);
+    for (const sf of skillFiles) {
+      await writeFile(absDir, sf.path, sf.content, created);
+      skillCount++;
+    }
+
+    // AGENTS.md
+    try {
+      const agentsMd = await githubGetFileContent(AGENTS_FILE);
+      await writeFile(absDir, AGENTS_FILE, agentsMd, created);
+      skillCount++;
+    } catch {
+      // optional
+    }
+
+    // Prompts
+    try {
+      const promptFiles = await githubFetchTree(PROMPTS_PATH);
+      for (const pf of promptFiles) {
+        await writeFile(absDir, pf.path, pf.content, created);
+        skillCount++;
+      }
+    } catch {
+      // optional
+    }
+
+    console.log(` ✓ (${skillCount} files)`);
+  } catch {
+    console.log(` ✗`);
+    warnings.push(
+      "Could not fetch skills from GitHub. You may need a GITHUB_TOKEN. Skills can be added later by copying .github/skills/ from the monorepo."
+    );
+  }
   // Install dependencies
-  if (npmrc) {
+  if (hasGlobalAuth) {
     process.stdout.write(`   Installing dependencies...`);
     try {
       execSync("npm install", { cwd: absDir, stdio: "pipe" });
@@ -291,17 +361,52 @@ createRoot(document.getElementById('root')!).render(<App />);
     }
   } else {
     warnings.push(
-      "Skipped npm install — .npmrc not found. Add it manually then run npm install."
+      "Skipped npm install — Azure Artifacts credentials not found in ~/.npmrc (see setup steps below)."
     );
   }
 
   // Summary
   console.log(`\n✅ Workspace ready!\n`);
+  console.log(`   Includes:`);
+  console.log(`   - MCP server config (.vscode/mcp.json)`);
+  console.log(`   - ${patterns.length} shared patterns`);
+  console.log(`   - ${skillCount} skill files (.github/skills/)`);
+
+  if (!hasGlobalAuth) {
+    console.log(`\n   ⚠️  One-time setup — Azure Artifacts PAT:`);
+    console.log(``);
+    console.log(`   The @charm-ux/cui package lives in a private Azure Artifacts feed.`);
+    console.log(`   You need a Personal Access Token (PAT) to install it.`);
+    console.log(``);
+    console.log(`   1. Go to:  https://dev.azure.com/charm-pilot/_usersSettings/tokens`);
+    console.log(`   2. Click "+ New Token"`);
+    console.log(`   3. Give it a name, set expiration, and under Scopes select:`);
+    console.log(`      Packaging → Read`);
+    console.log(`   4. Copy the token and run:`);
+    console.log(``);
+    console.log(`      echo -n "YOUR_PAT" | base64`);
+    console.log(``);
+    console.log(`   5. Add these lines to ~/.npmrc (create it if it doesn't exist):`);
+    console.log(``);
+    console.log(`      //pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm/registry/:username=azdo`);
+    console.log(`      //pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm/registry/:_password=<BASE64_PAT>`);
+    console.log(`      //pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm/registry/:always-auth=true`);
+    console.log(``);
+    console.log(`   6. Then install dependencies:`);
+    console.log(``);
+    console.log(`      cd ${absDir} && npm install`);
+    console.log(``);
+  }
+
   console.log(`   Next steps:`);
+  console.log(``);
   console.log(`   1. Open in VS Code:  code ${absDir}`);
-  console.log(`   2. Say to Copilot:   "build me an Azure page"`);
-  console.log(`   3. Preview locally:  npm run dev`);
-  console.log(`   4. Deploy:           "deploy it"\n`);
+  console.log(`   2. When prompted, click "Start" on the coherence-prototyper MCP server`);
+  console.log(`      (VS Code reads .vscode/mcp.json and will ask to activate it)`);
+  console.log(`   3. Say to Copilot:   "build me an Azure page"`);
+  console.log(`   4. Preview locally:  npm run dev`);
+  console.log(`   5. Deploy:           "deploy it"`);
+  console.log(``);
 
   if (warnings.length > 0) {
     console.log(`   ⚠️  Warnings:`);

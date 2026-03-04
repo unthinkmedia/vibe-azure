@@ -42,7 +42,13 @@ import {
   type VerificationCriterion,
 } from "./src/verification-scorecard-store.js";
 
-const DIST_DIR = path.join(import.meta.dirname, "dist");
+// When running from source (tsx server.ts), import.meta.dirname is mcp-server/
+// and the built HTML files live in mcp-server/dist/.
+// When running from the published npm package (dist/server.js),
+// import.meta.dirname is already the dist/ folder where the HTML files live.
+const DIST_DIR = existsSync(path.join(import.meta.dirname, "dist"))
+  ? path.join(import.meta.dirname, "dist")
+  : import.meta.dirname;
 
 export function createServer(): McpServer {
   const server = new McpServer({

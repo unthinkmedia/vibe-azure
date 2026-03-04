@@ -4,6 +4,7 @@ import '@charm-ux/cui/dist/themes/cui/theme.css';
 import '@charm-ux/cui/dist/themes/cui/reset.css';
 import ShareButton from './ShareButton';
 import IntentButton from './IntentButton';
+import GettingStartedPanel from './GettingStartedPanel';
 
 // ─── Types ───
 type Entry = {
@@ -663,6 +664,7 @@ function App() {
     return getInitialEntry(initialAllEntries).subRoute;
   });
   const [activeTab, setActiveTab] = useState<TabId>('all');
+  const [showGettingStarted, setShowGettingStarted] = useState(false);
 
   const toggleTag = (tag: string) => {
     setActiveTags(prev => {
@@ -946,10 +948,41 @@ function App() {
 
   return (
     <div style={{ maxWidth: 1040, margin: '0 auto', padding: '48px 24px' }}>
-      <h1 style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 600 }}>Coherence Preview</h1>
-      <p style={{ margin: '0 0 20px', color: 'var(--neutral-foreground3)', fontSize: 14 }}>
-        {allEntries.length} total items
-      </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <h1 style={{ margin: '0 0 4px', fontSize: 24, fontWeight: 600 }}>Coherence Preview</h1>
+          <p style={{ margin: '0 0 20px', color: 'var(--neutral-foreground3)', fontSize: 14 }}>
+            {allEntries.length} total items
+          </p>
+        </div>
+        <button
+          onClick={() => setShowGettingStarted(true)}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '8px 16px',
+            fontSize: 13,
+            fontWeight: 500,
+            color: 'var(--brand-foreground-link, #0078d4)',
+            background: 'var(--brand-background2, #e8f0fe)',
+            border: '1px solid var(--brand-stroke1, #b4d6fa)',
+            borderRadius: 6,
+            cursor: 'pointer',
+            transition: 'all 0.15s',
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
+            marginTop: 4,
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--brand-background2-hover, #d0e4f7)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'var(--brand-background2, #e8f0fe)'; }}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1Zm0 1a6 6 0 1 0 0 12A6 6 0 0 0 8 2Zm0 9.5a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Zm0-7a2.5 2.5 0 0 1 1.65 4.38c-.36.32-.65.6-.65 1.12a.5.5 0 0 1-1 0c0-.92.52-1.36.94-1.74A1.5 1.5 0 1 0 6.5 6.5a.5.5 0 0 1-1 0A2.5 2.5 0 0 1 8 4.5Z" fill="currentColor"/>
+          </svg>
+          Getting Started
+        </button>
+      </div>
 
       {/* Search bar */}
       <div style={{ position: 'relative', marginBottom: 16 }}>
@@ -1132,6 +1165,7 @@ function App() {
       </div>
 
       <UseTemplateModal />
+      {showGettingStarted && <GettingStartedPanel onClose={() => setShowGettingStarted(false)} />}
     </div>
   );
 }

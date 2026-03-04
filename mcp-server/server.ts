@@ -13,7 +13,8 @@ import {
 } from "@modelcontextprotocol/ext-apps/server";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import fs from "node:fs/promises";
+import { existsSync } from "node:fs";
+import fsp from "node:fs/promises";
 import path from "node:path";
 
 import {
@@ -309,7 +310,7 @@ export function createServer(): McpServer {
     async () => {
       let html: string;
       try {
-        html = await fs.readFile(
+        html = await fsp.readFile(
           path.join(DIST_DIR, "intent-app.html"),
           "utf-8"
         );
@@ -506,7 +507,7 @@ export function createServer(): McpServer {
     async () => {
       let html: string;
       try {
-        html = await fs.readFile(
+        html = await fsp.readFile(
           path.join(DIST_DIR, "verification-report.html"),
           "utf-8"
         );
@@ -580,7 +581,7 @@ export function createServer(): McpServer {
     async () => {
       let html: string;
       try {
-        html = await fs.readFile(
+        html = await fsp.readFile(
           path.join(DIST_DIR, "token-browser.html"),
           "utf-8"
         );
@@ -685,7 +686,7 @@ export function createServer(): McpServer {
         selectedAt: new Date().toISOString(),
       };
       const selectionPath = path.join(import.meta.dirname, ".icon-selection.json");
-      await fs.writeFile(selectionPath, JSON.stringify(selection, null, 2));
+      await fsp.writeFile(selectionPath, JSON.stringify(selection, null, 2));
       return {
         content: [
           {
@@ -706,7 +707,7 @@ export function createServer(): McpServer {
     async () => {
       let html: string;
       try {
-        html = await fs.readFile(
+        html = await fsp.readFile(
           path.join(DIST_DIR, "icon-browser.html"),
           "utf-8"
         );
@@ -723,6 +724,418 @@ export function createServer(): McpServer {
           },
         ],
       };
+    }
+  );
+
+  // ════════════════════════════════════════════════════════
+  // Reference tools: Experiment browsing (works remotely via GitHub API)
+  // ════════════════════════════════════════════════════════
+
+  const GITHUB_REPO = "unthinkmedia/vibe-azure";
+  const EXPERIMENTS_PATH = "coherence-preview/src/experiments";
+  const MAIN_TSX_PATH = "coherence-preview/src/main.tsx";
+  const PATTERNS_PATH = "coherence-preview/src/patterns";
+
+  async function githubFetch(apiPath: string): Promise<any> {
+    const headers: Record<string, string> = {
+      Accept: "application/vnd.github.v3+json",
+      "User-Agent": "coherence-prototyper-mcp",
+    };
+    if (process.env.GITHUB_TOKEN) {
+      headers.Authorization = `token ${process.env.GITHUB_TOKEN}`;
+    }
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/${apiPath}`, { headers });
+    if (!res.ok) throw new Error(`GitHub API ${res.status}: ${res.statusText}`);
+    return res.json();
+  }
+
+  async function githubGetFileContent(filePath: string): Promise<string> {
+    const data = await githubFetch(`contents/${filePath}`);
+    if (data.encoding === "base64" && data.content) {
+      return Buffer.from(data.content, "base64").toString("utf-8");
+    }
+    throw new Error(`Unexpected response for ${filePath}`);
+  }
+
+  // Parse main.tsx to extract experiment metadata
+  function parseExperimentsFromMainTsx(source: string): Array<{
+    id: string;
+    title: string;
+    description: string;
+    date?: string;
+    tags?: string[];
+  }> {
+    const results: Array<{ id: string; title: string; description: string; date?: string; tags?: string[] }> = [];
+    // Match each object in the experiments array
+    const entryRegex = /\{\s*id:\s*'([^']+)',\s*title:\s*'([^']*)',\s*description:\s*'([^']*)'[^}]*?(?:date:\s*'([^']*)')?[^}]*?(?:tags:\s*\[([^\]]*)\])?[^}]*\}/g;
+    let match;
+    while ((match = entryRegex.exec(source)) !== null) {
+      const tags = match[5]
+        ? match[5].split(",").map((t: string) => t.trim().replace(/^'|'$/g, "")).filter(Boolean)
+        : undefined;
+      results.push({
+        id: match[1],
+        title: match[2],
+        description: match[3],
+        date: match[4] || undefined,
+        tags: tags && tags.length > 0 ? tags : undefined,
+      });
+    }
+    return results;
+  }
+
+  server.tool(
+    "list_experiments",
+    "List all experiments in the coherence-preview gallery, with their titles, descriptions, dates, and tags. " +
+      "Fetches live metadata from the GitHub repo so it works from any workspace. " +
+      "Use this to discover existing experiments, find examples of specific page types, or reference prior work.",
+    {
+      tags: z.array(z.string()).optional().describe("Filter by tags (e.g. ['side-panel', 'overview'])"),
+      query: z.string().optional().describe("Search filter — matches against id, title, description"),
+    },
+    async ({ tags, query }) => {
+      const mainTsx = await githubGetFileContent(MAIN_TSX_PATH);
+      let experiments = parseExperimentsFromMainTsx(mainTsx);
+
+      if (tags && tags.length > 0) {
+        experiments = experiments.filter((e) =>
+          e.tags && tags.some((t) => e.tags!.includes(t))
+        );
+      }
+      if (query) {
+        const q = query.toLowerCase();
+        experiments = experiments.filter(
+          (e) =>
+            e.id.includes(q) ||
+            e.title.toLowerCase().includes(q) ||
+            e.description.toLowerCase().includes(q)
+        );
+      }
+
+      let text = `# Experiments (${experiments.length})\n\n`;
+      text += "| ID | Title | Date | Tags |\n|-----|-------|------|------|\n";
+      for (const e of experiments) {
+        text += `| ${e.id} | ${e.title} | ${e.date ?? ""} | ${e.tags?.join(", ") ?? ""} |\n`;
+      }
+      return { content: [{ type: "text" as const, text }] };
+    }
+  );
+
+  server.tool(
+    "get_experiment",
+    "Get the full source files of a specific experiment from the GitHub repo. " +
+      "Returns index.tsx, data.ts, styles.ts, and intent.json (if they exist). " +
+      "Use this to study how existing experiments are structured, learn conventions, or reference patterns.",
+    {
+      experimentId: z.string().describe("Experiment folder name (e.g. 'logic-app-designer')"),
+      files: z
+        .array(z.string())
+        .optional()
+        .describe("Specific files to fetch (default: ['index.tsx', 'data.ts', 'styles.ts', 'intent.json'])"),
+    },
+    async ({ experimentId, files }) => {
+      const filesToFetch = files ?? ["index.tsx", "data.ts", "styles.ts", "intent.json"];
+      const results: Array<{ file: string; content: string }> = [];
+
+      for (const file of filesToFetch) {
+        try {
+          const content = await githubGetFileContent(`${EXPERIMENTS_PATH}/${experimentId}/${file}`);
+          results.push({ file, content });
+        } catch {
+          // File doesn't exist — skip
+        }
+      }
+
+      if (results.length === 0) {
+        return {
+          content: [{ type: "text" as const, text: `No files found for experiment "${experimentId}".` }],
+        };
+      }
+
+      let text = `# Experiment: ${experimentId}\n\n`;
+      for (const r of results) {
+        const ext = r.file.split(".").pop() ?? "";
+        text += `## ${r.file}\n\n\`\`\`${ext === "json" ? "json" : "tsx"}\n${r.content}\n\`\`\`\n\n`;
+      }
+      return { content: [{ type: "text" as const, text }] };
+    }
+  );
+
+  server.tool(
+    "get_pattern",
+    "Get the source code of a shared pattern or scaffold component from coherence-preview/src/patterns/. " +
+      "Use this to read PageHeader, CopilotSuggestions, ScaffoldBrowseBlade, or any other shared pattern " +
+      "when building experiments from a remote workspace that doesn't have the repo cloned.",
+    {
+      filename: z.string().describe("Pattern filename (e.g. 'PageHeader.tsx', 'ScaffoldBrowseBlade.tsx', 'azure-icons.ts')"),
+    },
+    async ({ filename }) => {
+      try {
+        const content = await githubGetFileContent(`${PATTERNS_PATH}/${filename}`);
+        const ext = filename.split(".").pop() ?? "";
+        return {
+          content: [{ type: "text" as const, text: `# Pattern: ${filename}\n\n\`\`\`${ext === "json" ? "json" : "tsx"}\n${content}\n\`\`\`` }],
+        };
+      } catch {
+        // Try listing available patterns
+        try {
+          const listing = await githubFetch(`contents/${PATTERNS_PATH}`);
+          const files = (listing as any[]).map((f: any) => f.name).join(", ");
+          return {
+            content: [{ type: "text" as const, text: `Pattern "${filename}" not found. Available patterns: ${files}` }],
+          };
+        } catch {
+          return {
+            content: [{ type: "text" as const, text: `Pattern "${filename}" not found.` }],
+          };
+        }
+      }
+    }
+  );
+
+  // ════════════════════════════════════════════════════════
+  // Workspace scaffolding: local preview for standalone workspaces
+  // ════════════════════════════════════════════════════════
+
+  server.tool(
+    "init_workspace",
+    "Initialize a standalone workspace for local experiment development and preview. " +
+      "Writes package.json, vite.config.ts, tsconfig.json, index.html, src/preview.tsx, and shared patterns " +
+      "directly to the target directory. Run this once in a new workspace before building experiments.",
+    {
+      targetDir: z
+        .string()
+        .describe("Absolute path to the workspace directory to initialize"),
+      installDeps: z
+        .boolean()
+        .optional()
+        .describe("If true, also run npm install after scaffolding (default: false)"),
+    },
+    async ({ targetDir, installDeps }) => {
+      const instructions: string[] = [];
+      const created: string[] = [];
+
+      // Fetch the list of all patterns from the repo
+      let patternFiles: string[] = [];
+      try {
+        const listing = await githubFetch(`contents/${PATTERNS_PATH}`);
+        patternFiles = (listing as any[])
+          .filter((f: any) => f.type === "file")
+          .map((f: any) => f.name);
+      } catch {
+        instructions.push("⚠️ Could not fetch pattern list from GitHub. You may need a GITHUB_TOKEN for API access.");
+      }
+
+      // Fetch each pattern's content
+      const patterns: Array<{ name: string; content: string }> = [];
+      for (const pf of patternFiles) {
+        try {
+          const content = await githubGetFileContent(`${PATTERNS_PATH}/${pf}`);
+          patterns.push({ name: pf, content });
+        } catch {
+          // skip
+        }
+      }
+
+      const packageJson = JSON.stringify(
+        {
+          name: "coherence-experiment",
+          private: true,
+          type: "module",
+          scripts: {
+            dev: "vite --port 5175",
+            build: "vite build",
+          },
+          dependencies: {
+            "@charm-ux/cui": "^0.0.1-alpha.69",
+            "@types/react": "^19.2.14",
+            "@types/react-dom": "^19.2.3",
+            "@vitejs/plugin-react": "^5.1.4",
+            react: "^19.2.4",
+            "react-dom": "^19.2.4",
+            typescript: "^5.9.3",
+            vite: "^7.3.1",
+          },
+        },
+        null,
+        2
+      );
+
+      // Try to copy .npmrc from the local monorepo (contains private registry config for @charm-ux/cui)
+      let npmrc = "";
+      const monorepoNpmrc = path.resolve(import.meta.dirname, "../../coherence-preview/.npmrc");
+      if (existsSync(monorepoNpmrc)) {
+        try {
+          npmrc = await fsp.readFile(monorepoNpmrc, "utf-8");
+        } catch { /* fall through */ }
+      }
+      if (!npmrc) {
+        // Fallback: try fetching from GitHub (won't work if gitignored)
+        try {
+          npmrc = await githubGetFileContent("coherence-preview/.npmrc");
+        } catch {
+          instructions.push("⚠️ Could not find .npmrc for @charm-ux registry. Copy it from a team member or the monorepo's coherence-preview/.npmrc.");
+        }
+      }
+
+      const viteConfig = `import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@charm-ux/cui/react': '@charm-ux/cui/dist/react',
+    },
+  },
+});
+`;
+
+      const tsconfig = JSON.stringify(
+        {
+          compilerOptions: {
+            target: "ES2020",
+            module: "ESNext",
+            moduleResolution: "bundler",
+            jsx: "react-jsx",
+            strict: true,
+            esModuleInterop: true,
+            skipLibCheck: true,
+            forceConsistentCasingInFileNames: true,
+            resolveJsonModule: true,
+            isolatedModules: true,
+            noEmit: true,
+            paths: {
+              "../../patterns/*": ["./src/patterns/*"],
+              "../copilot-button": ["./src/patterns/CopilotSuggestions"],
+            },
+          },
+          include: ["src"],
+        },
+        null,
+        2
+      );
+
+      const indexHtml = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Experiment Preview</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/preview.tsx"></script>
+  </body>
+</html>
+`;
+
+      const previewTsx = `import { createRoot } from 'react-dom/client';
+import { Suspense, lazy, useState, useEffect } from 'react';
+import '@charm-ux/cui/dist/themes/cui/theme.css';
+import '@charm-ux/cui/dist/themes/cui/reset.css';
+
+// Auto-discover experiments: add lazy imports here
+const experiments: Record<string, { title: string; component: React.LazyExoticComponent<any> }> = {};
+
+// Scan for experiments — the builder skill will add entries above
+// Example:
+// experiments['my-experiment'] = {
+//   title: 'My Experiment',
+//   component: lazy(() => import('./experiments/my-experiment')),
+// };
+
+function App() {
+  const [id, setId] = useState(window.location.hash.slice(1) || '');
+
+  useEffect(() => {
+    const onHash = () => setId(window.location.hash.slice(1) || '');
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
+  const entry = experiments[id];
+  if (!entry) {
+    return (
+      <div style={{ padding: 40, fontFamily: 'Segoe UI, sans-serif' }}>
+        <h1>Experiment Preview</h1>
+        {Object.keys(experiments).length === 0 ? (
+          <p>No experiments yet. Ask Copilot to <strong>"build me an Azure page"</strong>.</p>
+        ) : (
+          <ul>
+            {Object.entries(experiments).map(([eid, e]) => (
+              <li key={eid}><a href={\`#\${eid}\`}>{e.title}</a></li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+
+  const Comp = entry.component;
+  return (
+    <Suspense fallback={<div style={{ padding: 40 }}>Loading...</div>}>
+      <Comp />
+    </Suspense>
+  );
+}
+
+createRoot(document.getElementById('root')!).render(<App />);
+`;
+
+      // Helper to write a file (creating parent dirs as needed)
+      const writeFile = async (relPath: string, content: string) => {
+        const fullPath = path.join(targetDir, relPath);
+        await fsp.mkdir(path.dirname(fullPath), { recursive: true });
+        await fsp.writeFile(fullPath, content, "utf-8");
+        created.push(relPath);
+      };
+
+      await writeFile("package.json", packageJson);
+      if (npmrc) {
+        await writeFile(".npmrc", npmrc);
+      }
+      await writeFile("vite.config.ts", viteConfig);
+      await writeFile("tsconfig.json", tsconfig);
+      await writeFile("index.html", indexHtml);
+      await writeFile("src/preview.tsx", previewTsx);
+
+      if (patterns.length > 0) {
+        for (const p of patterns) {
+          await writeFile(`src/patterns/${p.name}`, p.content);
+        }
+      }
+
+      // Create experiments directory
+      const expDir = path.join(targetDir, "src/experiments");
+      if (!existsSync(expDir)) {
+        await fsp.mkdir(expDir, { recursive: true });
+        created.push("src/experiments/");
+      }
+
+      let text = `# ✅ Workspace Initialized\n\n`;
+      text += `**Directory:** ${targetDir}\n\n`;
+      text += `**Files created:** ${created.length}\n\n`;
+      text += created.map(f => `- ${f}`).join("\n") + "\n\n";
+
+      if (installDeps) {
+        text += `## Running npm install...\n\n`;
+        try {
+          const { execSync } = await import("child_process");
+          execSync("npm install", { cwd: targetDir, stdio: "pipe" });
+          text += `✅ Dependencies installed.\n\n`;
+        } catch (e: any) {
+          text += `⚠️ npm install failed: ${e.message}\n\n`;
+        }
+      } else {
+        text += `## Next Steps\n\n1. \`cd ${targetDir}\`\n2. \`npm install\`\n3. \`npm run dev\` → preview at http://localhost:5175\n`;
+      }
+
+      if (instructions.length > 0) {
+        text += `\n## Warnings\n\n${instructions.join("\n")}\n`;
+      }
+
+      return { content: [{ type: "text" as const, text }] };
     }
   );
 

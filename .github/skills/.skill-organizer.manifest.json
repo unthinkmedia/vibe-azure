@@ -1,5 +1,7 @@
 {
-  "managedFolders": [],
+  "managedFolders": [
+    "electron"
+  ],
   "manualFolders": [
     "azure-experiment-deploy",
     "azure-experiment-orchestrator",

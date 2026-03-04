@@ -1,8 +1,17 @@
-import fs from "node:fs/promises";
+import fs from "node:fs";
+import fsp from "node:fs/promises";
 import path from "node:path";
 
-const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
-const EXPERIMENTS_DIR = path.join(REPO_ROOT, "coherence-preview", "src", "experiments");
+function resolveExperimentsDir(): string {
+  if (process.env.EXPERIMENTS_DIR) {
+    return path.resolve(process.env.EXPERIMENTS_DIR);
+  }
+  const monorepoPath = path.resolve(import.meta.dirname, "../../coherence-preview/src/experiments");
+  if (fs.existsSync(monorepoPath)) return monorepoPath;
+  return path.resolve(process.cwd(), "experiments");
+}
+
+const EXPERIMENTS_DIR = resolveExperimentsDir();
 
 export interface VerificationCriterion {
   id: string;
@@ -62,7 +71,7 @@ function historyPath(experimentId: string): string {
 
 async function readJson<T>(filePath: string): Promise<T | null> {
   try {
-    const raw = await fs.readFile(filePath, "utf-8");
+    const raw = await fsp.readFile(filePath, "utf-8");
     return JSON.parse(raw) as T;
   } catch {
     return null;
@@ -71,7 +80,7 @@ async function readJson<T>(filePath: string): Promise<T | null> {
 
 export async function listExperimentFolders(): Promise<string[]> {
   try {
-    const entries = await fs.readdir(EXPERIMENTS_DIR, { withFileTypes: true });
+    const entries = await fsp.readdir(EXPERIMENTS_DIR, { withFileTypes: true });
     return entries.filter((e) => e.isDirectory()).map((e) => e.name).sort();
   } catch {
     return [];

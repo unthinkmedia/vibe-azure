@@ -5,13 +5,25 @@ description: "Build an Azure portal prototype from a confirmed intent.json. Only
 
 # Azure Portal Builder
 
-Build complete Azure portal page prototypes from a confirmed design intent. Produces ready-to-run `.tsx` files for the `coherence-preview/` app.
+Build complete Azure portal page prototypes from a confirmed design intent. Produces ready-to-run `.tsx` files that will be pushed to the `coherence-preview/` app in the repo.
+
+## Workspace Detection
+
+Before any file operations, detect the workspace type:
+
+| Check | Workspace Type | `EXP_ROOT` | `PATTERNS_PATH` |
+|-------|---------------|------------|-----------------|
+| `coherence-preview/src/experiments/` exists | **Monorepo** | `coherence-preview/src/experiments` | `coherence-preview/src/patterns` |
+| `experiments/` exists (no `coherence-preview/`) | **Standalone** | `experiments` | N/A — use `get_pattern` MCP tool |
+| Neither exists | **Standalone (fresh)** | `experiments` (create it) | N/A — use `get_pattern` MCP tool |
+
+Use `EXP_ROOT` for all local file operations. In standalone workspaces, use the `get_pattern` and `get_experiment` MCP tools to fetch shared patterns and reference experiments from the repo.
 
 ## Step 0: Verify Intent (HARD GATE — MANDATORY FILESYSTEM CHECK)
 
 ⚠️ **This step is NON-NEGOTIABLE. You MUST perform it before writing ANY code.**
 
-**Action:** Use a tool to check whether `coherence-preview/src/experiments/<id>/intent.json` exists on disk. Do NOT assume it exists — actually verify with `list_dir` or `read_file`.
+**Action:** Use a tool to check whether `<EXP_ROOT>/<id>/intent.json` exists on disk. Do NOT assume it exists — actually verify with `list_dir` or `read_file`.
 
 **If it does NOT exist: STOP IMMEDIATELY.** Do not create any `.ts` or `.tsx` files. Tell the user:
 
@@ -195,7 +207,16 @@ See [references/page-types.md](references/page-types.md) for detailed anatomy.
 
 ## Step 2: Check Shared Patterns
 
-**Before writing any UI**, list `coherence-preview/src/patterns/` and check what's available. Mandatory shared patterns — NEVER reimplement:
+**Before writing any UI**, check what shared patterns are available:
+
+- **Monorepo:** List `coherence-preview/src/patterns/` directly
+- **Standalone:** Check `src/patterns/` — these are placed by the `init_workspace` MCP tool. If missing, call `init_workspace` first or use `get_pattern` to fetch individual patterns.
+
+**Import paths:** In both workspace types, experiments use `../../patterns/PageHeader` style imports:
+- **Monorepo:** resolves to `coherence-preview/src/patterns/PageHeader.tsx`
+- **Standalone:** `tsconfig.json` maps `../../patterns/*` → `src/patterns/*` so the same imports work locally AND in the repo after deployment
+
+Mandatory shared patterns — NEVER reimplement:
 
 | Pattern | Import | What it handles |
 |---------|--------|-----------------|
@@ -215,7 +236,7 @@ Also read the Composition Patterns table in the coherence-ui SKILL.md.
 
 **In Figma Reference Mode:** Build the experiment from the intent's `vision` and `successCriteria` — these describe the improved design. Use the `figmaContext` to understand the data domain and context (what tables show, what metrics matter), but make your own layout and UX decisions. Where the Figma had issues, build better alternatives.
 
-Create the experiment folder at `coherence-preview/src/experiments/<experiment-id>/` with the standard file structure:
+Create the experiment folder at `<EXP_ROOT>/<experiment-id>/` with the standard file structure:
 
 ### Single-Page Experiments (Side Panel Layout)
 
@@ -282,6 +303,8 @@ Use the `coherence-ui` skill to look up component APIs (fetch the manifest) and 
 
 ## Step 4: Register the Experiment
 
+### Monorepo
+
 Add an entry to the `experiments` array in `coherence-preview/src/main.tsx`:
 
 ```tsx
@@ -293,6 +316,21 @@ Add an entry to the `experiments` array in `coherence-preview/src/main.tsx`:
   date: '<today YYYY-MM-DD>',
 },
 ```
+
+### Standalone
+
+Add an entry to the `experiments` object in `src/preview.tsx` so the local dev server can render it:
+
+```tsx
+experiments['<experiment-id>'] = {
+  title: '<Title from intent>',
+  component: lazy(() => import('./experiments/<experiment-id>')),
+};
+```
+
+Insert this after the comment `// Scan for experiments — the builder skill will add entries above`.
+
+The deploy skill will handle registering in the repo's `main.tsx` later when pushing to GitHub.
 
 ## Step 5: Custom Code Audit
 
@@ -318,6 +356,8 @@ Fix any issues found.
 
 ## Step 6: Build Verification
 
+### Monorepo
+
 Run a Vite build to confirm the experiment compiles:
 
 ```bash
@@ -326,7 +366,13 @@ cd coherence-preview && npx vite build --mode development
 
 Fix any compilation errors.
 
+### Standalone
+
+Skip build verification — the build runs on GitHub Actions after the deploy skill pushes the files. Instead, verify the generated TypeScript for obvious import errors or syntax issues by reading the files.
+
 ## Step 7: Ensure Dev Server & Hand Off to Verify Phase
+
+### Monorepo
 
 **Before telling the user to preview, ensure the dev server is running:**
 
@@ -343,6 +389,24 @@ cd coherence-preview && npx vite --port 5175
 Then tell the user:
 
 > _"Build complete. The experiment compiles and is registered. Say **'verify it'** to run UI verification, or navigate to `http://localhost:5175#<experiment-id>` to preview."_
+
+### Standalone
+
+Check the experiment files for obvious import errors or syntax issues. Then ensure the local dev server is running:
+
+1. Check if `node_modules/` exists — if not, tell the user to run `npm install` first
+2. Run: `lsof -i :5175 2>/dev/null | grep LISTEN`
+3. If nothing is listening → start the server as a background process:
+
+```bash
+npm run dev
+```
+
+4. Verify it responds: `curl -s -o /dev/null -w "%{http_code}" http://localhost:5175/`
+
+Tell the user:
+
+> _"Build complete. Preview at `http://localhost:5175#<experiment-id>`. Say **'deploy it'** to push to the shared gallery, or **'verify it'** to run UI checks first."_
 
 **Do NOT run UI verification yourself.** That is the `coherence-experiment-verify` skill's job.
 

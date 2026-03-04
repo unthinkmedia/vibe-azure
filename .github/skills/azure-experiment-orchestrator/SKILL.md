@@ -91,33 +91,53 @@ The intent form opens pre-populated. The user reviews, tweaks if needed, and con
 
 ## Step 2: Detect Current Phase
 
+### Step 2a: Workspace Detection
+
+Before checking files, determine which workspace layout you're in:
+
+| Check | Workspace Type | Experiment Path |
+|-------|---------------|-----------------|
+| `coherence-preview/src/experiments/` folder exists | **Monorepo** | `coherence-preview/src/experiments/<id>/` |
+| `experiments/` folder exists (no `coherence-preview/` prefix) | **Standalone** | `experiments/<id>/` |
+| Neither exists | **Standalone (fresh)** | `experiments/<id>/` (will be created) |
+
+Set `EXP_ROOT` to the detected experiment path prefix for all subsequent filesystem checks.
+
+**If standalone:** Also check if `main.tsx` exists locally for registration checks. If not, use the `list_experiments` MCP tool to check if the experiment is already registered in the repo.
+
+### Step 2b: Phase Detection
+
 ⚠️ **CRITICAL: You MUST actually check the filesystem using tools (list_dir, read_file) — do NOT skip this step or assume a phase. A "build me a page" request from the user does NOT mean you're in the BUILD phase — it almost always starts at INTENT.**
 
 Check the filesystem to determine which phase the experiment is in:
 
 | Check | Phase |
 |-------|-------|
-| `coherence-preview/src/experiments/<id>/` folder does **not** exist | **INTENT** — nothing started |
+| `<EXP_ROOT>/<id>/` folder does **not** exist | **INTENT** — nothing started |
 | `intent.json` exists but `index.tsx` does **not** | **BUILD** — intent captured, ready to build |
-| `index.tsx` exists and experiment is in `main.tsx` | **VERIFY** — built, ready to verify |
+| `index.tsx` exists and experiment is registered | **VERIFY** — built, ready to verify |
 | All above exist and build compiles | **DEPLOY** — verified, ready to deploy |
 
 Run these checks in order:
 
 ```
-1. Does coherence-preview/src/experiments/<id>/intent.json exist?
+1. Does <EXP_ROOT>/<id>/intent.json exist?
    NO  → Phase = INTENT
    YES → continue
 
-2. Does coherence-preview/src/experiments/<id>/index.tsx exist?
+2. Does <EXP_ROOT>/<id>/index.tsx exist?
    NO  → Phase = BUILD
    YES → continue
 
-3. Is <id> registered in coherence-preview/src/main.tsx experiments array?
+3. Is <id> registered?
+   - Monorepo: check coherence-preview/src/main.tsx experiments array
+   - Standalone: use list_experiments MCP tool to check repo
    NO  → Phase = BUILD  (partially built, registration missing)
    YES → continue
 
-4. Does `cd coherence-preview && npx vite build --mode development` succeed?
+4. Does the build succeed?
+   - Monorepo: cd coherence-preview && npx vite build --mode development
+   - Standalone: skip (build runs on GitHub Actions after push)
    NO  → Phase = BUILD  (build broken)
    YES → Phase = VERIFY  (or DEPLOY if user explicitly asked to deploy/share)
 ```
@@ -175,8 +195,12 @@ Invoke the **coherence-experiment-verify** skill. This will:
 > _"Deploying experiment `<id>` to Azure Static Web Apps..."_
 
 Invoke the **azure-experiment-deploy** skill. This will:
-1. Run the azure-share-experiment workflow
-2. Return the shareable URL
+1. Create a feature branch `experiment/<id>` and push experiment files
+2. Open a pull request targeting `main`
+3. GitHub Actions deploys a **staging preview** on the PR
+4. Return the PR link and staging preview URL
+
+The user reviews the staging preview, then **merges the PR** to publish to the production gallery.
 
 **After completion:** Report the URL and end.
 

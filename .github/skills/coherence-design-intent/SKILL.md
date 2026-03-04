@@ -106,7 +106,10 @@ The MCP UI auto-saves all edits to intent.json in real-time — there are no Sav
 
 ### 4. Verify intent.json Exists
 
-Read `coherence-preview/src/experiments/<experimentId>/intent.json` to confirm it was created.
+Check for intent.json in the workspace-appropriate location:
+
+- **Monorepo** (if `coherence-preview/src/experiments/` exists): Read `coherence-preview/src/experiments/<experimentId>/intent.json`
+- **Standalone** (otherwise): Read `experiments/<experimentId>/intent.json`
 
 - **If it exists:** Tell the user: _"Your design intent is accepted. Moving to the build phase now."_ Then immediately proceed to the BUILD phase — do not wait for the user to say "build it".
 - **If it does NOT exist:** Tell the user: _"I don't see the intent.json yet. Please click Accept in the Intent App, or let me re-open it."_ Re-call the `design_intent` MCP tool.

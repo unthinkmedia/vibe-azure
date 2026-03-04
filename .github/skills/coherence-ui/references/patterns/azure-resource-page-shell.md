@@ -1,21 +1,26 @@
 # Azure Resource Page Shell
 
-Full-page scaffold for any Azure resource blade: app frame, header, side navigation drawer, and main content area with breadcrumb, title row, subtitle, and toolbar.
+Full-page scaffold for any Azure resource blade: app frame, header, section nav inside `slot="main"`, and main content area with breadcrumb, title row, subtitle, and toolbar.
+
+> **⚠️ Two-Tier Navigation Rule:** Section nav (`<nav>` + `CuiSideNav`) goes **inside `slot="main"`** — **NOT** inside a `CuiDrawer slot="navigation"`. Only the global portal nav (`AzurePortalNav`) uses `slot="navigation"`. Putting both in `slot="navigation"` causes two drawers to collide in CuiAppFrame's single `<aside>`, breaking layout.
 
 ## Structure
 
 ```
 CuiAppFrame (skipToMainText)
 ├── slot="header"      → Azure Portal Header (see azure-portal-header.md)
-├── slot="navigation"  → CuiDrawer (inline, position="start", breakpoint="686px", open)
-│   └── CuiSideNav     → See side-nav-with-iconify.md
-└── slot="main"
-    ├── Breadcrumb row  → CuiBreadcrumb > CuiBreadcrumbItem(s)
-    ├── Page header     → icon + h1 title + star/action buttons
-    ├── Subtitle        → <p> with resource type
-    ├── Toolbar         → See resource-page-toolbar.md
-    ├── CuiDivider
-    └── Content area    → Tabs, cards, tables, etc.
+├── slot="navigation"  → Global AzurePortalNav ONLY (hamburger-toggled overlay)
+└── slot="main"        → display: flex; flex-direction: column; height: 100%
+    ├── Breadcrumb row  → CuiBreadcrumb > CuiBreadcrumbItem(s) (full width, above sidebar)
+    ├── Page header     → icon + h1 title + star/action buttons (full width, above sidebar)
+    ├── .blade-body     → display: flex; flex: 1; overflow: hidden
+    │   ├── .blade-sidebar  → 220px collapsible <nav> + CuiSideNav
+    │   ├── .blade-toggle   → 28px thin column with chevron toggle button
+    │   └── .blade-content  → flex: 1; the main content area
+    │       ├── Subtitle    → <p> with resource type
+    │       ├── Toolbar     → See resource-page-toolbar.md
+    │       ├── CuiDivider
+    │       └── Content     → Tabs, cards, tables, etc.
 ```
 
 ## React Example
@@ -28,7 +33,6 @@ import {
   CuiBreadcrumbItem,
   CuiButton,
   CuiDivider,
-  CuiDrawer,
   CuiHeader,
   CuiIcon,
   CuiPopOver,
@@ -39,14 +43,53 @@ import {
   CuiNavItem,
   CuiToolbar,
 } from '@charm-ux/cui/react';
+import { useState } from 'react';
 
 export default function AzureResourcePage() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   const styles = `
     body { margin: 0; }
     [slot='main'] {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
       min-width: 320px;
       padding: 0;
       background: var(--neutral-background2);
+    }
+    .blade-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .blade-sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--neutral-background1);
+      border-right: 1px solid var(--neutral-stroke2);
+      overflow-y: auto;
+      transition: width 0.2s, min-width 0.2s;
+    }
+    .blade-sidebar.collapsed {
+      width: 0;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .blade-toggle-strip {
+      width: 28px;
+      min-width: 28px;
+      display: flex;
+      align-items: flex-start;
+      padding-top: 8px;
+      justify-content: center;
+      border-right: 1px solid var(--neutral-stroke2);
+      background: var(--neutral-background1);
+    }
+    .blade-content {
+      flex: 1;
+      overflow-y: auto;
+      min-width: 0;
     }
     .page-header {
       display: flex;
@@ -77,30 +120,12 @@ export default function AzureResourcePage() {
         {/* ─── Header ─── */}
         {/* Insert Azure Portal Header here (see azure-portal-header.md) */}
 
-        {/* ─── Side Navigation ─── */}
-        <CuiDrawer
-          slot="navigation"
-          id="navigation-drawer"
-          inline
-          position="start"
-          breakpoint="686px"
-          open
-        >
-          <CuiSideNav size="small">
-            {/* Nav items — see side-nav-with-iconify.md */}
-            <CuiNavItem label="Overview" href="#" selected>
-              <CuiIcon
-                slot="icon"
-                url="https://api.iconify.design/fluent:home-24-regular.svg"
-                selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg"
-              />
-            </CuiNavItem>
-          </CuiSideNav>
-        </CuiDrawer>
+        {/* ─── Global Nav (AzurePortalNav) goes in slot="navigation" ─── */}
+        {/* See azure-portal-nav.md — this is the ONLY drawer in slot="navigation" */}
 
         {/* ─── Main Content ─── */}
         <div slot="main">
-          {/* Breadcrumb */}
+          {/* Breadcrumb — full width, above sidebar */}
           <div style={{ padding: '8px 32px 0' }}>
             <CuiBreadcrumb label="Navigation" size="small">
               <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
@@ -108,7 +133,7 @@ export default function AzureResourcePage() {
             </CuiBreadcrumb>
           </div>
 
-          {/* Page title row */}
+          {/* Page title row — full width, above sidebar */}
           <div className="page-header">
             <CuiIcon
               url="https://api.iconify.design/fluent:person-24-regular.svg"
@@ -121,25 +146,60 @@ export default function AzureResourcePage() {
               <CuiIcon name="star" />
             </CuiButton>
           </div>
-          <p className="resource-subtitle">Resource type</p>
 
-          {/* Toolbar */}
-          <div style={{ padding: '0 32px' }}>
-            <CuiToolbar size="small" label="Actions">
-              <CuiButton appearance="subtle" size="small">
-                <CuiIcon slot="start" name="add" />
-                Add
+          {/* ─── Blade Body: Sidebar + Content ─── */}
+          <div className="blade-body">
+            {/* Section nav — inside slot="main", NOT in CuiDrawer slot="navigation" */}
+            <nav className={`blade-sidebar ${sidebarOpen ? '' : 'collapsed'}`}
+                 aria-label="Resource navigation">
+              <CuiSideNav size="small">
+                {/* Nav items — see side-nav-with-iconify.md */}
+                <CuiNavItem label="Overview" href="#" selected>
+                  <CuiIcon
+                    slot="icon"
+                    url="https://api.iconify.design/fluent:home-24-regular.svg"
+                    selectedUrl="https://api.iconify.design/fluent:home-24-filled.svg"
+                  />
+                </CuiNavItem>
+              </CuiSideNav>
+            </nav>
+
+            {/* Toggle strip */}
+            <div className="blade-toggle-strip">
+              <CuiButton
+                appearance="subtle"
+                iconOnly
+                size="small"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                aria-label={sidebarOpen ? 'Collapse navigation' : 'Expand navigation'}
+              >
+                <CuiIcon name={sidebarOpen ? 'chevron-left' : 'chevron-right'} />
               </CuiButton>
-              <CuiDivider orientation="vertical" style={{ height: '20px' }} />
-              <CuiButton appearance="subtle" size="small">Refresh</CuiButton>
-            </CuiToolbar>
-          </div>
+            </div>
 
-          <CuiDivider style={{ margin: '0' }} />
+            {/* Main content area */}
+            <div className="blade-content">
+              <p className="resource-subtitle">Resource type</p>
 
-          {/* ─── Page Content Goes Here ─── */}
-          <div style={{ padding: '24px 32px' }}>
-            {/* Tabs, cards, tables, etc. */}
+              {/* Toolbar */}
+              <div style={{ padding: '0 32px' }}>
+                <CuiToolbar size="small" label="Actions">
+                  <CuiButton appearance="subtle" size="small">
+                    <CuiIcon slot="start" name="add" />
+                    Add
+                  </CuiButton>
+                  <CuiDivider orientation="vertical" style={{ height: '20px' }} />
+                  <CuiButton appearance="subtle" size="small">Refresh</CuiButton>
+                </CuiToolbar>
+              </div>
+
+              <CuiDivider style={{ margin: '0' }} />
+
+              {/* ─── Page Content Goes Here ─── */}
+              <div style={{ padding: '24px 32px' }}>
+                {/* Tabs, cards, tables, etc. */}
+              </div>
+            </div>
           </div>
         </div>
       </CuiAppFrame>

@@ -802,9 +802,9 @@ export default function ScaffoldDesignerBlade() {
 
           {/* ─── Body: sidebar + content ─── */}
           <div className="blade-body">
-            <div className={`blade-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
+            <nav className={`blade-sidebar ${sidebarOpen ? '' : 'collapsed'}`} aria-label="Resource navigation">
               <Navigation />
-            </div>
+            </nav>
 
             <div className="blade-content">
               <div className="blade-toggle-strip">

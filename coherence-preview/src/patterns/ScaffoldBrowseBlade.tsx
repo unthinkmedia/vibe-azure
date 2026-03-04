@@ -471,7 +471,7 @@ export default function ScaffoldBrowseBlade() {
           {/* ─── Body: sidebar + content ─── */}
           <div className="blade-body">
             {/* Collapsible service sidebar */}
-            <div className={`blade-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
+            <nav className={`blade-sidebar ${sidebarOpen ? '' : 'collapsed'}`} aria-label="Service navigation">
               <CuiSideNav size="small">
                 {navSections.map((section, si) => (
                   <span key={si}>
@@ -494,7 +494,7 @@ export default function ScaffoldBrowseBlade() {
                   </span>
                 ))}
               </CuiSideNav>
-            </div>
+            </nav>
 
             {/* Content area */}
             <div className="blade-content">

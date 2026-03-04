@@ -51,7 +51,7 @@ coherence-preview/src/experiments/<experiment-id>/
   intent.json        # MANDATORY — Design intent document (created by design_intent MCP tool, powers IntentButton in preview)
   data.ts            # Types, interfaces, mock data, nav config (swap for real APIs)
   styles.ts          # Scoped CSS as exported string
-  Navigation.tsx     # CuiDrawer + CuiSideNav (driven by navSections from data.ts)
+  Navigation.tsx     # Section nav: <nav> + CuiSideNav inside slot="main" (NOT CuiDrawer slot="navigation")
   PageContent.tsx    # Toolbar + page body — the unique part of the experiment
 ```
 

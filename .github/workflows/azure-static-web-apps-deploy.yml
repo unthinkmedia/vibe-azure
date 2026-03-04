@@ -30,6 +30,14 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Configure private registry
+        run: |
+          cd coherence-preview
+          echo '@charm-ux:registry=https://pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm/registry/' > .npmrc
+          echo '//pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm/registry/:username=azdo' >> .npmrc
+          echo '//pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm/registry/:_password=${{ secrets.CHARM_FEED_TOKEN }}' >> .npmrc
+          echo '//pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm/registry/:always-auth=true' >> .npmrc
+
       - name: Install dependencies
         run: cd coherence-preview && npm install
 

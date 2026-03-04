@@ -186,9 +186,20 @@ Invoke the **coherence-experiment-verify** skill. This will:
 
 **After completion:** Tell the user:
 
-> _"✅ Verification complete. Say **'deploy it'** to publish, or make changes and say **'verify again'**."_
+> _"✅ Verification complete. Say **'deploy it'** to publish, **'verify again'** to re-check, or **'audit patterns'** to check for cross-experiment duplication."_
 >
 > _"The verification report now includes a Success Criteria Effectiveness Scorecard with per-criterion grades, trend deltas vs the previous run, and machine-readable JSON snapshots for tracking improvement over time."_
+
+**If user says "audit patterns":** Dispatch the **Coherence Pattern Audit** sub-agent:
+
+```
+runSubagent("Coherence Pattern Audit",
+  "Audit experiment <id> at <EXP_ROOT>/<id>/.
+   Cross-reference shared patterns, check mandatory imports,
+   compare against similar experiments, identify extraction candidates.")
+```
+
+Present the audit report to the user. If extraction candidates are found, offer to create shared patterns via the `coherence-pattern-creator` skill.
 
 ### Phase: DEPLOY
 

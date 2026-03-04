@@ -76,3 +76,19 @@ When asked to build, create, prototype, or mock an Azure portal page:
 3. **Theming/tokens → fetch the theme CSS.** The skill provides the URL. Don't invent token names.
 4. **Accessibility → read the guide.** The skill has a dedicated accessibility reference at `references/guides/accessibility.md`.
 5. **New components → follow existing patterns.** Look at existing components in `packages/core/src/components/` and use the Plop templates.
+
+## Sub-Agents
+
+Sub-agents are dispatched via `runSubagent()` on demand. They run in isolation with clean context, perform read-only work, and return structured reports.
+
+### Coherence Pattern Audit
+
+**When:** On-demand after verification — user says "audit patterns" or "check for duplication." Not part of the automatic lifecycle.
+
+**What it does:** Inventories experiment code, cross-references shared patterns and similar experiments, verifies mandatory pattern imports (PageHeader, CopilotSuggestions, CopilotButton), and flags duplicated code across experiments that should be extracted into shared patterns.
+
+**Why it's a sub-agent:** This cross-experiment comparison isn't covered by any existing skill (skills only check within a single experiment). Running it in isolation keeps the context clean for scanning 30+ experiment folders.
+
+**Dispatch:** `runSubagent("Coherence Pattern Audit", "Audit experiment <id> at <path>. ...")`
+
+**File:** `.github/agents/coherence-pattern-audit.agent.md`

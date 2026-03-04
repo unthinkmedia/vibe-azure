@@ -1,46 +1,28 @@
 # Coherence Prototyper MCP Server
 
-An MCP server (with MCP App) that gives Claude the same Azure portal prototyping knowledge as the VS Code skills — accessible from **Claude Desktop**, **Claude.ai**, or any MCP-compatible host.
+An MCP server with interactive MCP Apps that gives Claude Azure portal prototyping capabilities — accessible from **Claude Desktop**, **Claude.ai**, **VS Code**, or any MCP-compatible host.
 
-## How It Complements the VS Code Skills
+> **Note:** Text-based design guidance (component docs, UX guides, scaffolds, patterns, mock data references) is provided by the VS Code skills when working in-editor. This MCP server focuses on **visual interactive apps** and **remote reference access** for environments without a local repo clone.
 
-| Capability | VS Code Skills | This MCP Server |
-|---|---|---|
-| **Where it runs** | Inside VS Code Copilot | Claude Desktop, Claude.ai, any MCP host |
-| **Component API lookup** | Reads manifest docs on demand | `lookup_component` tool — fetches + parses live CDN manifest |
-| **Design tokens** | Reads theme CSS docs | `get_design_tokens` + `browse_design_tokens` MCP App with visual swatches |
-| **Scaffolds** | Copies template files | `get_scaffold` tool — returns all scaffold files ready to paste |
-| **Design guidance** | Reads reference markdown | `get_component_guidance`, `get_ux_guide`, etc. |
-| **Icon lookup** | Reads icon reference | `lookup_azure_icon` — search by name or purpose |
-| **Composition patterns** | Reads pattern docs | `get_composition_pattern` tool |
-| **Mock data** | Reads sample data refs | `get_mock_data_patterns` tool |
+## Tools (13 total)
 
-## Tools (15 total)
-
-### Knowledge Tools (text-based)
+### MCP Apps (interactive visual UI)
 
 | Tool | Description |
 |---|---|
-| `lookup_component` | Look up a component's full API (attributes, events, slots, CSS properties) from the live CDN manifest |
-| `search_components` | Search components by keyword across names, descriptions, and attributes |
-| `list_components` | List all ~70 Coherence UI components |
-| `get_component_guidance` | Get design guidance: when to use, dos/don'ts, accessibility, anatomy, code examples |
-| `get_design_tokens` | Search/filter design tokens by category or keyword |
-| `get_scaffold` | Get complete starter scaffold files for a page type |
-| `get_ux_guide` | Get cross-cutting UX guidance (accessibility, AI, writing, data viz) |
-| `lookup_azure_icon` | Search Azure portal icons (Fluent 2 via Iconify) |
-| `get_page_type_guidance` | Get anatomy + rules for Azure portal page types |
-| `get_composition_pattern` | Get reusable multi-component patterns (header, shell, toolbar, side nav) |
-| `get_template` | Get page layout template guidance (dashboard, form, settings) |
-| `get_task_flow` | Get task flow guidance (bulk edit, create, inline edit, etc.) |
-| `get_mock_data_patterns` | Get reference patterns for generating realistic Azure mock data |
+| `design_intent` | Interactive form to capture What / Why / Success Criteria / Non-Goals before prototyping |
+| `browse_design_tokens` | Visual token browser with color swatches, search, and category filtering |
+| `browse_icons` | Searchable grid of ~1500 Azure portal + Fluent UI icons — click to select |
+| `browse_verification_reports` | Success-criteria scorecard viewer with trend deltas across verification runs |
 
-### MCP App (visual UI)
+### Remote Reference Tools
 
 | Tool | Description |
 |---|---|
-| `browse_design_tokens` | Interactive visual token browser with color swatches, search, and category filtering — renders inline in Claude |
-| `browse_verification_reports` | Interactive success-criteria verification report browser with scorecards, trend deltas, and actionable feedback |
+| `list_experiments` | List all experiments with title, description, tags, and date |
+| `get_experiment` | Fetch full source files (index.tsx, data.ts, styles.ts, intent.json) of an experiment from GitHub |
+| `get_pattern` | Fetch shared pattern source code (PageHeader, CopilotSuggestions, etc.) from GitHub |
+| `init_workspace` | Bootstrap a standalone workspace with package.json, Vite config, and shared patterns |
 
 ## Setup
 
@@ -98,41 +80,41 @@ npm start
 
 ```
 mcp-server/
-├── main.ts                    # stdio entry point
-├── server.ts                  # MCP server: 15 tools + MCP App resources
+├── main.ts                    # stdio entry point + `init` CLI command
+├── server.ts                  # MCP server: 13 tools (4 Apps + 5 app helpers + 4 reference)
+├── init.ts                    # Workspace bootstrapper (fetches patterns from GitHub)
+├── icon-browser.html          # MCP App view (Vite entry)
 ├── token-browser.html         # MCP App view (Vite entry)
-├── verification-report.html   # MCP App view for validation scorecards
+├── intent-app.html            # MCP App view (Vite entry)
+├── verification-report.html   # MCP App view (Vite entry)
 ├── src/
-│   ├── verification-scorecard-store.ts # Reads verification snapshots/history from experiments
-│   ├── manifest-cache.ts      # Fetches + caches Coherence manifest from CDN
-│   ├── theme-cache.ts         # Fetches + caches theme CSS, parses tokens
 │   ├── content.ts             # Reads reference files from .github/skills/
+│   ├── icon-browser.ts        # Client-side App for icon browser UI
+│   ├── icon-data.ts           # Curated Azure icon catalog
+│   ├── intent-app.ts          # Client-side App for intent capture UI
+│   ├── intent-store.ts        # Reads/writes intent.json files
+│   ├── manifest-cache.ts      # Fetches + caches Coherence manifest from CDN
+│   ├── svg-cache.ts           # Fetches + caches SVG icons
+│   ├── theme-cache.ts         # Fetches + caches theme CSS, parses tokens
 │   ├── token-browser.ts       # Client-side App for token browser UI
-│   └── verification-report.ts # Client-side App for scorecard and trend UI
-├── dist/                      # Build output
-│   ├── main.js                # Compiled server
-│   ├── server.js
-│   ├── src/
-│   ├── token-browser.html     # Bundled single-file MCP App
-│   └── verification-report.html # Bundled single-file MCP App
+│   ├── verification-report.ts # Client-side App for scorecard UI
+│   └── verification-scorecard-store.ts # Reads verification snapshots/history
 ```
 
 ### Data Flow
 
 - **Live from CDN** (cached 1hr): Component manifest JSON + theme CSS
-- **Read from repo** (at runtime): Component guidance, UX guides, scaffolds, icons, patterns, mock data references from `.github/skills/`
-
-This means the MCP server always reflects the latest Coherence release (via CDN) while using the same curated design guidance that the VS Code skills use.
+- **From GitHub API** (on demand): Experiment source files, shared patterns, experiment registry
+- **From local disk**: Intent documents, verification reports (via `EXPERIMENTS_DIR` env var)
 
 ## Example Prompts
 
 Once connected, try these in Claude:
 
-- *"Look up the CuiDataGrid component API"*
-- *"Show me all status color tokens"*
-- *"Get the scaffold for an Azure overview page"*
-- *"What's the accessibility guidance for Coherence?"*
-- *"Search for components that support the appearance attribute"*
-- *"Get the composition pattern for the Azure portal header"*
-- *"Browse design tokens"* (opens the interactive MCP App)
-- *"Open the verification report for network-security-dashboard"* (opens the scorecard MCP App)
+- *"Browse design tokens"* — opens the interactive token browser
+- *"Find an icon for networking"* — opens the visual icon picker
+- *"Open the verification report for network-security-dashboard"* — opens the scorecard viewer
+- *"Show me the PageHeader pattern"* — fetches shared pattern source from GitHub
+- *"List all experiments"* — shows available prototypes with metadata
+- *"Get the source for the cost-management experiment"* — fetches full experiment files
+- *"Initialize a new workspace"* — bootstraps a standalone project with Vite + shared patterns

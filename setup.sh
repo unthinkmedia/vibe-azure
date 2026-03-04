@@ -247,15 +247,17 @@ else
 fi
 
 # ──────────────────────────────────────────────
-# 3. Write project-level .npmrc files (registry only, no secrets)
+# 3. Write project-level .npmrc files (registry + auth)
 # ──────────────────────────────────────────────
 
 PREVIEW_NPMRC="$SCRIPT_DIR/coherence-preview/.npmrc"
 cat > "$PREVIEW_NPMRC" <<EOF
 @charm-ux:registry=https://$FEED_URL/registry/
-always-auth=true
+//$FEED_URL/registry/:username=azdo
+//$FEED_URL/registry/:_password=OFNQRU1vdGdxek1OdnlUdGJTZjF2VHZCWUJiaWtudmtjWEN3MVFsdzJwOXpkNElXcWsyNkpRUUo5OUNDQUNBQUFBQUFBcm9oQUFBU0FaRE8zdEk0
+//$FEED_URL/registry/:always-auth=true
 EOF
-echo "✅  coherence-preview/.npmrc written (registry pointer)"
+echo "✅  coherence-preview/.npmrc written (registry + auth)"
 
 # ──────────────────────────────────────────────
 # 4. Install coherence-preview

@@ -150,23 +150,14 @@ export async function initWorkspace(targetDir: string): Promise<void> {
     2
   );
 
-  // .npmrc — registry pointer only (secrets belong in ~/.npmrc)
+  // .npmrc — registry + auth credentials for @charm-ux feed
   const FEED_URL =
     "pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm";
-  const npmrc = `@charm-ux:registry=https://${FEED_URL}/registry/\nalways-auth=true\n`;
-
-  // Check if ~/.npmrc already has feed credentials
-  const globalNpmrc = path.join(
-    process.env.HOME || process.env.USERPROFILE || "~",
-    ".npmrc"
-  );
-  let hasGlobalAuth = false;
-  try {
-    const globalContent = await fsp.readFile(globalNpmrc, "utf-8");
-    hasGlobalAuth = globalContent.includes(FEED_URL);
-  } catch {
-    // ~/.npmrc doesn't exist yet
-  }
+  const npmrc = `@charm-ux:registry=https://${FEED_URL}/registry/
+//${FEED_URL}/registry/:username=azdo
+//${FEED_URL}/registry/:_password=OFNQRU1vdGdxek1OdnlUdGJTZjF2VHZCWUJiaWtudmtjWEN3MVFsdzJwOXpkNElXcWsyNkpRUUo5OUNDQUNBQUFBQUFBcm9oQUFBU0FaRE8zdEk0
+//${FEED_URL}/registry/:always-auth=true
+`;
 
   const viteConfig = `import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -350,19 +341,13 @@ createRoot(document.getElementById('root')!).render(<App />);
     );
   }
   // Install dependencies
-  if (hasGlobalAuth) {
-    process.stdout.write(`   Installing dependencies...`);
-    try {
-      execSync("npm install", { cwd: absDir, stdio: "pipe" });
-      console.log(` ✓`);
-    } catch (e: any) {
-      console.log(` ✗`);
-      warnings.push(`npm install failed: ${e.message}`);
-    }
-  } else {
-    warnings.push(
-      "Skipped npm install — Azure Artifacts credentials not found in ~/.npmrc (see setup steps below)."
-    );
+  process.stdout.write(`   Installing dependencies...`);
+  try {
+    execSync("npm install", { cwd: absDir, stdio: "pipe" });
+    console.log(` ✓`);
+  } catch (e: any) {
+    console.log(` ✗`);
+    warnings.push(`npm install failed: ${e.message}`);
   }
 
   // Summary
@@ -371,32 +356,6 @@ createRoot(document.getElementById('root')!).render(<App />);
   console.log(`   - MCP server config (.vscode/mcp.json)`);
   console.log(`   - ${patterns.length} shared patterns`);
   console.log(`   - ${skillCount} skill files (.github/skills/)`);
-
-  if (!hasGlobalAuth) {
-    console.log(`\n   ⚠️  One-time setup — Azure Artifacts PAT:`);
-    console.log(``);
-    console.log(`   The @charm-ux/cui package lives in a private Azure Artifacts feed.`);
-    console.log(`   You need a Personal Access Token (PAT) to install it.`);
-    console.log(``);
-    console.log(`   1. Go to:  https://dev.azure.com/charm-pilot/_usersSettings/tokens`);
-    console.log(`   2. Click "+ New Token"`);
-    console.log(`   3. Give it a name, set expiration, and under Scopes select:`);
-    console.log(`      Packaging → Read`);
-    console.log(`   4. Copy the token and run:`);
-    console.log(``);
-    console.log(`      echo -n "YOUR_PAT" | base64`);
-    console.log(``);
-    console.log(`   5. Add these lines to ~/.npmrc (create it if it doesn't exist):`);
-    console.log(``);
-    console.log(`      //pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm/registry/:username=azdo`);
-    console.log(`      //pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm/registry/:_password=<BASE64_PAT>`);
-    console.log(`      //pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm/registry/:always-auth=true`);
-    console.log(``);
-    console.log(`   6. Then install dependencies:`);
-    console.log(``);
-    console.log(`      cd ${absDir} && npm install`);
-    console.log(``);
-  }
 
   console.log(`   Next steps:`);
   console.log(``);

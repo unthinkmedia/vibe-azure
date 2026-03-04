@@ -31,7 +31,6 @@ charm-pilot/
 __pycache__/
 
 # Credentials
-.npmrc
 .env
 .env.local
 

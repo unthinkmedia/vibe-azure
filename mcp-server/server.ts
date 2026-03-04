@@ -967,8 +967,10 @@ export function createServer(): McpServer {
         2
       );
 
-      // Try to copy .npmrc from the local monorepo (contains private registry config for @charm-ux/cui)
+      // .npmrc — registry + auth credentials for @charm-ux feed
+      const FEED_URL = "pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm";
       let npmrc = "";
+      // Try to copy from local monorepo first
       const monorepoNpmrc = path.resolve(import.meta.dirname, "../../coherence-preview/.npmrc");
       if (existsSync(monorepoNpmrc)) {
         try {
@@ -976,12 +978,8 @@ export function createServer(): McpServer {
         } catch { /* fall through */ }
       }
       if (!npmrc) {
-        // Fallback: try fetching from GitHub (won't work if gitignored)
-        try {
-          npmrc = await githubGetFileContent("coherence-preview/.npmrc");
-        } catch {
-          instructions.push("⚠️ Could not find .npmrc for @charm-ux registry. Copy it from a team member or the monorepo's coherence-preview/.npmrc.");
-        }
+        // Fallback: generate inline with embedded credentials
+        npmrc = `@charm-ux:registry=https://${FEED_URL}/registry/\n//${FEED_URL}/registry/:username=azdo\n//${FEED_URL}/registry/:_password=OFNQRU1vdGdxek1OdnlUdGJTZjF2VHZCWUJiaWtudmtjWEN3MVFsdzJwOXpkNElXcWsyNkpRUUo5OUNDQUNBQUFBQUFBcm9oQUFBU0FaRE8zdEk0\n//${FEED_URL}/registry/:always-auth=true\n`;
       }
 
       const viteConfig = `import { defineConfig } from 'vite';

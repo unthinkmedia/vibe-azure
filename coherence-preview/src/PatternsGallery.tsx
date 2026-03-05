@@ -1,3 +1,107 @@
+/**
+ * Patterns & Scaffolds Gallery
+ *
+ * Central catalog of all Azure portal composition patterns and page scaffolds.
+ * Each card links to a live preview via hash navigation.
+ *
+ * NOTE: This file is kept in sync with the patterns/scaffolds arrays in main.tsx.
+ * The vite.config.ts delete API also removes entries from this file.
+ */
+
+export default function PatternsGallery() {
+  const sections: {
+    title: string;
+    description: string;
+    items: { id: string; title: string; description: string; tags: string[] }[];
+  }[] = [
+    {
+      title: 'Composition Patterns',
+      description: 'Focused demos of individual Azure portal UI patterns. Each pattern can be composed into full pages.',
+      items: [
+        {
+          id: 'pattern-page-header',
+          title: 'Page Header',
+          description: 'Consistent title bar with icon, title, favorite, more actions, and Copilot suggestions.',
+          tags: ['Header', 'Copilot', 'Navigation'],
+        },
+        {
+          id: 'pattern-header',
+          title: 'Azure Portal Header',
+          description: 'Header bar with search, Copilot button, and avatar popover with persona card.',
+          tags: ['CuiHeader', 'CuiSearchBox', 'CuiAvatar', 'CuiPopOver'],
+        },
+        {
+          id: 'pattern-side-nav',
+          title: 'Side Nav with Iconify Icons',
+          description: 'Side navigation using Iconify SVG URLs with regular/filled icon pairs and section headings.',
+          tags: ['CuiDrawer', 'CuiSideNav', 'CuiNavItem', 'CuiIcon'],
+        },
+        {
+          id: 'pattern-azure-portal-nav',
+          title: 'Azure Portal Global Nav',
+          description: 'Portal-wide hamburger menu with Create a resource, Home, Dashboard, All services, and Favorites.',
+          tags: ['Navigation', 'Sidebar', 'Global'],
+        },
+        {
+          id: 'pattern-toolbar',
+          title: 'Resource Page Toolbar',
+          description: 'Horizontal action bar with subtle buttons, vertical dividers, and dropdown menus.',
+          tags: ['CuiToolbar', 'CuiButton', 'CuiMenu', 'CuiDivider'],
+        },
+        {
+          id: 'pattern-resource-shell',
+          title: 'Resource Page Shell',
+          description: 'Full page scaffold combining all patterns: app frame, header, side nav, breadcrumb, title, and toolbar.',
+          tags: ['CuiAppFrame', 'All Patterns'],
+        },
+        {
+          id: 'pattern-copilot-suggestions',
+          title: 'Copilot Suggestions',
+          description: 'Pill-shaped prompt suggestions with Copilot icon and +N overflow indicator.',
+          tags: ['Copilot', 'Component'],
+        },
+        {
+          id: 'pattern-donut-gauge',
+          title: 'Donut Gauge Readiness Card',
+          description: 'SVG ring gauge with color-coded arc, centered score, category breakdown, and status badge.',
+          tags: ['Chart', 'Donut', 'Cards'],
+        },
+        {
+          id: 'pattern-health-metric-card',
+          title: 'Pipeline Health Metric Card',
+          description: 'Compact KPI card with semantic status accent icon, large value, and contextual subtext.',
+          tags: ['Cards', 'Component'],
+        },
+        {
+          id: 'pattern-service-card',
+          title: 'Service Card',
+          description: 'Outline card with icon, title, description, and bordered action footer (View / More).',
+          tags: ['Cards', 'Component'],
+        },
+        {
+          id: 'pattern-filter-panel',
+          title: 'Filter Panel',
+          description: 'Functional filter bar with search, filter pills with multi-select dropdowns, dismissible tags, and filtered data table.',
+          tags: ['Filters', 'Table', 'Toolbar'],
+        },
+        {
+          id: 'pattern-nav-link',
+          title: 'Nav Link (Horizontal)',
+          description: 'Azure portal home page navigation link — horizontal layout with icon on left and label on right.',
+          tags: ['Navigation', 'Component', 'Home'],
+        },
+        {
+          id: 'pattern-service-tile',
+          title: 'Service Tile (Vertical)',
+          description: 'Azure portal home page service tile — vertical layout with icon on top and label below.',
+          tags: ['Cards', 'Component', 'Home'],
+        },
+      ],
+    },
+    {
+      title: 'Page Scaffolds',
+      description: 'Complete Azure portal page templates. Each scaffold is a starting point for a specific page type.',
+      items: [
         {
           id: 'scaffold-create-flow',
           title: 'Create Flow',
@@ -11,10 +115,34 @@
           tags: ['Service', 'Blade', 'Sidebar', 'Monitor'],
         },
         {
+          id: 'scaffold-marketplace-browse',
+          title: 'Marketplace Browse',
+          description: 'Categories sidebar with two-column service + marketplace product grid (matches "Create a resource" landing page).',
+          tags: ['Marketplace', 'Cards', 'Sidebar'],
+        },
+        {
           id: 'scaffold-home-page',
           title: 'Home Page',
           description: 'Azure portal landing page with service tiles, resource tabs, filter toolbar, and resource table.',
           tags: ['Home', 'Landing', 'Services', 'Resources Table'],
+        },
+        {
+          id: 'scaffold-browse-page',
+          title: 'Browse Page',
+          description: 'Full-width resource browse page with toolbar, filter pills, and data table with checkboxes.',
+          tags: ['Browse', 'Table', 'Filters', 'Toolbar'],
+        },
+        {
+          id: 'scaffold-browse-blade',
+          title: 'Browse Blade',
+          description: 'Browse page with collapsible side panel — toolbar, filter pills, and checkbox data table beside a toggleable sidebar.',
+          tags: ['Browse', 'Sidebar', 'Table', 'Filters'],
+        },
+        {
+          id: 'scaffold-designer-blade',
+          title: 'Designer Blade',
+          description: 'Visual designer canvas with workflow nodes, connector lines, branching UI, and config side panel.',
+          tags: ['Designer', 'Canvas', 'Workflow', 'Nodes'],
         },
       ],
     },

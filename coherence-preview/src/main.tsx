@@ -363,6 +363,20 @@ const patterns: Entry[] = [
     component: lazy(() => import('./patterns/PatternFilterPanel')),
     tags: ['filters', 'table', 'toolbar'],
   },
+  {
+    id: 'pattern-nav-link',
+    title: 'Nav Link (Horizontal)',
+    description: 'Azure portal home page navigation link — horizontal layout with icon on left and label on right, card-like hover effect',
+    component: lazy(() => import('./patterns/PatternNavLink')),
+    tags: ['navigation', 'component', 'home'],
+  },
+  {
+    id: 'pattern-service-tile',
+    title: 'Service Tile (Vertical)',
+    description: 'Azure portal home page service tile — vertical layout with icon on top and label below, subtle hover background',
+    component: lazy(() => import('./patterns/PatternServiceTile')),
+    tags: ['cards', 'component', 'home'],
+  },
 ];
 
 // ─── Page Scaffolds ───

@@ -60,6 +60,33 @@ The goal in **both** modes: after intent confirmation, the builder has enough de
 
 This step is optional — skip it if no Figma URL is provided.
 
+### 0b. Detect Web URL (if present) — Brownfield Mode
+
+If the user's message or the orchestrator's dispatch includes a **web URL** (not Figma) — such as `portal.azure.com`, `azure.microsoft.com`, or any other web page — the visual-ingest skill has already captured the page and produced a reference document.
+
+The orchestrator passes the web reference data via:
+- `prefillWebUrl` — the original URL
+- `prefillWebContext` — the structured reference document (layout, component inventory, content, visual properties)
+
+If these fields are present, use them to derive prefill values the same way Figma data is used:
+
+#### Import mode (default for brownfield):
+
+- `prefillVision` — "A Coherence-based replica of [page title] featuring [key Coherence components mapped from the reference]"
+- `prefillSuccessCriteria` — one criterion per major UI section identified in the web capture
+- `prefillConstraints` — include "Brownfield: replicate existing web page design as starting point using Coherence components and design tokens" as the first constraint
+
+#### Reference mode:
+
+- `prefillVision` — "An improved version of [page title], addressing [UX issues found]"
+- `prefillProblem` — UX issues observed in the captured page
+- `prefillSuccessCriteria` — criteria measuring improvement over the reference
+- `prefillConstraints` — include "Use captured web page as reference only — build an improved solution using Coherence best practices"
+
+**Priority:** If both Figma and web reference data are present, use Figma (it's higher fidelity). Web reference is used when no Figma URL exists.
+
+This step is optional — skip it if no web URL reference data is provided.
+
 ### 1. Extract Prefill Values
 
 Parse the user's description and map to these fields:
@@ -74,6 +101,8 @@ Parse the user's description and map to these fields:
 | `prefillFigmaUrl` | Figma URL from user (if any) | "https://www.figma.com/design/51UVR..." |
 | `prefillFigmaMode` | "import" or "reference" (if Figma URL present) | "reference" |
 | `prefillFigmaContext` | Detailed design spec from Figma (if any) | "Layout: left sidebar 240px, content area with 3-column card grid (gap: 16px). Cards: 320x180px with icon header, metric value, sparkline chart..." |
+| `prefillWebUrl` | Web page URL from visual-ingest (if any) | "https://portal.azure.com/#view/..." |
+| `prefillWebContext` | Structured reference doc from visual-ingest (if any) | JSON with layout, componentInventory, content, visualProperties |
 
 Generate a title automatically from the description — do NOT ask the user for one.
 

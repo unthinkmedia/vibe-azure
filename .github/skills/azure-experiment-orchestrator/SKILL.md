@@ -1,23 +1,50 @@
 ---
 name: azure-experiment-orchestrator
-description: "Orchestrate the full Azure portal experiment lifecycle: intent → build → verify → deploy. Use when the user asks to build, create, prototype, or mock an Azure portal page. Also triggers on: \"build me an Azure page\", \"create an Azure portal prototype\", \"prototype a resource blade\", or any request that would have previously triggered the azure-portal-prototyper skill. Detects the current phase automatically and dispatches to the correct phase-specific skill."
+description: "Orchestrate the full Azure portal experiment lifecycle: [ingest →] intent → build → verify → deploy. Supports both greenfield (no URL — start from scratch) and brownfield (URL provided — replicate an existing page first). Use when the user asks to build, create, prototype, or mock an Azure portal page. Also triggers on: \"build me an Azure page\", \"create an Azure portal prototype\", \"prototype a resource blade\", or any request that includes a URL to azure.microsoft.com, portal.azure.com, or figma.com. Detects the current phase automatically and dispatches to the correct phase-specific skill."
 ---
 
 # Experiment Orchestrator
 
-State machine that manages the full lifecycle of an Azure portal experiment across four phases. Each phase is handled by a dedicated skill with hard boundaries — the orchestrator never performs phase work itself.
+State machine that manages the full lifecycle of an Azure portal experiment. Supports two scenarios:
+
+- **Greenfield** (no reference URL): Start from scratch → INTENT → BUILD → VERIFY → DEPLOY
+- **Brownfield** (reference URL provided): Capture existing page → pre-populate intent → BUILD → VERIFY → DEPLOY
+
+Each phase is handled by a dedicated skill with hard boundaries — the orchestrator never performs phase work itself.
 
 ## Phase Map
 
 ```
-INTENT  →  BUILD  →  VERIFY  →  DEPLOY
-  ↑          ↑         ↑          ↑
-  │          │         │          │
-coherence-   azure-    coherence-  azure-
-design-   portal-   experiment-  experiment-
-intent    builder   verify       deploy
-skill     skill                skill
+                    ┌─────────────────────────────┐
+                    │  User provides a URL?        │
+                    └──────────┬──────────────────-┘
+                         │              │
+                        YES             NO
+                         │              │
+                         ▼              │
+                      INGEST            │
+                    (visual-            │
+                     ingest             │
+                     skill)             │
+                         │              │
+                         ▼              ▼
+                      INTENT  ←────────┘
+                    (coherence-design-intent)
+                         │
+                         ▼
+                       BUILD
+                    (azure-portal-builder)
+                         │
+                         ▼
+                      VERIFY
+                    (coherence-experiment-verify)
+                         │
+                         ▼
+                      DEPLOY
+                    (azure-experiment-deploy)
 ```
+
+**INGEST is optional.** It only runs when the user provides a reference URL (Figma or web). In greenfield mode, the orchestrator skips directly to INTENT.
 
 ## Step 1: Identify the Experiment
 
@@ -27,7 +54,25 @@ Extract the experiment ID from the user's request:
 - If the user describes a new page to build, derive an ID from the description (e.g., "Azure Key Vault overview" → `key-vault-overview`)
 - If ambiguous, ask the user: _"Which experiment? [list recent experiments from main.tsx]"_
 
-### Detect Figma URL
+### Detect Reference URL (Brownfield vs Greenfield)
+
+Check if the user's message contains ANY URL. This determines the scenario:
+
+| URL Pattern | Scenario | Capture Method |
+|-------------|----------|----------------|
+| `figma.com/design/*` or `figma.com/file/*` | Brownfield (Figma) | Figma MCP tools (existing path) |
+| `figma.com/board/*` | Brownfield (FigJam) | `mcp_figma_get_figjam` |
+| `portal.azure.com/*` | Brownfield (Azure Portal) | `visual-ingest` skill via agent-browser |
+| `azure.microsoft.com/*` | Brownfield (Azure Marketing) | `visual-ingest` skill via agent-browser |
+| `*.azure.com/*` | Brownfield (Azure Service) | `visual-ingest` skill via agent-browser |
+| Any other web URL | Brownfield (Generic Web) | `visual-ingest` skill via agent-browser |
+| No URL | **Greenfield** | Skip INGEST, go straight to INTENT |
+
+#### Greenfield Path (No URL)
+
+No reference URL → skip INGEST entirely. Proceed to Step 2 (Phase Detection) and dispatch to INTENT as usual. This is the existing behavior — nothing changes for users who don't provide a URL.
+
+#### Brownfield Path — Figma URL
 
 If the user's message contains a Figma URL (matching `figma.com/design/` or `figma.com/file/`):
 
@@ -88,6 +133,48 @@ See the full decision guide: `coherence-ui/references/patterns/page-layout-decis
 **Step F: Pass both the URL, mode, and detailed spec** to the INTENT phase via `prefillFigmaUrl`, `prefillFigmaMode`, and `prefillFigmaContext` on the `design_intent` tool call.
 
 The intent form opens pre-populated. The user reviews, tweaks if needed, and confirms.
+
+#### Brownfield Path — Web URL (Azure Portal, Azure Marketing, or any web page)
+
+If the user's message contains a web URL (not Figma), dispatch to the **visual-ingest** skill:
+
+> _"I see a web URL — switching to brownfield mode. I'll capture the page and use it as the starting point for your experiment."_
+
+**Step A: Dispatch to visual-ingest skill.**
+
+The `visual-ingest` skill handles the entire capture pipeline:
+1. Opens the page in an **external Chromium browser** (NOT VS Code's embedded browser — Microsoft Entra ID auth is blocked in embedded webviews)
+2. User authenticates manually in the external browser window (MFA, Conditional Access, etc.)
+3. Takes screenshots and accessibility snapshots after auth completes
+4. Analyzes the page structure and maps elements to Coherence components
+5. Produces a structured reference document
+6. Generates prefill values for the intent form
+
+**Step B: Receive the reference document from visual-ingest.**
+
+The visual-ingest skill returns:
+- `webUrl` — the original URL
+- `webContext` — the structured reference document (layout, component inventory, content, visual properties)
+- Derived prefill values for all intent fields
+
+**Step C: Determine the mode from the user's prompt.**
+
+| Mode | Signal words in prompt | What it means |
+|------|----------------------|---------------|
+| **import** | "build this", "reproduce", "replicate", "recreate", "make this", "copy this", or just a URL with no qualifying language | Replica of the existing page using Coherence components |
+| **reference** | "improve", "redesign", "do something better", "use as inspiration", "as a starting point to improve", "analyze" | Use the page as reference, build something better |
+
+**Default:** `import` — brownfield's primary use case is replicating what exists.
+
+**Step D: Pass the reference to the intent phase** via `prefillWebUrl` and `prefillWebContext` on the `design_intent` tool call, along with all derived prefill values.
+
+The intent form opens pre-populated with the captured page structure. The user reviews, adjusts (e.g., changes mode from import to reference, removes sections they don't want), and confirms.
+
+**⚠️ HARD STOP after INGEST:** After the visual-ingest skill completes and the intent form is open:
+
+> _"I've captured the page and pre-populated the intent form. Review and adjust — changes are auto-saved. Do you accept this intent?"_
+
+**STOP. END YOUR TURN.** Wait for user confirmation before proceeding to BUILD.
 
 ## Step 2: Detect Current Phase
 
@@ -272,13 +359,18 @@ Track each experiment independently by ID. If the user switches topics, re-run S
 
 ## Quick Reference
 
-| User says | Dispatches to |
-|-----------|---------------|
-| "Build me an Azure X page" | Phase detection → likely INTENT |
-| "Build using this Figma URL" | Figma extraction → INTENT (import mode — pixel-perfect) |
-| "Take a look at this Figma and improve it" | Figma extraction → INTENT (reference mode — analyze & improve) |
-| "Create an intent for X" | INTENT (coherence-design-intent skill) |
-| "Build it" / "Implement it" | BUILD (azure-portal-builder skill) |
-| "Verify it" / "Check the UI" | VERIFY (coherence-experiment-verify skill) |
-| "Deploy it" / "Share it" | DEPLOY (azure-experiment-deploy skill) |
-| "Start over" | Delete experiment folder, re-detect → INTENT |
+| User says | Scenario | Dispatches to |
+|-----------|----------|---------------|
+| "Build me an Azure X page" | Greenfield | Phase detection → likely INTENT |
+| "Build using this Figma URL" | Brownfield (Figma) | Figma extraction → INTENT (import mode) |
+| "Take a look at this Figma and improve it" | Brownfield (Figma) | Figma extraction → INTENT (reference mode) |
+| "Replicate this Azure portal page" + URL | Brownfield (Web) | visual-ingest → INTENT (import mode) |
+| "Use this page as a starting point" + URL | Brownfield (Web) | visual-ingest → INTENT (import mode) |
+| "Improve on this page" + URL | Brownfield (Web) | visual-ingest → INTENT (reference mode) |
+| "Ingest this page" + URL | Brownfield (Web) | visual-ingest → INTENT |
+| Just a URL with no other context | Brownfield | Detect URL type → visual-ingest or Figma → INTENT (import mode) |
+| "Create an intent for X" | Greenfield | INTENT (coherence-design-intent skill) |
+| "Build it" / "Implement it" | Either | BUILD (azure-portal-builder skill) |
+| "Verify it" / "Check the UI" | Either | VERIFY (coherence-experiment-verify skill) |
+| "Deploy it" / "Share it" | Either | DEPLOY (azure-experiment-deploy skill) |
+| "Start over" | Either | Delete experiment folder, re-detect → INTENT |

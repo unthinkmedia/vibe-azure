@@ -45,6 +45,10 @@ export interface DesignIntent {
   figmaMode?: "import" | "reference";
   /** Detailed design spec extracted from Figma (layout, components, spacing, colors, typography) */
   figmaContext?: string;
+  /** Optional web page URL — used as brownfield design starting point (captured via visual-ingest) */
+  webUrl?: string;
+  /** Structured reference document from visual-ingest (layout, component inventory, content, visual properties) */
+  webContext?: string;
   /** ISO date string */
   createdAt: string;
   /** ISO date string */
@@ -57,7 +61,7 @@ export type CreateIntentInput = Pick<
   "experimentId" | "vision"
 > &
   Partial<
-    Pick<DesignIntent, "title" | "problem" | "successCriteria" | "nonGoals" | "constraints" | "figmaUrl" | "figmaMode" | "figmaContext">
+    Pick<DesignIntent, "title" | "problem" | "successCriteria" | "nonGoals" | "constraints" | "figmaUrl" | "figmaMode" | "figmaContext" | "webUrl" | "webContext">
   >;
 
 export type UpdateIntentInput = Partial<
@@ -112,6 +116,8 @@ export async function createIntent(
     ...(input.figmaUrl ? { figmaUrl: input.figmaUrl } : {}),
     ...(input.figmaMode ? { figmaMode: input.figmaMode } : {}),
     ...(input.figmaContext ? { figmaContext: input.figmaContext } : {}),
+    ...(input.webUrl ? { webUrl: input.webUrl } : {}),
+    ...(input.webContext ? { webContext: input.webContext } : {}),
     createdAt: now,
     updatedAt: now,
     status: "draft",

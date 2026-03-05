@@ -22,6 +22,8 @@ interface DesignIntent {
   figmaUrl?: string;
   figmaMode?: "import" | "reference";
   figmaContext?: string;
+  webUrl?: string;
+  webContext?: string;
   updatedAt: string;
   status: "draft" | "active" | "completed" | "abandoned";
 }
@@ -37,6 +39,8 @@ interface PrefillData {
   figmaUrl?: string;
   figmaMode?: "import" | "reference";
   figmaContext?: string;
+  webUrl?: string;
+  webContext?: string;
 }
 
 interface IntentListData {
@@ -204,6 +208,14 @@ function renderList(): void {
           : ""
       }
       ${
+        intent.webUrl
+          ? `<div class="figma-link-row">
+              <span class="figma-badge figma-badge-import">🌐 Web Reference</span>
+              <a href="${esc(intent.webUrl)}" target="_blank" rel="noopener" class="figma-url">${esc(intent.webUrl.length > 60 ? intent.webUrl.slice(0, 57) + "..." : intent.webUrl)}</a>
+            </div>`
+          : ""
+      }
+      ${
         intent.successCriteria.length > 0
           ? `<div class="criteria-section">
               <span class="section-label">Success Criteria</span>
@@ -303,6 +315,10 @@ function showForm(intent: DesignIntent | null): void {
     intent?.figmaMode ?? "import";
   (formEl.querySelector("#f-figma-context") as any).value =
     intent?.figmaContext ?? "";
+  (formEl.querySelector("#f-web-url") as any).value =
+    intent?.webUrl ?? "";
+  (formEl.querySelector("#f-web-context") as any).value =
+    intent?.webContext ?? "";
 
   formSection.style.display = "block";
   listSection.style.display = "none";
@@ -365,6 +381,10 @@ function showFormWithPrefill(prefill: PrefillData): void {
     prefill.figmaMode ?? "import";
   (formEl.querySelector("#f-figma-context") as any).value =
     prefill.figmaContext ?? "";
+  (formEl.querySelector("#f-web-url") as any).value =
+    prefill.webUrl ?? "";
+  (formEl.querySelector("#f-web-context") as any).value =
+    prefill.webContext ?? "";
 
   formSection.style.display = "block";
   listSection.style.display = "none";
@@ -408,6 +428,8 @@ function collectFormData(): Record<string, unknown> | null {
     figmaUrl: ((formEl.querySelector("#f-figma-url") as any).value ?? "").trim() || undefined,
     figmaMode: ((formEl.querySelector("#f-figma-mode") as any).value ?? "import") || undefined,
     figmaContext: ((formEl.querySelector("#f-figma-context") as any).value ?? "").trim() || undefined,
+    webUrl: ((formEl.querySelector("#f-web-url") as any).value ?? "").trim() || undefined,
+    webContext: ((formEl.querySelector("#f-web-context") as any).value ?? "").trim() || undefined,
   };
 }
 
@@ -720,6 +742,16 @@ function buildShell(): string {
       <label for="f-figma-context">Figma Design Spec <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--muted)">(auto-extracted)</span></label>
       <vscode-textarea id="f-figma-context" rows="1" placeholder="Detailed design spec extracted from Figma (layout, components, spacing, colors, typography)..."></vscode-textarea>
       <div class="helper">Auto-populated from your Figma file. Import mode uses this as a pixel-perfect blueprint; Reference mode uses it to identify areas for improvement.</div>
+    </div>
+    <div class="field figma-field">
+      <label for="f-web-url">🌐 Web Reference <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--muted)">(optional — brownfield)</span></label>
+      <vscode-textfield id="f-web-url" placeholder="https://portal.azure.com/... or https://azure.microsoft.com/..."></vscode-textfield>
+      <div class="helper">URL of an existing web page captured via visual-ingest as the brownfield starting point.</div>
+    </div>
+    <div class="field figma-field">
+      <label for="f-web-context">Web Reference Spec <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--muted)">(auto-extracted)</span></label>
+      <vscode-textarea id="f-web-context" rows="1" placeholder="Structured reference document from visual-ingest (layout, component inventory, content, visual properties)..."></vscode-textarea>
+      <div class="helper">Auto-populated from the captured web page. Contains layout analysis, component inventory, content, and visual properties mapped to Coherence components.</div>
     </div>
     <div class="form-actions">
       <span id="auto-save-status" class="save-status"></span>

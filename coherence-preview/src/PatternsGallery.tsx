@@ -96,6 +96,24 @@ export default function PatternsGallery() {
           description: 'Azure portal home page service tile — vertical layout with icon on top and label below.',
           tags: ['Cards', 'Component', 'Home'],
         },
+        {
+          id: 'pattern-essentials-accordion',
+          title: 'Essentials Accordion',
+          description: 'Collapsible essentials panel with chevron toggle, two-column key-value grid, colon separators, and JSON View link.',
+          tags: ['Essentials', 'Accordion', 'Resource'],
+        },
+        {
+          id: 'pattern-keys-endpoint',
+          title: 'Keys & Endpoint',
+          description: 'API keys and endpoint display with single Show/Hide toggle, grey input fields, copy buttons, and info tooltips.',
+          tags: ['Keys', 'Endpoint', 'Security'],
+        },
+        {
+          id: 'pattern-info-banner',
+          title: 'Info Banner',
+          description: 'Fallback for CuiMessageBar — plain HTML banner with info, warning, success, and danger intents.',
+          tags: ['Alert', 'Banner', 'Fallback'],
+        },
       ],
     },
     {
@@ -107,12 +125,6 @@ export default function PatternsGallery() {
           title: 'Create Flow',
           description: 'Multi-step creation wizard with tabbed form (Basics, Networking, Tags, Review) and action bar.',
           tags: ['Wizard', 'Form', 'Tabs', 'Create'],
-        },
-        {
-          id: 'scaffold-service-blade',
-          title: 'Service Blade',
-          description: 'Alternate layout with full-width title bar above a collapsible service sidebar + content. Matches Monitor, Defender, etc.',
-          tags: ['Service', 'Blade', 'Sidebar', 'Monitor'],
         },
         {
           id: 'scaffold-marketplace-browse',

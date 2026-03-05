@@ -4,15 +4,75 @@ import fs from 'fs';
 import path from 'path';
 
 /**
- * Vite plugin: local dev API for scaffold management.
- * DELETE /api/scaffold/:id       — removes the scaffold .tsx file + unregisters from main.tsx & PatternsGallery.tsx
- * POST   /api/scaffold/:id/use   — copies scaffold into a new experiment folder and registers in main.tsx
+ * Vite plugin: local dev API for scaffold & experiment management.
+ * DELETE /api/scaffold/:id        — removes the scaffold .tsx file + unregisters from main.tsx & PatternsGallery.tsx
+ * POST   /api/scaffold/:id/use    — copies scaffold into a new experiment folder and registers in main.tsx
+ * DELETE /api/experiment/:id      — removes the experiment folder + unregisters from main.tsx
  */
 function scaffoldApi() {
   return {
     name: 'scaffold-api',
     configureServer(server: any) {
       server.middlewares.use((req: any, res: any, next: any) => {
+        // ── DELETE /api/experiment/:id — remove experiment folder + unregister from main.tsx ──
+        if (req.method === 'DELETE' && req.url?.startsWith('/api/experiment/')) {
+          const id = decodeURIComponent(req.url.replace('/api/experiment/', ''));
+          if (!id || !/^[a-z][a-z0-9-]*$/.test(id)) {
+            res.statusCode = 400;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ error: 'Invalid experiment id' }));
+            return;
+          }
+
+          const srcDir = path.resolve(__dirname, 'src');
+          const mainPath = path.resolve(srcDir, 'main.tsx');
+          const experimentDir = path.resolve(srcDir, 'experiments', id);
+
+          // Verify the experiment directory exists inside src/experiments
+          const resolvedDir = path.resolve(experimentDir);
+          const allowedBase = path.resolve(srcDir, 'experiments');
+          if (!resolvedDir.startsWith(allowedBase + path.sep)) {
+            res.statusCode = 400;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ error: 'Invalid experiment path' }));
+            return;
+          }
+
+          // Remove entry block from main.tsx
+          const mainSrc = fs.readFileSync(mainPath, 'utf-8');
+          const lines = mainSrc.split('\n');
+          const idPattern = new RegExp(`id:\\s*'${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}'`);
+          const idLineIdx = lines.findIndex(l => idPattern.test(l));
+          if (idLineIdx === -1) {
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ error: `Experiment "${id}" not found in main.tsx` }));
+            return;
+          }
+
+          // Walk backward to find opening `{`
+          let startIdx = idLineIdx;
+          while (startIdx > 0 && !lines[startIdx].trimStart().startsWith('{')) startIdx--;
+
+          // Walk forward to find closing `},` or `}`
+          let endIdx = idLineIdx;
+          while (endIdx < lines.length - 1 && !lines[endIdx].trimStart().startsWith('}')) endIdx++;
+
+          lines.splice(startIdx, endIdx - startIdx + 1);
+          fs.writeFileSync(mainPath, lines.join('\n'), 'utf-8');
+
+          // Delete the experiment folder
+          const deleted: string[] = [];
+          if (fs.existsSync(experimentDir)) {
+            fs.rmSync(experimentDir, { recursive: true, force: true });
+            deleted.push(`experiments/${id}/`);
+          }
+
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ ok: true, id, deleted }));
+          return;
+        }
+
         // ── POST /api/scaffold/:id/use — create experiment from scaffold ──
         if (req.method === 'POST' && req.url?.match(/^\/api\/scaffold\/[^/]+\/use/)) {
           const urlParts = req.url.replace('/api/scaffold/', '').split('/');

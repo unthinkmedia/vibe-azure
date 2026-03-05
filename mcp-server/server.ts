@@ -121,12 +121,20 @@ export function createServer(): McpServer {
           .string()
           .optional()
           .describe("Detailed design spec extracted from the Figma file (exact layout, components, spacing, colors, typography, data content). This is the pixel-perfect blueprint the builder will follow."),
+        prefillWebUrl: z
+          .string()
+          .optional()
+          .describe("Web page URL captured via visual-ingest as a brownfield design starting point (e.g. portal.azure.com, azure.microsoft.com)."),
+        prefillWebContext: z
+          .string()
+          .optional()
+          .describe("Structured reference document from visual-ingest containing layout analysis, component inventory, content extraction, and visual properties mapped to Coherence components. JSON string."),
       },
       _meta: {
         ui: { resourceUri: intentAppUri },
       },
     },
-    async ({ experimentId, prefillTitle, prefillVision, prefillProblem, prefillSuccessCriteria, prefillNonGoals, prefillConstraints, prefillFigmaUrl, prefillFigmaMode, prefillFigmaContext }) => {
+    async ({ experimentId, prefillTitle, prefillVision, prefillProblem, prefillSuccessCriteria, prefillNonGoals, prefillConstraints, prefillFigmaUrl, prefillFigmaMode, prefillFigmaContext, prefillWebUrl, prefillWebContext }) => {
       const experiments = await listExperimentFolders();
 
       // Build prefill object if any prefill params were provided
@@ -134,7 +142,8 @@ export function createServer(): McpServer {
         (prefillSuccessCriteria && prefillSuccessCriteria.length > 0) ||
         (prefillNonGoals && prefillNonGoals.length > 0) ||
         (prefillConstraints && prefillConstraints.length > 0) ||
-        prefillFigmaUrl || prefillFigmaContext;
+        prefillFigmaUrl || prefillFigmaContext ||
+        prefillWebUrl || prefillWebContext;
       const prefill = hasPrefill ? {
         experimentId: experimentId ?? "",
         title: prefillTitle ?? "",
@@ -146,6 +155,8 @@ export function createServer(): McpServer {
         figmaUrl: prefillFigmaUrl ?? "",
         figmaMode: prefillFigmaMode ?? "",
         figmaContext: prefillFigmaContext ?? "",
+        webUrl: prefillWebUrl ?? "",
+        webContext: prefillWebContext ?? "",
       } : null;
 
       if (experimentId) {

@@ -33,7 +33,11 @@ Use `EXP_ROOT` for all local file operations. In standalone workspaces, use the 
 
 **If it exists:** Read the full document and use it as the **PRIMARY INSTRUCTION SOURCE** for all build decisions. Every component choice, layout decision, and mock data selection should trace back to a field in the intent.
 
-**If intent includes `figmaUrl` + `figmaContext`:** Check `figmaMode` to determine behavior.
+**If intent includes `figmaUrl` + `figmaContext`:** Check `figmaMode` to determine behavior (see Figma sections below).
+
+**If intent includes `webUrl` + `webContext`:** This is a brownfield web capture. Check the mode and use the web reference data (see Web Reference sections below).
+
+**If intent includes NEITHER:** This is a greenfield build. Use the intent's `vision`, `successCriteria`, and `constraints` as the primary instruction source.
 
 ---
 
@@ -161,13 +165,73 @@ The Figma design is a **reference to improve upon**, NOT a blueprint to reproduc
 
 **Priority order for Figma references:** intent vision/criteria (the IMPROVED design) → Coherence best practices → figmaContext (what to keep/improve) → page type scaffolds.
 
+---
+
+### WEB REFERENCE IMPORT MODE (`webUrl` + `webContext`, no `figmaUrl`)
+
+This is a brownfield build from a captured web page. The `webContext` is a structured reference document produced by the visual-ingest skill containing layout analysis, component inventory, content extraction, and visual properties.
+
+Your job is to **recreate the captured web page using Coherence components and design tokens**, the same way you would for a Figma import — but using the web reference data instead.
+
+#### Web-to-Coherence Mapping Process
+
+Walk through the `webContext` reference document and map each element to Coherence:
+
+**A) Read the component inventory** from `webContext.componentInventory`. Each entry already identifies the nearest `cui-*` component. Verify these mappings by:
+1. Fetching the **live API manifest** to confirm the component exists and check its exact attributes, slots, and CSS properties
+2. Reading the **component reference doc** for dos/don'ts
+3. If the mapping suggests a shared pattern (PageHeader, CopilotSuggestions, etc.) — use the shared pattern
+
+**B) Read the layout analysis** from `webContext.layout`. Use the `type` field to determine:
+- `"side-panel"` → Side Panel layout with section nav
+- `"full-width"` → Full Width layout
+- `"service-blade"` → Collapsible sidebar layout
+
+**C) Read the content extraction** from `webContext.content`. Use this to generate:
+- Mock data (`data.ts`) with realistic values matching what was captured
+- Navigation items matching the exact labels and groupings
+- Table columns with the same headers and sample data
+
+**D) Read the visual properties** from `webContext.visualProperties`. Map to Coherence tokens:
+- Colors → use nearest Coherence semantic color token
+- Spacing → snap to Coherence spacing token scale
+- Typography → use Coherence font tokens
+
+**E) If the captured page is from Azure Portal**, it already uses Fluent/Coherence patterns — the mapping should be very direct. Look for:
+- Azure resource navigation → `CuiSideNav` with matching nav items
+- Command bar → `CuiToolbar` with matching action buttons
+- Essentials panel → grid layout with `CuiLabel`
+- Data tables → `CuiDataGrid` or `CuiTable`
+
+**F) You may re-reference the live page during build:**
+If the `webContext` is insufficient for a particular detail, you can ask the user to re-open the browser session and capture additional details:
+
+> _"I need more detail on the [specific section]. Can you scroll to that section in the browser and let me re-capture it?"_
+
+**Priority order for web imports:** webContext (reference doc) → Coherence component match → intent vision/criteria → page type scaffolds.
+
+---
+
+### WEB REFERENCE MODE (`webUrl` + `webContext`, reference mode in constraints)
+
+The captured web page is a **reference to improve upon**. This follows the same pattern as Figma Reference Mode:
+
+1. Read `webContext` to understand what EXISTS — the current layout, components, and content
+2. Read the intent's `vision` and `successCriteria` — these describe the IMPROVED version
+3. Design a better solution using Coherence best practices
+4. Keep what works well from the captured page
+5. Fix what's broken — crowded layouts, missing accessibility, non-standard patterns
+6. Data content: same topics, better organization
+
+**Priority order for web references:** intent vision/criteria (the IMPROVED design) → Coherence best practices → webContext (what to keep/improve) → page type scaffolds.
+
 **Why this gate exists:** Without it, experiments get built without user review, wasting effort if the design direction was wrong. This gate was added after a real incident where the build phase ran before intent capture.
 
 ## Step 1: Identify Page Type & Layout
 
-**In Figma Import Mode:** Skip the scaffold table — the Figma design defines the page structure. Read the `figmaContext` to determine the layout instead. Still use the scaffolds as a reference for file structure conventions.
+**In Figma Import Mode or Web Import Mode:** Skip the scaffold table — the reference design defines the page structure. Read the `figmaContext` or `webContext` to determine the layout instead. Still use the scaffolds as a reference for file structure conventions.
 
-**In Figma Reference Mode:** Use the scaffold table normally — pick the page type that best fits the IMPROVED design, not necessarily what the Figma used.
+**In Figma Reference Mode or Web Reference Mode:** Use the scaffold table normally — pick the page type that best fits the IMPROVED design, not necessarily what the reference used.
 
 ### Step 1a: Determine Layout (Side Panel or Full Width)
 

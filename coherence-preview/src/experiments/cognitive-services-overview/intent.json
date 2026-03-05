@@ -1,0 +1,40 @@
+{
+  "experimentId": "cognitive-services-overview",
+  "title": "Azure Cognitive Services (Speech) Overview — FigmaFoundry",
+  "vision": "An enhanced Azure Cognitive Services (Speech Services) overview page that replicates the existing portal layout (essentials, keys, Get Started) and adds a new 'Usage & Insights' tab surfacing API call volume, latency metrics, quota utilization, and recent errors — data that currently requires navigating to the Monitoring section. Uses CuiSideNav with 6 groups, Browse Blade scaffold, shared PageHeader with Copilot suggestions, and Coherence design tokens throughout.",
+  "problem": "The current Cognitive Services overview page shows only static resource properties and API keys. Engineers must navigate away to Monitoring > Metrics to see any usage data. There's no at-a-glance view of how the resource is performing, whether the free tier quota is being consumed, or if there are recent errors — making the overview page feel like a dead end after initial setup.",
+  "successCriteria": [
+    "Left navigation sidebar with 6 collapsible groups (Quick Access, Resource Management, Security, Monitoring, Automation, Help) using CuiSideNav",
+    "Essentials panel displaying Resource group, Status (Active), Location (East US), Subscription, Subscription ID, API Kind (SpeechServices), Pricing tier (Free), Endpoint, Manage keys link, and Tags with JSON View link",
+    "Get Started tab with Speech Studio CTA card and keys/endpoint section showing Key 1, Key 2, Location/Region, and Endpoint with copy-to-clipboard buttons",
+    "NEW: 'Usage & Insights' tab with 4 KPI summary cards — Total API Calls (7d), Avg Latency (P95), Error Rate, and Quota Used — styled as a metric strip with trend indicators",
+    "NEW: API call volume sparkline chart (last 7 days, broken down by operation type: Speech-to-Text, Text-to-Speech, Pronunciation Assessment)",
+    "NEW: Quota utilization progress bars showing free tier consumption for each operation (e.g. 3.2K / 5K Speech-to-Text minutes used) with warning state at >80%",
+    "NEW: Recent errors table (last 10 failures) with columns: Timestamp, Operation, Error Code, Message, and a 'View in Logs' link",
+    "CuiMessageBar info banner about commitment plan association",
+    "CuiToolbar with Delete button",
+    "Copilot suggestion pills in PageHeader: 'Duplicate my Azure AI resource with CLI', 'Best practices for managing AI resources', 'Show platform metrics for this AI resource'",
+    "Browse Blade layout with breadcrumb (Home) + PageHeader above 220px collapsible sidebar"
+  ],
+  "nonGoals": [
+    "Functional API key regeneration",
+    "Real Azure backend integration",
+    "Navigation to sub-pages (only Overview page is in scope)",
+    "Actual commitment plan management",
+    "Real-time streaming metrics or live websocket data"
+  ],
+  "constraints": [
+    "Layout: side-panel",
+    "Brownfield: replicate existing Azure Portal Cognitive Services overview page, then enhance with Usage & Insights tab",
+    "Use Browse Blade scaffold layout (breadcrumb + PageHeader full-width above sidebar/content split)",
+    "Use shared PageHeader pattern with copilotSuggestions prop",
+    "Use CuiSideNav for left navigation with collapsible groups",
+    "Speech service resource type — API Kind: SpeechServices, Pricing tier: Free",
+    "Usage charts use CSS-only sparklines with Coherence tokens (no charting library)",
+    "Quota bars use Coherence status tokens: green (<60%), amber (60-80%), red (>80%)"
+  ],
+  "webUrl": "https://portal.azure.com/#@abritezgmail.onmicrosoft.com/resource/subscriptions/813fc56e-c3b3-4222-9586-3e6966997f90/resourceGroups/rg-abritez-9245/providers/Microsoft.CognitiveServices/accounts/FigmaFoundry/overview",
+  "createdAt": "2026-03-05T21:04:10.848Z",
+  "updatedAt": "2026-03-05T21:08:10.590Z",
+  "status": "draft"
+}

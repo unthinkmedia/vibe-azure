@@ -35,6 +35,14 @@ function parseHash(hash: string, entries: Entry[]): { entryId: string | null; su
 // ─── Experiments (with dates, newest first) ───
 const experiments: Entry[] = [
   {
+    id: 'cognitive-services-overview',
+    title: 'Cognitive Services (Speech) Overview',
+    description: 'Azure Cognitive Services Speech overview with essentials, Get Started tab (Speech Studio CTA + API keys), and Usage & Insights tab (KPI metrics, call volume chart, quota bars, recent errors)',
+    component: lazy(() => import('./experiments/cognitive-services-overview')),
+    date: '2026-03-05',
+    tags: ['overview', 'side-panel', 'cognitive-services', 'speech', 'table', 'chart', 'cards', 'copilot'],
+  },
+  {
     id: 'agent-monitor',
     title: 'Agent Monitoring Dashboard',
     description: 'Centralized monitoring view for all AI agents — health status, KPI summary (total/healthy/degraded/invocations), agent cards with latency and success rates, and recent activity table',
@@ -49,14 +57,6 @@ const experiments: Entry[] = [
     component: lazy(() => import('./experiments/logic-app-designer')),
     date: '2026-02-21',
     tags: ['designer', 'side-panel', 'logic-apps', 'canvas', 'workflow', 'branching'],
-  },
-  {
-    id: 'resource-group-overview',
-    title: 'Azure Resource Group Overview',
-    description: 'Resource group overview with resource count summary cards, cost breakdown donut chart, recent activity log, and tag compliance checker',
-    component: lazy(() => import('./experiments/resource-group-overview')),
-    date: '2026-02-20',
-    tags: ['overview', 'side-panel', 'resource-groups', 'donut-chart', 'table', 'cards'],
   },
   {
     id: 'functions-create-hosting-plan',
@@ -385,6 +385,27 @@ const patterns: Entry[] = [
     component: lazy(() => import('./patterns/PatternServiceTile')),
     tags: ['cards', 'component', 'home'],
   },
+  {
+    id: 'pattern-essentials-accordion',
+    title: 'Essentials Accordion',
+    description: 'Collapsible essentials panel with chevron toggle, two-column key-value grid, colon separators, and JSON View link',
+    component: lazy(() => import('./patterns/PatternEssentialsAccordion')),
+    tags: ['essentials', 'accordion', 'resource', 'overview'],
+  },
+  {
+    id: 'pattern-keys-endpoint',
+    title: 'Keys & Endpoint',
+    description: 'API keys and endpoint display with single Show/Hide toggle, grey input fields, copy buttons, and optional info tooltips',
+    component: lazy(() => import('./patterns/PatternKeysEndpoint')),
+    tags: ['keys', 'endpoint', 'copy', 'security'],
+  },
+  {
+    id: 'pattern-info-banner',
+    title: 'Info Banner',
+    description: 'Fallback for CuiMessageBar — plain HTML banner with info/warning/success/danger intents and guaranteed blue/yellow/green/red styling',
+    component: lazy(() => import('./patterns/PatternInfoBanner')),
+    tags: ['alert', 'banner', 'message-bar', 'fallback'],
+  },
 ];
 
 // ─── Page Scaffolds ───
@@ -395,13 +416,6 @@ const scaffolds: Entry[] = [
     description: 'Multi-step creation wizard with tabbed form and action bar',
     component: lazy(() => import('./patterns/ScaffoldCreateFlow')),
     tags: ['create-flow', 'full-width', 'form', 'tabs'],
-  },
-  {
-    id: 'scaffold-service-blade',
-    title: 'Service Blade',
-    description: 'Alternate layout with full-width title bar above a collapsible service sidebar + content area (matches Monitor, Defender, etc.)',
-    component: lazy(() => import('./patterns/ScaffoldServiceBlade')),
-    tags: ['service-blade', 'sidebar', 'layout'],
   },
   {
     id: 'scaffold-marketplace-browse',
@@ -440,9 +454,10 @@ const scaffolds: Entry[] = [
   },
 ];
 
-// Initial scaffold list (may shrink at runtime via delete API)
+// Initial lists (may shrink at runtime via delete API)
+const initialExperiments = experiments;
 const initialScaffolds = scaffolds;
-const initialAllEntries = [...experiments, ...patterns, ...initialScaffolds];
+const initialAllEntries = [...initialExperiments, ...patterns, ...initialScaffolds];
 
 type TabId = 'all' | 'experiments' | 'patterns' | 'scaffolds';
 
@@ -621,7 +636,7 @@ function EntryCard({ entry, onDelete, onUseTemplate, categoryLabel, activeTags, 
       {onDelete && (
         <button
           onClick={() => {
-            if (confirm(`Delete scaffold "${entry.title}"?\n\nThis removes the .tsx file and unregisters it. Cannot be undone.`)) {
+            if (confirm(`Delete "${entry.title}"?\n\nThis removes all files and unregisters it from the catalog. Cannot be undone.`)) {
               onDelete(entry.id);
             }
           }}
@@ -674,8 +689,9 @@ function getInitialEntry(entries: Entry[]): { entryId: string | null; subRoute?:
 }
 
 function App() {
+  const [liveExperiments, setLiveExperiments] = useState<Entry[]>(initialExperiments);
   const [liveScaffolds, setLiveScaffolds] = useState<Entry[]>(initialScaffolds);
-  const allEntries = [...experiments, ...patterns, ...liveScaffolds];
+  const allEntries = [...liveExperiments, ...patterns, ...liveScaffolds];
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTags, setActiveTags] = useState<Set<string>>(new Set());
 
@@ -697,7 +713,7 @@ function App() {
     });
   };
 
-  const allAvailableTags = useMemo(() => collectTags(allEntries), [liveScaffolds]);
+  const allAvailableTags = useMemo(() => collectTags(allEntries), [liveExperiments, liveScaffolds]);
 
   const filterEntries = (entries: Entry[]) =>
     entries.filter(e =>
@@ -705,7 +721,7 @@ function App() {
       matchesTags(e, activeTags)
     );
 
-  const filteredExperiments = useMemo(() => filterEntries(experiments), [searchQuery, activeTags]);
+  const filteredExperiments = useMemo(() => filterEntries(liveExperiments), [searchQuery, activeTags, liveExperiments]);
   const filteredPatterns = useMemo(() => filterEntries(patterns), [searchQuery, activeTags]);
   const filteredScaffolds = useMemo(() => filterEntries(liveScaffolds), [searchQuery, activeTags, liveScaffolds]);
   const filteredAll = useMemo(() => [...filteredExperiments, ...filteredPatterns, ...filteredScaffolds], [filteredExperiments, filteredPatterns, filteredScaffolds]);
@@ -721,6 +737,25 @@ function App() {
         return;
       }
       setLiveScaffolds(prev => prev.filter(s => s.id !== id));
+    } catch (err) {
+      alert(`Delete failed: ${err}`);
+    }
+  };
+
+  const handleDeleteExperiment = async (id: string) => {
+    try {
+      const res = await fetch(`/api/experiment/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        alert(`Failed to delete: ${body.error || res.statusText}`);
+        return;
+      }
+      setLiveExperiments(prev => prev.filter(e => e.id !== id));
+      // If we're currently viewing this experiment, go home
+      if (activeId === id) {
+        window.location.hash = '';
+        setActiveId(null);
+      }
     } catch (err) {
       alert(`Delete failed: ${err}`);
     }
@@ -888,7 +923,7 @@ function App() {
   // (must be before any early returns to keep hook count stable)
   const tabTags = useMemo(() => {
     const source = activeTab === 'all' ? allEntries :
-      activeTab === 'experiments' ? experiments :
+      activeTab === 'experiments' ? liveExperiments :
         activeTab === 'patterns' ? patterns : liveScaffolds;
     return collectTags(source);
   }, [activeTab, liveScaffolds]);
@@ -919,7 +954,7 @@ function App() {
           </a>
           <span style={{ color: 'var(--neutral-foreground3)', fontSize: 14 }}>|</span>
           <span style={{ fontSize: 14, fontWeight: 600 }}>{activeEntry.title}</span>
-          {experiments.some(e => e.id === activeEntry.id) && <IntentButton experimentId={activeEntry.id} />}
+          {liveExperiments.some(e => e.id === activeEntry.id) && <IntentButton experimentId={activeEntry.id} />}
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
             {liveScaffolds.some(s => s.id === activeEntry.id) && (
               <button
@@ -1109,13 +1144,17 @@ function App() {
           )}
           {currentEntries.map(entry => {
             const isScaffold = liveScaffolds.some(s => s.id === entry.id);
+            const isExperiment = liveExperiments.some(e => e.id === entry.id);
+            const deleteHandler = activeTab === 'scaffolds' ? handleDeleteScaffold
+              : (activeTab === 'experiments' || activeTab === 'all') && isExperiment ? handleDeleteExperiment
+              : undefined;
             return (
               <EntryCard
                 key={entry.id}
                 entry={entry}
-                onDelete={activeTab === 'scaffolds' ? handleDeleteScaffold : undefined}
+                onDelete={deleteHandler}
                 onUseTemplate={isScaffold ? handleUseTemplate : undefined}
-                categoryLabel={activeTab === 'all' ? entryCategory(entry, experiments, patterns, liveScaffolds) : undefined}
+                categoryLabel={activeTab === 'all' ? entryCategory(entry, liveExperiments, patterns, liveScaffolds) : undefined}
                 activeTags={activeTags}
                 onTagClick={toggleTag}
               />

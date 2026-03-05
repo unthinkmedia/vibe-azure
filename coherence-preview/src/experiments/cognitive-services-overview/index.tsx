@@ -1,15 +1,16 @@
 // @ts-nocheck
 /**
- * Azure Resource Group Overview — main entry point
+ * Azure Cognitive Services (Speech) Overview — FigmaFoundry
  *
- * Resource group overview page with resource count summary cards,
- * cost breakdown donut chart, recent activity log, and tag compliance checker.
+ * Resource overview page with essentials panel, Get Started tab
+ * (Speech Studio CTA + API keys), and Usage & Insights tab
+ * (KPI metrics, call volume chart, quota bars, recent errors).
  *
  * File structure:
- *   data.ts          — types, mock data, nav config
+ *   data.ts          — essentials, keys, metrics, quota, errors, nav items
  *   styles.ts        — scoped CSS
- *   Navigation.tsx   — side nav component
- *   PageContent.tsx  — essentials + resource cards + donut + activity + compliance
+ *   Navigation.tsx   — side nav component (6 groups)
+ *   PageContent.tsx  — essentials + tabs (Get Started, Usage & Insights)
  *   index.tsx        — this file, orchestrates the above
  */
 import {
@@ -30,10 +31,10 @@ import PageHeader from '../../patterns/PageHeader';
 import AzurePortalNav from '../../patterns/PatternAzurePortalNav';
 import Navigation from './Navigation';
 import PageContent from './PageContent';
-import { resourceGroupName, resourceType, copilotSuggestions } from './data';
+import { resourceName, resourceType, copilotSuggestions } from './data';
 import { styles } from './styles';
 
-export default function ResourceGroupOverview() {
+export default function CognitiveServicesOverview() {
   return (
     <>
       <CuiAppFrame skipToMainText="Skip to main content">
@@ -85,32 +86,53 @@ export default function ResourceGroupOverview() {
         <AzurePortalNav />
 
         {/* ─── Main Content ─── */}
-        <div slot="main" style={{ display: 'flex', height: '100%' }}>
-          {/* ─── Section Side Navigation ─── */}
-          <Navigation />
-
-          <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
+        <div slot="main">
           <div style={{ padding: '8px 32px 0' }}>
             <CuiBreadcrumb label="Navigation" size="small">
               <CuiBreadcrumbItem href="#">Home</CuiBreadcrumbItem>
-              <CuiBreadcrumbItem href="#">Resource groups</CuiBreadcrumbItem>
-              <CuiBreadcrumbItem active current="page">{resourceGroupName}</CuiBreadcrumbItem>
+              <CuiBreadcrumbItem href="#">Cognitive Services</CuiBreadcrumbItem>
+              <CuiBreadcrumbItem active current="page">{resourceName}</CuiBreadcrumbItem>
             </CuiBreadcrumb>
           </div>
 
           <PageHeader
-            icon="https://api.iconify.design/fluent:folder-24-regular.svg"
-            title={resourceGroupName}
+            icon="https://api.iconify.design/fluent:brain-circuit-24-regular.svg"
+            title={resourceName}
             subtitle={resourceType}
             showFavorite
             copilotSuggestions={copilotSuggestions}
           />
 
-          <PageContent />
+          {/* Browse Blade layout: sidebar + content */}
+          <div className="blade-body">
+            <div className="blade-sidebar">
+              <Navigation />
+            </div>
+            <div className="blade-content">
+              <PageContent />
+            </div>
           </div>
         </div>
       </CuiAppFrame>
       <style>{styles}</style>
+      <style>{`
+        .blade-body {
+          display: flex;
+          flex: 1;
+          overflow: hidden;
+        }
+        .blade-sidebar {
+          width: 220px;
+          min-width: 220px;
+          border-right: 1px solid var(--neutral-stroke2);
+          background: var(--neutral-background1);
+          overflow-y: auto;
+        }
+        .blade-content {
+          flex: 1;
+          overflow-y: auto;
+        }
+      `}</style>
     </>
   );
 }

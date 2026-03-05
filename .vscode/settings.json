@@ -1,3 +1,4 @@
 {
-    "agenticWorkflows.repositoryPath": "https://github.com/unthinkmedia/MakeAgenticWorkflow.git"
+    "agenticWorkflows.repositoryPath": "https://github.com/unthinkmedia/MakeAgenticWorkflow.git",
+    "terminal.integrated.inheritEnv": true
 }

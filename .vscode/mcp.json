@@ -2,24 +2,19 @@
 	"servers": {
 		"microsoft/playwright-mcp": {
 			"type": "stdio",
-			"command": "/Users/alexbritez/.nvm/versions/node/v22.18.0/bin/npx",
+			"command": "npx",
 			"args": [
+				"-y",
 				"@playwright/mcp@latest"
-			],
-			"env": {
-				"PATH": "/Users/alexbritez/.nvm/versions/node/v22.18.0/bin:/usr/local/bin:/usr/bin:/bin"
-			}
+			]
 		},
 		"coherence-prototyper": {
 			"type": "stdio",
-			"command": "/Users/alexbritez/.nvm/versions/node/v22.18.0/bin/npx",
+			"command": "npx",
 			"args": [
 				"tsx",
 				"${workspaceFolder}/mcp-server/main.ts"
-			],
-			"env": {
-				"PATH": "/Users/alexbritez/.nvm/versions/node/v22.18.0/bin:/usr/local/bin:/usr/bin:/bin"
-			}
+			]
 		},
 		"figma": {
 			"type": "http",

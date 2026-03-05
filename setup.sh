@@ -2,7 +2,8 @@
 set -euo pipefail
 
 # VibeAzure Developer Setup
-# Configures npm auth for the private @charm-ux feed, then installs all dependencies.
+# Installs all dependencies — no private feed auth required.
+# Coherence (CUI) components are loaded from the public CDN at runtime.
 # Usage:
 #   ./setup.sh          # Full setup (check + install)
 #   ./setup.sh --check  # Check prerequisites only (no changes made)
@@ -12,9 +13,6 @@ CHECK_ONLY=false
 if [[ "${1:-}" == "--check" ]]; then
   CHECK_ONLY=true
 fi
-
-FEED_URL="pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm"
-NPMRC="$HOME/.npmrc"
 
 # ──────────────────────────────────────────────
 # Prerequisite Check
@@ -70,28 +68,9 @@ run_checks() {
     ((fail++))
   fi
 
-  # ── Azure Artifacts feed auth ──
-  local npmrc_found=false
-  if grep -q "$FEED_URL" "$NPMRC" 2>/dev/null; then
-    npmrc_found=true
-  elif grep -q "$FEED_URL" "$SCRIPT_DIR/coherence-preview/.npmrc" 2>/dev/null; then
-    npmrc_found=true
-  fi
-  if $npmrc_found; then
-    echo "  ✅  Azure Artifacts feed credentials — configured"
-    ((pass++))
-  else
-    echo "  ❌  Azure Artifacts feed credentials — not found"
-    echo "      You need a PAT from https://dev.azure.com/charm-pilot/_usersSettings/tokens"
-    echo "      The setup script (./setup.sh) will configure this for you"
-    ((fail++))
-  fi
-
   # ── coherence-preview node_modules ──
-  if [ -d "$SCRIPT_DIR/coherence-preview/node_modules/@charm-ux" ]; then
-    local cui_ver
-    cui_ver=$(node -e "console.log(require('$SCRIPT_DIR/coherence-preview/node_modules/@charm-ux/cui/package.json').version)" 2>/dev/null || echo "unknown")
-    echo "  ✅  coherence-preview — installed (@charm-ux/cui v$cui_ver)"
+  if [ -d "$SCRIPT_DIR/coherence-preview/node_modules" ]; then
+    echo "  ✅  coherence-preview — dependencies installed (CUI loaded from CDN)"
     ((pass++))
   else
     echo "  ❌  coherence-preview — dependencies not installed"
@@ -142,8 +121,24 @@ run_checks() {
     echo "  ✅  FIGMA_ACCESS_TOKEN — set"
   else
     echo "  ⚠️   FIGMA_ACCESS_TOKEN — not set (optional, for Figma MCP integration)"
+    echo "      Set in your shell profile: export FIGMA_ACCESS_TOKEN=your-token"
     ((warn++))
   fi
+
+  # ── MCP servers (informational) ──
+  echo ""
+  echo "  MCP Server Status:"
+
+  # Playwright MCP — verify npx can resolve the package
+  if npx -y @playwright/mcp@latest --help &>/dev/null 2>&1; then
+    echo "  ✅  Playwright MCP — available (@playwright/mcp)"
+  else
+    echo "  ⚠️   Playwright MCP — not cached yet (will auto-install on first MCP start via npx)"
+    ((warn++))
+  fi
+
+  echo "  ✅  Coherence Prototyper MCP — configured via .vscode/mcp.json"
+  echo "  ✅  Figma MCP — configured via .vscode/mcp.json (requires FIGMA_ACCESS_TOKEN)"
 
   # ── Summary ──
   echo ""
@@ -201,66 +196,7 @@ fi
 echo "✅  Node.js v$NODE_VERSION"
 
 # ──────────────────────────────────────────────
-# 2. Configure npm auth for @charm-ux feed
-# ──────────────────────────────────────────────
-
-FEED_URL="pkgs.dev.azure.com/charm-pilot/charm-pilot/_packaging/charm-feed/npm"
-NPMRC="$HOME/.npmrc"
-
-# Check if auth is already configured
-if grep -q "$FEED_URL" "$NPMRC" 2>/dev/null; then
-  echo "✅  Azure Artifacts feed already configured in ~/.npmrc"
-else
-  echo ""
-  echo "The @charm-ux/cui package lives in a private Azure Artifacts feed."
-  echo "You need a Personal Access Token (PAT) with Packaging > Read scope."
-  echo ""
-  echo "  1. Go to: https://dev.azure.com/charm-pilot/_usersSettings/tokens"
-  echo "  2. Create a token with Packaging → Read"
-  echo "  3. Paste it below"
-  echo ""
-  read -rsp "PAT> " PAT
-  echo ""
-
-  if [ -z "$PAT" ]; then
-    echo "❌  No PAT provided. Exiting."
-    exit 1
-  fi
-
-  B64=$(echo -n "$PAT" | base64)
-
-  # Append to ~/.npmrc
-  {
-    echo ""
-    echo "; ── @charm-ux Azure Artifacts feed (added by VibeAzure setup) ──"
-    echo "//$FEED_URL/registry/:username=azdo"
-    echo "//$FEED_URL/registry/:_password=$B64"
-    echo "//$FEED_URL/registry/:email=setup@vibeazure"
-    echo "//$FEED_URL/registry/:always-auth=true"
-    echo "//$FEED_URL/:username=azdo"
-    echo "//$FEED_URL/:_password=$B64"
-    echo "//$FEED_URL/:email=setup@vibeazure"
-    echo "//$FEED_URL/:always-auth=true"
-  } >> "$NPMRC"
-
-  echo "✅  Azure Artifacts credentials written to ~/.npmrc"
-fi
-
-# ──────────────────────────────────────────────
-# 3. Write project-level .npmrc files (registry + auth)
-# ──────────────────────────────────────────────
-
-PREVIEW_NPMRC="$SCRIPT_DIR/coherence-preview/.npmrc"
-cat > "$PREVIEW_NPMRC" <<EOF
-@charm-ux:registry=https://$FEED_URL/registry/
-//$FEED_URL/registry/:username=azdo
-//$FEED_URL/registry/:_password=OFNQRU1vdGdxek1OdnlUdGJTZjF2VHZCWUJiaWtudmtjWEN3MVFsdzJwOXpkNElXcWsyNkpRUUo5OUNDQUNBQUFBQUFBcm9oQUFBU0FaRE8zdEk0
-//$FEED_URL/registry/:always-auth=true
-EOF
-echo "✅  coherence-preview/.npmrc written (registry + auth)"
-
-# ──────────────────────────────────────────────
-# 4. Install coherence-preview
+# 2. Install coherence-preview (no private feed — CUI loaded from CDN)
 # ──────────────────────────────────────────────
 
 echo ""
@@ -270,7 +206,7 @@ npm install
 echo "✅  coherence-preview ready"
 
 # ──────────────────────────────────────────────
-# 5. Install mcp-server
+# 3. Install mcp-server
 # ──────────────────────────────────────────────
 
 echo ""
@@ -280,7 +216,7 @@ npm install
 echo "✅  mcp-server ready"
 
 # ──────────────────────────────────────────────
-# 6. Build mcp-server
+# 4. Build mcp-server
 # ──────────────────────────────────────────────
 
 echo ""

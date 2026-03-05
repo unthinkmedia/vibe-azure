@@ -267,10 +267,22 @@ createRoot(document.getElementById('root')!).render(<App />);
   const mcpJson = JSON.stringify(
     {
       servers: {
+        "microsoft/playwright-mcp": {
+          type: "stdio",
+          command: "npx",
+          args: ["-y", "@playwright/mcp@latest"],
+        },
         "coherence-prototyper": {
           type: "stdio",
           command: "npx",
           args: ["-y", "@unthinkmedia/coherence-prototyper-mcp"],
+        },
+        figma: {
+          type: "http",
+          url: "https://mcp.figma.com/mcp",
+          headers: {
+            Authorization: "Bearer ${env:FIGMA_ACCESS_TOKEN}",
+          },
         },
       },
     },
@@ -354,17 +366,21 @@ createRoot(document.getElementById('root')!).render(<App />);
   console.log(`\n✅ Workspace ready!\n`);
   console.log(`   Includes:`);
   console.log(`   - MCP server config (.vscode/mcp.json)`);
+  console.log(`     • Coherence Prototyper — AI-powered Azure portal builder`);
+  console.log(`     • Playwright MCP — browser automation & testing`);
+  console.log(`     • Figma MCP — design-to-code (requires FIGMA_ACCESS_TOKEN env var)`);
   console.log(`   - ${patterns.length} shared patterns`);
   console.log(`   - ${skillCount} skill files (.github/skills/)`);
 
   console.log(`   Next steps:`);
   console.log(``);
   console.log(`   1. Open in VS Code:  code ${absDir}`);
-  console.log(`   2. When prompted, click "Start" on the coherence-prototyper MCP server`);
-  console.log(`      (VS Code reads .vscode/mcp.json and will ask to activate it)`);
-  console.log(`   3. Say to Copilot:   "build me an Azure page"`);
-  console.log(`   4. Preview locally:  npm run dev`);
-  console.log(`   5. Deploy:           "deploy it"`);
+  console.log(`   2. When prompted, click "Start" on the MCP servers`);
+  console.log(`      (VS Code reads .vscode/mcp.json and will ask to activate them)`);
+  console.log(`   3. (Optional) Set FIGMA_ACCESS_TOKEN for Figma MCP integration`);
+  console.log(`   4. Say to Copilot:   "build me an Azure page"`);
+  console.log(`   5. Preview locally:  npm run dev`);
+  console.log(`   6. Deploy:           "deploy it"`);
   console.log(``);
 
   if (warnings.length > 0) {

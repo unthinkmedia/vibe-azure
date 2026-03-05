@@ -204,4 +204,13 @@ function scaffoldApi() {
 
 export default defineConfig({
   plugins: [react(), scaffoldApi()],
+  resolve: {
+    alias: {
+      '@charm-ux/cui/react': path.resolve(__dirname, 'src/charm-shim.ts'),
+      '@charm-ux/cui/dist/react/index.js': path.resolve(__dirname, 'src/charm-shim.ts'),
+      // CSS imports become no-ops — theme/reset loaded from CDN in index.html
+      '@charm-ux/cui/dist/themes/cui/theme.css': path.resolve(__dirname, 'src/charm-noop.css'),
+      '@charm-ux/cui/dist/themes/cui/reset.css': path.resolve(__dirname, 'src/charm-noop.css'),
+    },
+  },
 });

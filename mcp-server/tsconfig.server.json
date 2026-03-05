@@ -13,6 +13,6 @@
     "declaration": false,
     "sourceMap": true
   },
-  "include": ["main.ts", "server.ts", "src/**/*.ts"],
+  "include": ["main.ts", "init.ts", "server.ts", "src/**/*.ts"],
   "exclude": ["node_modules", "dist", "src/token-browser.ts", "src/intent-app.ts"]
 }

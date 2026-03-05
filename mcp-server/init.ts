@@ -6,74 +6,30 @@
  * Usage: npx @unthinkmedia/coherence-prototyper-mcp init [target-dir]
  */
 
-import { existsSync } from "node:fs";
+import { existsSync, cpSync, readdirSync, statSync } from "node:fs";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { execSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
-const GITHUB_REPO = "unthinkmedia/vibe-azure";
-const PATTERNS_PATH = "coherence-preview/src/patterns";
-const SKILLS_PATH = ".github/skills";
-const AGENTS_FILE = ".github/AGENTS.md";
-const PROMPTS_PATH = ".github/prompts";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Directories/files to skip when fetching skills from GitHub
-const SKILL_EXCLUDE = new Set([
-  ".browser-profile",
-  ".skill-organizer.manifest.json",
-  ".DS_Store",
-  "__pycache__",
-]);
+/** Bundled assets directory — ships inside the npm package. */
+const BUNDLED_DIR = path.join(__dirname, "bundled");
 
-async function githubFetch(apiPath: string): Promise<any> {
-  const headers: Record<string, string> = {
-    Accept: "application/vnd.github.v3+json",
-    "User-Agent": "coherence-prototyper-mcp",
-  };
-  if (process.env.GITHUB_TOKEN) {
-    headers.Authorization = `token ${process.env.GITHUB_TOKEN}`;
-  }
-  const res = await fetch(
-    `https://api.github.com/repos/${GITHUB_REPO}/${apiPath}`,
-    { headers }
-  );
-  if (!res.ok) throw new Error(`GitHub API ${res.status}: ${res.statusText}`);
-  return res.json();
-}
-
-async function githubGetFileContent(filePath: string): Promise<string> {
-  const data = await githubFetch(`contents/${filePath}`);
-  if (data.encoding === "base64" && data.content) {
-    return Buffer.from(data.content, "base64").toString("utf-8");
-  }
-  throw new Error(`Unexpected response for ${filePath}`);
-}
-
-/** Recursively fetch all files under a GitHub directory, respecting excludes. */
-async function githubFetchTree(
-  dirPath: string,
-  exclude = SKILL_EXCLUDE
-): Promise<Array<{ path: string; content: string }>> {
-  const results: Array<{ path: string; content: string }> = [];
-  const listing: any[] = await githubFetch(`contents/${dirPath}`);
-
-  for (const entry of listing) {
-    const name = entry.name as string;
-    if (exclude.has(name) || name.endsWith(".pyc")) continue;
-
-    if (entry.type === "dir") {
-      const children = await githubFetchTree(entry.path, exclude);
-      results.push(...children);
-    } else if (entry.type === "file") {
-      try {
-        const content = await githubGetFileContent(entry.path);
-        results.push({ path: entry.path, content });
-      } catch {
-        // skip files that can't be fetched
-      }
+/** Recursively count files in a directory. */
+function countFiles(dir: string): number {
+  let count = 0;
+  for (const entry of readdirSync(dir)) {
+    const full = path.join(dir, entry);
+    if (statSync(full).isDirectory()) {
+      count += countFiles(full);
+    } else {
+      count++;
     }
   }
-  return results;
+  return count;
 }
 
 async function writeFile(
@@ -98,31 +54,23 @@ export async function initWorkspace(targetDir: string): Promise<void> {
 
   await fsp.mkdir(absDir, { recursive: true });
 
-  // Fetch patterns from GitHub
-  let patternFiles: string[] = [];
-  try {
-    const listing = await githubFetch(`contents/${PATTERNS_PATH}`);
-    patternFiles = (listing as any[])
-      .filter((f: any) => f.type === "file")
-      .map((f: any) => f.name);
-  } catch {
-    warnings.push(
-      "Could not fetch pattern list from GitHub. You may need a GITHUB_TOKEN for API access."
-    );
-  }
-
+  // Copy bundled patterns
+  const bundledPatterns = path.join(BUNDLED_DIR, "patterns");
   const patterns: Array<{ name: string; content: string }> = [];
-  if (patternFiles.length > 0) {
-    process.stdout.write(`   Fetching ${patternFiles.length} shared patterns...`);
-    for (const pf of patternFiles) {
-      try {
-        const content = await githubGetFileContent(`${PATTERNS_PATH}/${pf}`);
+  if (existsSync(bundledPatterns)) {
+    process.stdout.write(`   Copying shared patterns...`);
+    for (const pf of readdirSync(bundledPatterns)) {
+      const full = path.join(bundledPatterns, pf);
+      if (statSync(full).isFile()) {
+        const content = await fsp.readFile(full, "utf-8");
         patterns.push({ name: pf, content });
-      } catch {
-        // skip
       }
     }
-    console.log(` ✓`);
+    console.log(` ✓ (${patterns.length} files)`);
+  } else {
+    warnings.push(
+      "Bundled patterns not found. The npm package may be incomplete."
+    );
   }
 
   // package.json
@@ -313,43 +261,39 @@ createRoot(document.getElementById('root')!).render(<App />);
   }
   console.log(` ✓ (${created.length} files)`);
 
-  // Fetch and install skills, AGENTS.md, and prompts from GitHub
+  // Copy bundled skills, AGENTS.md, and prompts
   let skillCount = 0;
-  try {
-    process.stdout.write(`   Installing skills from GitHub...`);
+  const bundledSkills = path.join(BUNDLED_DIR, ".github/skills");
+  const bundledAgents = path.join(BUNDLED_DIR, ".github/AGENTS.md");
+  const bundledPrompts = path.join(BUNDLED_DIR, ".github/prompts");
 
-    // Skills
-    const skillFiles = await githubFetchTree(SKILLS_PATH);
-    for (const sf of skillFiles) {
-      await writeFile(absDir, sf.path, sf.content, created);
-      skillCount++;
-    }
+  if (existsSync(bundledSkills)) {
+    process.stdout.write(`   Installing skills...`);
+
+    // Skills — recursive copy
+    const skillsDest = path.join(absDir, ".github/skills");
+    cpSync(bundledSkills, skillsDest, { recursive: true });
+    skillCount += countFiles(bundledSkills);
 
     // AGENTS.md
-    try {
-      const agentsMd = await githubGetFileContent(AGENTS_FILE);
-      await writeFile(absDir, AGENTS_FILE, agentsMd, created);
+    if (existsSync(bundledAgents)) {
+      const agentsDest = path.join(absDir, ".github/AGENTS.md");
+      await fsp.mkdir(path.dirname(agentsDest), { recursive: true });
+      cpSync(bundledAgents, agentsDest);
       skillCount++;
-    } catch {
-      // optional
     }
 
     // Prompts
-    try {
-      const promptFiles = await githubFetchTree(PROMPTS_PATH);
-      for (const pf of promptFiles) {
-        await writeFile(absDir, pf.path, pf.content, created);
-        skillCount++;
-      }
-    } catch {
-      // optional
+    if (existsSync(bundledPrompts)) {
+      const promptsDest = path.join(absDir, ".github/prompts");
+      cpSync(bundledPrompts, promptsDest, { recursive: true });
+      skillCount += countFiles(bundledPrompts);
     }
 
     console.log(` ✓ (${skillCount} files)`);
-  } catch {
-    console.log(` ✗`);
+  } else {
     warnings.push(
-      "Could not fetch skills from GitHub. You may need a GITHUB_TOKEN. Skills can be added later by copying .github/skills/ from the monorepo."
+      "Bundled skills not found. The npm package may be incomplete."
     );
   }
   // Install dependencies

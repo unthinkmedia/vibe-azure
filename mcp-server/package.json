@@ -14,7 +14,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc --noEmit && tsc -p tsconfig.server.json && rm -rf dist/*.html && cross-env INPUT=token-browser.html vite build && cross-env INPUT=intent-app.html vite build && cross-env INPUT=icon-browser.html vite build && cross-env INPUT=verification-report.html vite build",
+    "bundle-assets": "node scripts/bundle-assets.mjs",
+    "build": "tsc --noEmit && tsc -p tsconfig.server.json && npm run bundle-assets && rm -rf dist/*.html && cross-env INPUT=token-browser.html vite build && cross-env INPUT=intent-app.html vite build && cross-env INPUT=icon-browser.html vite build && cross-env INPUT=verification-report.html vite build",
     "prepublishOnly": "npm run build",
     "start": "concurrently \"cross-env NODE_ENV=development INPUT=token-browser.html vite build --watch\" \"cross-env NODE_ENV=development INPUT=intent-app.html vite build --watch\" \"cross-env NODE_ENV=development INPUT=icon-browser.html vite build --watch\" \"cross-env NODE_ENV=development INPUT=verification-report.html vite build --watch\" \"tsx watch main.ts\"",
     "dev": "tsx main.ts"

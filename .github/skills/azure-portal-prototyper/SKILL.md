@@ -175,5 +175,5 @@ Use these exact labels for consistency with the real Azure portal:
 - **Page content** — single-page: export from `PageContent.tsx`. Multi-page: each page in `pages/` is self-contained.
 - **Icons** — use Iconify URLs for nav/page icons (see azure-icons reference)
 - **Body margin** — always include `body { margin: 0; }` in styles
-- **Self-contained** — each experiment folder must be fully independent; never import from other experiments (except the `copilot-button` utility and shared patterns from `src/patterns/`)
+- **Self-contained** — each experiment folder must be fully independent; **NEVER import from another experiment folder** (`../some-experiment`). The only allowed import sources are: `@charm-ux/cui/react` (components), `../../patterns/<PatternName>` (shared patterns), co-located files within the same experiment (`./data`, `./styles`, etc.), and `react`. If you need functionality from another experiment, extract it to `src/patterns/` first.
 - **Multi-page navigation** — use `window.location.hash = '<experiment-id>/<sub-route>'` to navigate between pages within a flow. Never use separate experiment entries for pages that are part of the same user journey.

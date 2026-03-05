@@ -168,9 +168,22 @@ To manually create an intent file (without the MCP tool), use this format:
 - Co-located files (mock data, helpers) go in the same folder
 - Each `index.tsx` exports a default function component
 - Filenames for the component use `index.tsx`; PascalCase is used for the exported component name
-- To import a sibling experiment (e.g., CopilotButton), use a relative path: `import CopilotButton from '../copilot-button'`
-- To import a shared pattern (e.g., PageHeader), use: `import PageHeader from '../../patterns/PageHeader'` (from experiment root) or `import PageHeader from '../../../patterns/PageHeader'` (from `pages/` subdirectory)
 - **MANDATORY**: Always use shared patterns from `src/patterns/` instead of re-implementing equivalent UI. At minimum, every Azure page must use `PageHeader` (with `copilotSuggestions` prop) and `CopilotButton`. Never hand-roll custom pill buttons, suggestion bars, or title rows. See the coherence-ui skill's "Shared Pattern Components" section for the full list.
+
+### HARD RULE: Allowed Import Sources
+
+**NEVER import from another experiment folder** (`../some-experiment`). Experiments must be fully self-contained. The only allowed import sources are:
+
+| Source | Import path (from experiment root) | What it provides |
+|--------|-------------------------------------|------------------|
+| `@charm-ux/cui/react` | `@charm-ux/cui/react` | All `Cui*` React component wrappers |
+| `src/patterns/` | `../../patterns/<PatternName>` | Shared reusable pattern components (PageHeader, CopilotButton, CopilotSuggestions, AzurePortalHeader, PatternResourceShell, scaffolds, etc.) |
+| Own experiment folder | `./data`, `./styles`, `./Navigation`, `./PageContent`, `./pages/<Page>` | Co-located data, styles, sub-components within the same experiment |
+| React | `react` | React hooks, types |
+
+From a `pages/` subdirectory, pattern imports use one extra `../`: `../../../patterns/<PatternName>`.
+
+If you need functionality from another experiment, extract it to `src/patterns/` first.
 - Theme CSS is already imported globally in `main.tsx` — individual experiments do not need to import it
 - The experiment picker shows all registered experiments as clickable cards with title and description
 

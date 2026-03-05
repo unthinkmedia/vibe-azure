@@ -37,7 +37,16 @@ List `coherence-preview/src/experiments/` and read 3-5 experiments that are simi
 Verify these are imported from shared patterns (NEVER reimplemented):
 - `PageHeader` from `../../patterns/PageHeader`
 - `CopilotSuggestions` from `../../patterns/CopilotSuggestions` (if used)
-- `CopilotButton` from experiment's `../copilot-button` (if header has copilot)
+- `CopilotButton` from `../../patterns/CopilotButton` (if header has copilot)
+
+### 4b. Check for Cross-Experiment Imports (VIOLATION)
+Scan all imports for any path that resolves to `../some-experiment` — these are **violations**. Experiments must NEVER import from another experiment folder. Allowed import sources:
+- `@charm-ux/cui/react` — Coherence components
+- `../../patterns/<PatternName>` — shared patterns
+- `./data`, `./styles`, `./Navigation`, `./PageContent`, `./pages/<Page>` — own experiment files
+- `react` — React hooks/types
+
+If a cross-experiment import is found, flag it and recommend extracting the imported code to `src/patterns/`.
 
 ### 5. Identify Extraction Candidates
 For any custom code that appears in 2+ experiments or is >30 lines of reusable composition:

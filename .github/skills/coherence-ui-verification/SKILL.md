@@ -79,7 +79,7 @@ List `coherence-preview/src/patterns/` and check whether any shared pattern comp
 |---|---|---|
 | Title row with icon/star/actions | `PageHeader` | `../../patterns/PageHeader` |
 | Copilot suggestion pills | `CopilotSuggestions` (or `copilotSuggestions` prop on `PageHeader`) | `../../patterns/CopilotSuggestions` |
-| Header Copilot button | `CopilotButton` | `../copilot-button` |
+| Header Copilot button | `CopilotButton` | `../../patterns/CopilotButton` |
 | Resource card with icon + title + action footer | `ServiceCard` pattern | Check `PatternServiceCard.tsx` |
 | SVG donut/gauge chart | `DonutGauge` pattern | Check `PatternDonutGauge.tsx` |
 

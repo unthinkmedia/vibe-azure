@@ -1011,7 +1011,7 @@ export default defineConfig({
             noEmit: true,
             paths: {
               "../../patterns/*": ["./src/patterns/*"],
-              "../copilot-button": ["./src/patterns/CopilotSuggestions"],
+              "../copilot-button": ["./src/patterns/CopilotButton"],
             },
           },
           include: ["src"],

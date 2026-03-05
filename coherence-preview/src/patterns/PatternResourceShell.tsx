@@ -22,7 +22,7 @@ import {
   CuiSideNav,
   CuiToolbar,
 } from '@charm-ux/cui/react';
-import CopilotButton from '../experiments/copilot-button';
+import CopilotButton from './CopilotButton';
 import { azureIcon } from './azure-icons';
 import AzurePortalNav from './PatternAzurePortalNav';
 

@@ -12,7 +12,7 @@ import {
   CuiPopOver,
   CuiSearchBox,
 } from '@charm-ux/cui/react';
-import CopilotButton from '../experiments/copilot-button';
+import CopilotButton from './CopilotButton';
 
 export default function PatternHeader() {
   return (

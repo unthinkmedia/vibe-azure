@@ -222,9 +222,24 @@ Mandatory shared patterns — NEVER reimplement:
 |---------|--------|-----------------|
 | `PageHeader` | `../../patterns/PageHeader` | Title row with icon, star, more-actions, Copilot suggestions |
 | `CopilotSuggestions` | `../../patterns/CopilotSuggestions` | Dismissible pill bar (or use `copilotSuggestions` prop on PageHeader) |
-| `CopilotButton` | `../copilot-button` | Header Copilot button |
+| `CopilotButton` | `../../patterns/CopilotButton` | Header Copilot button |
 
 Also read the Composition Patterns table in the coherence-ui SKILL.md.
+
+### HARD RULE: Allowed Import Sources
+
+**NEVER import from another experiment folder** (`../some-experiment`). Experiments must be fully self-contained. The only allowed import sources for an experiment are:
+
+| Source | Import path (from experiment root) | What it provides |
+|--------|-------------------------------------|------------------|
+| `@charm-ux/cui/react` | `@charm-ux/cui/react` | All `Cui*` React component wrappers |
+| `src/patterns/` | `../../patterns/<PatternName>` | Shared reusable pattern components (PageHeader, CopilotButton, CopilotSuggestions, AzurePortalHeader, PatternResourceShell, scaffolds, etc.) |
+| Own experiment folder | `./data`, `./styles`, `./Navigation`, `./PageContent`, `./pages/<Page>` | Co-located data, styles, sub-components within the same experiment |
+| React | `react` | React hooks, types |
+
+**From a `pages/` subdirectory**, pattern imports use one extra `../`: `../../../patterns/<PatternName>`.
+
+**If you need functionality that lives in another experiment**, it should be extracted to `src/patterns/` first.
 
 **In Figma Import Mode:** Also read the coherence-ui skill's full Component Index and fetch the live API manifest. You will need to look up exact attributes, slots, and CSS custom properties for each component you map from the Figma design.
 

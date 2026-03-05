@@ -157,7 +157,13 @@ Invoke the **coherence-design-intent** skill. This will:
 2. Wait for user to click **Accept** in the intent UI
 3. Save `intent.json` to the experiment folder
 
-**After completion:** Re-run Step 2 to detect the next phase. If `intent.json` now exists, **auto-advance to BUILD immediately** — the user's Accept click is the explicit confirmation.
+**After completion:** Re-run Step 2 to detect the next phase. If `intent.json` now exists:
+
+> _"Design intent captured and confirmed. Ready to build the experiment? Say **'build it'** to proceed."_
+
+**⚠️ STOP HERE. END YOUR TURN.** Do not auto-advance to BUILD. Wait for the user's explicit confirmation before proceeding.
+
+**Why this gate exists:** On 2026-03-05, the agent barreled through INTENT → BUILD → DEPLOY in a single turn without any user confirmation at phase boundaries. Every phase transition is now a hard stop requiring explicit user approval.
 
 ### Phase: BUILD
 
@@ -223,16 +229,18 @@ After each phase skill completes, **always re-run Step 2** to detect the current
 - Phases that fail or require user input → stay in current phase
 - User manually fixing files between phases → correct detection
 
-**Auto-advance rules:**
+**⚠️ HARD RULE: Every phase transition is a MANDATORY HARD STOP.**
 
 | Scenario | Action |
-|----------|---------|
-| INTENT completed (user clicked Accept) | **Always** auto-advance to BUILD |
-| BUILD completed | Pause. Ask user if they want to verify. |
-| VERIFY completed with 0 violations | Tell user they can deploy. Do not auto-deploy. |
-| User's original request implies full pipeline | Advance through INTENT → BUILD (auto after Accept), then pause at VERIFY |
+|----------|--------|
+| INTENT completed | **STOP. END YOUR TURN.** Ask: _"Intent captured. Ready to build?"_ Wait for explicit confirmation. |
+| BUILD completed | **STOP. END YOUR TURN.** Ask: _"Build complete. Want me to run verification?"_ Wait for explicit confirmation. |
+| VERIFY completed | **STOP. END YOUR TURN.** Ask: _"Verification complete. Want to deploy?"_ Wait for explicit confirmation. |
+| User's original request implies full pipeline | Still stop at EVERY boundary. "Build me a page" means start at INTENT, stop, wait, then BUILD on confirmation, stop, wait, etc. |
 
-**Never auto-advance to DEPLOY.** Always require explicit user confirmation before deploying.
+**Never auto-advance between ANY phases.** Every transition requires the user to explicitly say "yes", "go ahead", "build it", "verify it", "deploy it", or equivalent.
+
+**Why this rule exists (2026-03-05 incident):** The agent received "build me a page" and executed the entire pipeline — intent capture, code generation, PR creation, and cloud deployment — in a single turn without stopping once. The user never reviewed the intent, never previewed the build, and never approved the deployment. All phase gates now require the agent to END ITS TURN and yield to the user.
 
 ## Handling Edge Cases
 

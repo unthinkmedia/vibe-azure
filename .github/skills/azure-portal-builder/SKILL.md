@@ -405,6 +405,8 @@ Then tell the user:
 
 > _"Build complete. The experiment compiles and is registered. Say **'verify it'** to run UI verification, or navigate to `http://localhost:5175#<experiment-id>` to preview."_
 
+**⚠️ STOP HERE. END YOUR TURN.** Do not auto-advance to verification or deployment. Do not invoke the `coherence-experiment-verify` or `azure-experiment-deploy` skills. Yield control back to the user and wait for their explicit next instruction.
+
 ### Standalone
 
 Check the experiment files for obvious import errors or syntax issues. Then ensure the local dev server is running:
@@ -422,6 +424,8 @@ npm run dev
 Tell the user:
 
 > _"Build complete. Preview at `http://localhost:5175#<experiment-id>`. Say **'deploy it'** to push to the shared gallery, or **'verify it'** to run UI checks first."_
+
+**⚠️ STOP HERE. END YOUR TURN.** Do not auto-advance to verification or deployment. Do not invoke the `coherence-experiment-verify` or `azure-experiment-deploy` skills. Yield control back to the user and wait for their explicit next instruction.
 
 **Do NOT run UI verification yourself.** That is the `coherence-experiment-verify` skill's job.
 

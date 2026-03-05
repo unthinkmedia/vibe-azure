@@ -96,13 +96,19 @@ Add the layout constraint to `prefillConstraints` so it persists into `intent.js
 
 Call `design_intent` with all prefill parameters. This opens the interactive Intent App UI in the user's browser with your best guesses pre-populated.
 
-### 3. Ask the User for Acceptance
+### 3. Ask the User for Acceptance — MANDATORY HARD STOP
+
+⚠️ **This is a MANDATORY HARD STOP. You MUST end your turn here and wait for the user to respond.**
 
 The MCP UI auto-saves all edits to intent.json in real-time — there are no Save or Accept buttons. Once the form is open, tell the user:
 
 > _"The Intent App is open with your experiment pre-filled. Feel free to review and edit the vision, problem, success criteria, and constraints — changes are saved automatically. Do you accept this intent?"_
 
-**STOP HERE.** Do not proceed until the user confirms acceptance in chat.
+**STOP HERE. END YOUR TURN.** Do not proceed to Step 4. Do not check for `intent.json`. Do not advance to the BUILD phase. Do not call any more tools. Yield control back to the user and wait for their explicit confirmation in chat (e.g. "yes", "accepted", "looks good", "build it").
+
+**Why this gate exists:** On 2026-03-05, the agent skipped this stop and barreled through intent → build → deploy in a single turn without any user confirmation. The user never got a chance to review or adjust the intent.
+
+**NEVER write intent.json manually.** The `design_intent` MCP tool creates it via the interactive UI. If you write intent.json yourself, the user never sees the Intent App and cannot review/edit their design intent.
 
 ### 4. Verify intent.json Exists
 

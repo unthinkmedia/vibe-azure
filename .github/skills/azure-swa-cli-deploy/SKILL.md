@@ -7,6 +7,26 @@ description: Deploy to Azure Static Web Apps using the SWA CLI with a deployment
 
 Deploy the `coherence-preview/` Vite app to Azure Static Web Apps using the SWA CLI and a deployment token. This bypasses the GitHub OAuth connection entirely — ideal for Enterprise Managed User (EMU) accounts that cannot authorize third-party GitHub Apps.
 
+## HARD RULE: User Confirmation Before Creating Azure Resources
+
+⚠️ **Before creating ANY Azure resource (resource group, Static Web App, etc.), you MUST:**
+
+1. **State exactly what will be created:** resource name, resource type, subscription, resource group, region, and pricing tier (e.g. Free)
+2. **STOP. END YOUR TURN.** Wait for the user to explicitly confirm.
+
+Example:
+
+> _"I'm about to create the following Azure resources:_
+> - _Resource Group: `coherence-preview-rg` (East US 2)_
+> - _Static Web App: `coherence-preview` (Free tier, East US 2)_
+> - _Subscription: `<subscription name>`_
+>
+> _This will create billable resources in your Azure subscription. Proceed?"_
+
+**Do NOT run `az group create` or `az staticwebapp create` until the user says yes.** This applies to every resource creation command, not just the first one.
+
+**Why this rule exists:** On 2026-03-05, the agent created Azure resources without user approval as part of an auto-advancing pipeline.
+
 ## Prerequisites
 
 Before starting, verify the user has:

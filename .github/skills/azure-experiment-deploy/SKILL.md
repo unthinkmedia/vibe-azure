@@ -25,9 +25,27 @@ User reviews → merges PR → production gallery
 Production: https://thankful-mud-0be9d9a1e-preview.westus2.1.azurestaticapps.net/#<id>
 ```
 
-## Step 0: Verify Experiment Is Ready (HARD GATE)
+## Step 0: Confirm Deployment with User (HARD GATE — MANDATORY STOP)
 
-Check that **all** of these exist locally:
+⚠️ **Before checking any files, you MUST describe what deploying will do and get explicit user confirmation.**
+
+Tell the user:
+
+> _"Deploying this experiment will:_
+> - _Create a feature branch `experiment/<id>` in the GitHub repo_
+> - _Push experiment files to the branch_
+> - _Open a pull request targeting `main`_
+> - _GitHub Actions will build and deploy a **staging preview** to Azure Static Web Apps_
+>
+> _Do you want to proceed?"_
+
+**STOP HERE. END YOUR TURN.** Wait for the user to explicitly confirm (e.g. "yes", "go ahead", "deploy it"). Do not proceed to file checks or any subsequent steps until you have confirmation.
+
+**Why this gate exists:** On 2026-03-05, the agent auto-advanced through intent → build → deploy without any user confirmation, creating cloud resources and PRs the user never approved.
+
+## Step 0b: Verify Experiment Is Ready
+
+After user confirms, check that **all** of these exist locally:
 
 1. `<EXP_ROOT>/experiments/<id>/intent.json` — intent captured
 2. `<EXP_ROOT>/experiments/<id>/index.tsx` — experiment built

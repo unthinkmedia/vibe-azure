@@ -115,6 +115,14 @@ const experiments: Entry[] = [
     tags: ['dashboard', 'side-panel', 'cost-management', 'table', 'chart', 'cards'],
   },
   {
+    id: 'cost-management',
+    title: 'Azure Cost Management + Billing Dashboard',
+    description: 'Subscription-level cost analysis page with cost breakdown donut chart, daily spend bar chart with budget threshold, resource group table with sparklines and anomaly badges, budget alerts with progress bars, and Advisor recommendations',
+    component: lazy(() => import('./experiments/cost-management')),
+    date: '2026-03-05',
+    tags: ['dashboard', 'full-width', 'cost-management', 'chart', 'table', 'cards'],
+  },
+  {
     id: 'key-vault-overview',
     title: 'Key Vault Overview Dashboard',
     description: 'Azure Key Vault overview with secrets expiration timeline (30/60/90-day buckets), certificate health dashboard with auto-renewal indicators, access policy cards grouped by principal type, and sensitive operations log',

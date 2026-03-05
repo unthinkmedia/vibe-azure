@@ -1,0 +1,30 @@
+{
+  "experimentId": "cost-management",
+  "title": "Azure Cost Management + Billing Dashboard",
+  "vision": "A subscription-level cost analysis page with cost breakdown donut chart by service, daily spend trend bar chart with budget threshold overlay, resource group table ranked by cost with sparklines and anomaly badges, budget alerts panel with progress bars, and Advisor cost-optimization recommendations card.",
+  "problem": "Users need a single-pane-of-glass view to understand where their Azure spend is going, spot anomalies, track budget consumption, and act on cost-optimization recommendations — all in one dashboard without navigating multiple blades.",
+  "successCriteria": [
+    "Cost breakdown donut chart by service (Compute, Storage, Networking, Databases) with total spend callout",
+    "Daily spend trend bar chart for current billing period with budget threshold line overlay",
+    "Resource group table ranked by cost with sparkline trends, % change from last month, and anomaly badges",
+    "Budget alerts panel showing 2-3 active budgets with progress bars and warning states",
+    "Recommendations card with 3 Advisor cost-optimization tips (reserved instances, idle resources, orphaned disks)",
+    "Copilot suggestions: Where are my biggest cost increases?, Which resources can I shut down off-hours?, Forecast my spend for this month"
+  ],
+  "nonGoals": [
+    "Actual Azure API integration",
+    "Working cost export functionality",
+    "Real-time data updates",
+    "Multi-subscription pivot"
+  ],
+  "constraints": [
+    "Layout: full-width (subscription-level dashboard, no resource-specific side nav)",
+    "Use Coherence donut/bar chart patterns or custom SVG/Canvas charts styled with Coherence tokens",
+    "Budget progress bars should use status colors (warning for >80%, success for <60%)",
+    "Anomaly badges on resource group table rows",
+    "Sparkline mini-charts in table cells for cost trend"
+  ],
+  "createdAt": "2026-03-05T15:47:18.739Z",
+  "updatedAt": "2026-03-05T15:47:18.739Z",
+  "status": "draft"
+}
